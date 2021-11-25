@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20F71" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="AnswerHistory" representedClassName="AnswerHistory" syncable="YES" codeGenerationType="class">
+        <attribute name="answer" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="word" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WordCard" inverseName="history" inverseEntity="WordCard"/>
+    </entity>
+    <entity name="Engagement" representedClassName="Engagement" syncable="YES" codeGenerationType="class">
+        <attribute name="buried" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="checked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="day" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="finished" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="goal" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="good" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="new" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="noidea" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="vague" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="working" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="Mnemonic" representedClassName="Mnemonic" syncable="YES" codeGenerationType="class">
+        <attribute name="hint" optional="YES" attributeType="String"/>
+        <attribute name="sync" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <relationship name="word" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WordCard" inverseName="mnemonic" inverseEntity="WordCard"/>
+    </entity>
+    <entity name="Reference" representedClassName="Reference" syncable="YES" codeGenerationType="class">
+        <attribute name="desc" optional="YES" attributeType="String"/>
+        <attribute name="imgurl" optional="YES" attributeType="URI"/>
+        <attribute name="source" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sync" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="valid" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="word" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="SenseRef" representedClassName="SenseRef" syncable="YES" codeGenerationType="class">
+        <attribute name="hidden" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="lexid" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="word" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WordCard" inverseName="collapsed" inverseEntity="WordCard"/>
+    </entity>
+    <entity name="WordCard" representedClassName="WordCard" syncable="YES" codeGenerationType="class">
+        <attribute name="category" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="duedate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="leech" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="step" optional="YES" attributeType="Integer 16" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="word" attributeType="String" defaultValueString="" spotlightIndexingEnabled="YES"/>
+        <relationship name="collapsed" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SenseRef" inverseName="word" inverseEntity="SenseRef"/>
+        <relationship name="history" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AnswerHistory" inverseName="word" inverseEntity="AnswerHistory"/>
+        <relationship name="mnemonic" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Mnemonic" inverseName="word" inverseEntity="Mnemonic"/>
+    </entity>
+    <elements>
+        <element name="AnswerHistory" positionX="648" positionY="-1251" width="128" height="103"/>
+        <element name="Engagement" positionX="762.53125" positionY="-1187.87890625" width="128" height="208"/>
+        <element name="Mnemonic" positionX="648" positionY="-1242" width="128" height="88"/>
+        <element name="Reference" positionX="648" positionY="-1242" width="128" height="133"/>
+        <element name="SenseRef" positionX="801" positionY="-1377" width="128" height="88"/>
+        <element name="WordCard" positionX="496.49609375" positionY="-1398.5390625" width="128" height="164"/>
+    </elements>
+</model>

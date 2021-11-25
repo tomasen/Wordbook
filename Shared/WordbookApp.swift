@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct WordbookApp: App {
-    let persistenceController = PersistenceController.shared
+    let persistenceController = CoreDataManager.shared
 
     var body: some Scene {
         WindowGroup {

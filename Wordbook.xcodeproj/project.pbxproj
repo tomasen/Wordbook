@@ -7,23 +7,54 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8833ABF3274F358B00637B61 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF2274F358B00637B61 /* CardView.swift */; };
+		8833ABF4274F358B00637B61 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF2274F358B00637B61 /* CardView.swift */; };
+		8833ABF6274F3F6C00637B61 /* SharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF5274F3F6C00637B61 /* SharingView.swift */; };
+		8833ABF7274F3F6C00637B61 /* SharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF5274F3F6C00637B61 /* SharingView.swift */; };
+		8833ABF9274F3F9200637B61 /* WordListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF8274F3F9200637B61 /* WordListView.swift */; };
+		8833ABFA274F3F9200637B61 /* WordListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF8274F3F9200637B61 /* WordListView.swift */; };
+		8833ABFC274F621F00637B61 /* WordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFB274F621F00637B61 /* WordManager.swift */; };
+		8833ABFD274F621F00637B61 /* WordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFB274F621F00637B61 /* WordManager.swift */; };
+		8833ABFF274F65D900637B61 /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFE274F65D900637B61 /* CardViewModel.swift */; };
+		8833AC00274F65D900637B61 /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFE274F65D900637B61 /* CardViewModel.swift */; };
+		8833AC03274FDE9500637B61 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8833AC02274FDE9500637B61 /* CloudKit.framework */; };
+		8833AC06274FDEDC00637B61 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8833AC05274FDEDC00637B61 /* CloudKit.framework */; };
+		8833AC13274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */; };
+		8833AC14274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */; };
+		8833AC19274FE8D000637B61 /* wordnet.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC16274FE8D000637B61 /* wordnet.sqlite */; };
+		8833AC1A274FE8D000637B61 /* wordnet.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC16274FE8D000637B61 /* wordnet.sqlite */; };
+		8833AC22274FE90400637B61 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC21274FE90400637B61 /* ShareViewController.swift */; };
+		8833AC25274FE90400637B61 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC23274FE90400637B61 /* MainInterface.storyboard */; };
+		8833AC29274FE90400637B61 /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8833AC1F274FE90400637B61 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8833AC2F274FE98500637B61 /* wordnet-lite.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */; };
+		8833AC31274FF1A700637B61 /* WordDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabase.swift */; };
+		8833AC32274FF1A700637B61 /* WordDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabase.swift */; };
+		8833AC33274FF1A700637B61 /* WordDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabase.swift */; };
+		8833AC36274FF33B00637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC35274FF33B00637B61 /* SQLite */; };
+		8833AC38274FF53300637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC37274FF53300637B61 /* SQLite */; };
+		8833AC3A274FF53900637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC39274FF53900637B61 /* SQLite */; };
 		88E02E0D27061D280015ECEA /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02E0C27061D280015ECEA /* Tests_iOS.swift */; };
 		88E02E0F27061D280015ECEA /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02E0E27061D280015ECEA /* Tests_iOSLaunchTests.swift */; };
 		88E02E1927061D280015ECEA /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02E1827061D280015ECEA /* Tests_macOS.swift */; };
 		88E02E1B27061D280015ECEA /* Tests_macOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02E1A27061D280015ECEA /* Tests_macOSLaunchTests.swift */; };
-		88E02E1C27061D280015ECEA /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF127061D260015ECEA /* Wordbook.xcdatamodeld */; };
-		88E02E1D27061D280015ECEA /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF127061D260015ECEA /* Wordbook.xcdatamodeld */; };
 		88E02E1E27061D280015ECEA /* WordbookApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF327061D260015ECEA /* WordbookApp.swift */; };
 		88E02E1F27061D280015ECEA /* WordbookApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF327061D260015ECEA /* WordbookApp.swift */; };
 		88E02E2027061D280015ECEA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF427061D260015ECEA /* ContentView.swift */; };
 		88E02E2127061D280015ECEA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF427061D260015ECEA /* ContentView.swift */; };
-		88E02E2227061D280015ECEA /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* Persistence.swift */; };
-		88E02E2327061D280015ECEA /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* Persistence.swift */; };
+		88E02E2227061D280015ECEA /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* CoreDataManager.swift */; };
+		88E02E2327061D280015ECEA /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* CoreDataManager.swift */; };
 		88E02E2427061D280015ECEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
 		88E02E2527061D280015ECEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8833AC27274FE90400637B61 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88E02DEC27061D260015ECEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8833AC1E274FE90400637B61;
+			remoteInfo = Wordbook;
+		};
 		88E02E0927061D280015ECEA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 88E02DEC27061D260015ECEA /* Project object */;
@@ -40,11 +71,42 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8833AC2E274FE90400637B61 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8833AC29274FE90400637B61 /* ShareExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		88E02DF227061D260015ECEA /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
+		8833ABF2274F358B00637B61 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		8833ABF5274F3F6C00637B61 /* SharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingView.swift; sourceTree = "<group>"; };
+		8833ABF8274F3F9200637B61 /* WordListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordListView.swift; sourceTree = "<group>"; };
+		8833ABFB274F621F00637B61 /* WordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordManager.swift; sourceTree = "<group>"; };
+		8833ABFE274F65D900637B61 /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
+		8833AC02274FDE9500637B61 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.0.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
+		8833AC04274FDEB500637B61 /* Wordbook--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Wordbook--iOS--Info.plist"; sourceTree = "<group>"; };
+		8833AC05274FDEDC00637B61 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		8833AC12274FE35800637B61 /* Memorable.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Memorable.xcdatamodel; sourceTree = "<group>"; };
+		8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "wordnet-lite.sqlite"; sourceTree = "<group>"; };
+		8833AC16274FE8D000637B61 /* wordnet.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = wordnet.sqlite; sourceTree = "<group>"; };
+		8833AC1F274FE90400637B61 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8833AC21274FE90400637B61 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		8833AC24274FE90400637B61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		8833AC26274FE90400637B61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8833AC2A274FE90400637B61 /* Wordbook.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wordbook.entitlements; sourceTree = "<group>"; };
+		8833AC30274FF1A700637B61 /* WordDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordDatabase.swift; sourceTree = "<group>"; };
+		888EB1292722BF400067EA72 /* Wordbook (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Wordbook (iOS).entitlements"; sourceTree = "<group>"; };
 		88E02DF327061D260015ECEA /* WordbookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookApp.swift; sourceTree = "<group>"; };
 		88E02DF427061D260015ECEA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		88E02DF527061D260015ECEA /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		88E02DF527061D260015ECEA /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		88E02DF627061D270015ECEA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		88E02DFB27061D270015ECEA /* Wordbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wordbook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88E02E0127061D270015ECEA /* Wordbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wordbook.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -58,10 +120,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8833AC1C274FE90400637B61 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8833AC3A274FF53900637B61 /* SQLite in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		88E02DF827061D270015ECEA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8833AC36274FF33B00637B61 /* SQLite in Frameworks */,
+				8833AC03274FDE9500637B61 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,6 +141,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8833AC38274FF53300637B61 /* SQLite in Frameworks */,
+				8833AC06274FDEDC00637B61 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,25 +163,81 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8833ABEF274F34D800637B61 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				88E02DF427061D260015ECEA /* ContentView.swift */,
+				8833ABF2274F358B00637B61 /* CardView.swift */,
+				8833ABF5274F3F6C00637B61 /* SharingView.swift */,
+				8833ABF8274F3F9200637B61 /* WordListView.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		8833ABF0274F34F300637B61 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8833AC30274FF1A700637B61 /* WordDatabase.swift */,
+				88E02DF527061D260015ECEA /* CoreDataManager.swift */,
+				8833ABFB274F621F00637B61 /* WordManager.swift */,
+				8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		8833ABF1274F351200637B61 /* View Models */ = {
+			isa = PBXGroup;
+			children = (
+				8833ABFE274F65D900637B61 /* CardViewModel.swift */,
+			);
+			name = "View Models";
+			sourceTree = "<group>";
+		};
+		8833AC01274FDE9500637B61 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8833AC05274FDEDC00637B61 /* CloudKit.framework */,
+				8833AC02274FDE9500637B61 /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8833AC20274FE90400637B61 /* Wordbook */ = {
+			isa = PBXGroup;
+			children = (
+				8833AC2A274FE90400637B61 /* Wordbook.entitlements */,
+				8833AC21274FE90400637B61 /* ShareViewController.swift */,
+				8833AC23274FE90400637B61 /* MainInterface.storyboard */,
+				8833AC26274FE90400637B61 /* Info.plist */,
+			);
+			path = Wordbook;
+			sourceTree = "<group>";
+		};
 		88E02DEB27061D260015ECEA = {
 			isa = PBXGroup;
 			children = (
+				8833AC04274FDEB500637B61 /* Wordbook--iOS--Info.plist */,
+				888EB1292722BF400067EA72 /* Wordbook (iOS).entitlements */,
 				88E02DF027061D260015ECEA /* Shared */,
 				88E02E0227061D270015ECEA /* macOS */,
 				88E02E0B27061D280015ECEA /* Tests iOS */,
 				88E02E1727061D280015ECEA /* Tests macOS */,
+				8833AC20274FE90400637B61 /* Wordbook */,
 				88E02DFC27061D270015ECEA /* Products */,
+				8833AC01274FDE9500637B61 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		88E02DF027061D260015ECEA /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				8833ABEF274F34D800637B61 /* Views */,
+				8833ABF1274F351200637B61 /* View Models */,
+				8833ABF0274F34F300637B61 /* Models */,
 				88E02DF327061D260015ECEA /* WordbookApp.swift */,
-				88E02DF427061D260015ECEA /* ContentView.swift */,
-				88E02DF527061D260015ECEA /* Persistence.swift */,
+				8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */,
+				8833AC16274FE8D000637B61 /* wordnet.sqlite */,
 				88E02DF627061D270015ECEA /* Assets.xcassets */,
-				88E02DF127061D260015ECEA /* Wordbook.xcdatamodeld */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -119,6 +249,7 @@
 				88E02E0127061D270015ECEA /* Wordbook.app */,
 				88E02E0827061D280015ECEA /* Tests iOS.xctest */,
 				88E02E1427061D280015ECEA /* Tests macOS.xctest */,
+				8833AC1F274FE90400637B61 /* ShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -152,6 +283,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8833AC1E274FE90400637B61 /* ShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8833AC2B274FE90400637B61 /* Build configuration list for PBXNativeTarget "ShareExtension" */;
+			buildPhases = (
+				8833AC1B274FE90400637B61 /* Sources */,
+				8833AC1C274FE90400637B61 /* Frameworks */,
+				8833AC1D274FE90400637B61 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ShareExtension;
+			packageProductDependencies = (
+				8833AC39274FF53900637B61 /* SQLite */,
+			);
+			productName = Wordbook;
+			productReference = 8833AC1F274FE90400637B61 /* ShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		88E02DFA27061D270015ECEA /* Wordbook (iOS) */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 88E02E2827061D280015ECEA /* Build configuration list for PBXNativeTarget "Wordbook (iOS)" */;
@@ -159,12 +310,17 @@
 				88E02DF727061D270015ECEA /* Sources */,
 				88E02DF827061D270015ECEA /* Frameworks */,
 				88E02DF927061D270015ECEA /* Resources */,
+				8833AC2E274FE90400637B61 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				8833AC28274FE90400637B61 /* PBXTargetDependency */,
 			);
 			name = "Wordbook (iOS)";
+			packageProductDependencies = (
+				8833AC35274FF33B00637B61 /* SQLite */,
+			);
 			productName = "Wordbook (iOS)";
 			productReference = 88E02DFB27061D270015ECEA /* Wordbook.app */;
 			productType = "com.apple.product-type.application";
@@ -182,6 +338,9 @@
 			dependencies = (
 			);
 			name = "Wordbook (macOS)";
+			packageProductDependencies = (
+				8833AC37274FF53300637B61 /* SQLite */,
+			);
 			productName = "Wordbook (macOS)";
 			productReference = 88E02E0127061D270015ECEA /* Wordbook.app */;
 			productType = "com.apple.product-type.application";
@@ -229,9 +388,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1300;
+				LastSwiftUpdateCheck = 1310;
+				LastUpgradeCheck = 1310;
 				TargetAttributes = {
+					8833AC1E274FE90400637B61 = {
+						CreatedOnToolsVersion = 13.1;
+					};
 					88E02DFA27061D270015ECEA = {
 						CreatedOnToolsVersion = 13.0;
 					};
@@ -257,6 +419,9 @@
 				Base,
 			);
 			mainGroup = 88E02DEB27061D260015ECEA;
+			packageReferences = (
+				8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
+			);
 			productRefGroup = 88E02DFC27061D270015ECEA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -265,15 +430,26 @@
 				88E02E0027061D270015ECEA /* Wordbook (macOS) */,
 				88E02E0727061D280015ECEA /* Tests iOS */,
 				88E02E1327061D280015ECEA /* Tests macOS */,
+				8833AC1E274FE90400637B61 /* ShareExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8833AC1D274FE90400637B61 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8833AC25274FE90400637B61 /* MainInterface.storyboard in Resources */,
+				8833AC2F274FE98500637B61 /* wordnet-lite.sqlite in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		88E02DF927061D270015ECEA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8833AC19274FE8D000637B61 /* wordnet.sqlite in Resources */,
 				88E02E2427061D280015ECEA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -282,6 +458,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8833AC1A274FE8D000637B61 /* wordnet.sqlite in Resources */,
 				88E02E2527061D280015ECEA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -303,14 +480,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8833AC1B274FE90400637B61 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8833AC22274FE90400637B61 /* ShareViewController.swift in Sources */,
+				8833AC33274FF1A700637B61 /* WordDatabase.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		88E02DF727061D270015ECEA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8833AC13274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
 				88E02E1E27061D280015ECEA /* WordbookApp.swift in Sources */,
-				88E02E2227061D280015ECEA /* Persistence.swift in Sources */,
-				88E02E1C27061D280015ECEA /* Wordbook.xcdatamodeld in Sources */,
+				8833ABFC274F621F00637B61 /* WordManager.swift in Sources */,
+				8833AC31274FF1A700637B61 /* WordDatabase.swift in Sources */,
+				88E02E2227061D280015ECEA /* CoreDataManager.swift in Sources */,
+				8833ABF6274F3F6C00637B61 /* SharingView.swift in Sources */,
+				8833ABF9274F3F9200637B61 /* WordListView.swift in Sources */,
+				8833ABF3274F358B00637B61 /* CardView.swift in Sources */,
 				88E02E2027061D280015ECEA /* ContentView.swift in Sources */,
+				8833ABFF274F65D900637B61 /* CardViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,10 +510,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8833AC14274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
 				88E02E1F27061D280015ECEA /* WordbookApp.swift in Sources */,
-				88E02E2327061D280015ECEA /* Persistence.swift in Sources */,
-				88E02E1D27061D280015ECEA /* Wordbook.xcdatamodeld in Sources */,
+				8833ABFD274F621F00637B61 /* WordManager.swift in Sources */,
+				8833AC32274FF1A700637B61 /* WordDatabase.swift in Sources */,
+				88E02E2327061D280015ECEA /* CoreDataManager.swift in Sources */,
+				8833ABF7274F3F6C00637B61 /* SharingView.swift in Sources */,
+				8833ABFA274F3F9200637B61 /* WordListView.swift in Sources */,
+				8833ABF4274F358B00637B61 /* CardView.swift in Sources */,
 				88E02E2127061D280015ECEA /* ContentView.swift in Sources */,
+				8833AC00274F65D900637B61 /* CardViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +544,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8833AC28274FE90400637B61 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8833AC1E274FE90400637B61 /* ShareExtension */;
+			targetProxy = 8833AC27274FE90400637B61 /* PBXContainerItemProxy */;
+		};
 		88E02E0A27061D280015ECEA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 88E02DFA27061D270015ECEA /* Wordbook (iOS) */;
@@ -358,7 +561,77 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		8833AC23274FE90400637B61 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8833AC24274FE90400637B61 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		8833AC2C274FE90400637B61 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Wordbook/Wordbook.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9ZARAPZJX4;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Wordbook/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Wordbook;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.words;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8833AC2D274FE90400637B61 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Wordbook/Wordbook.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9ZARAPZJX4;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Wordbook/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Wordbook;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.words;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		88E02E2627061D280015ECEA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -473,16 +746,20 @@
 		88E02E2927061D280015ECEA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Wordbook (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 124;
 				DEVELOPMENT_TEAM = 9ZARAPZJX4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Wordbook--iOS--Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -490,29 +767,34 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.tomasen.Wordbook;
+				MARKETING_VERSION = 1.0.6;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
 		88E02E2A27061D280015ECEA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Wordbook (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 124;
 				DEVELOPMENT_TEAM = 9ZARAPZJX4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Wordbook--iOS--Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -520,13 +802,14 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.tomasen.Wordbook;
+				MARKETING_VERSION = 1.0.6;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -537,9 +820,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 124;
 				DEVELOPMENT_TEAM = 9ZARAPZJX4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -550,8 +834,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.tomasen.Wordbook;
+				MARKETING_VERSION = 1.0.6;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -565,9 +849,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 124;
 				DEVELOPMENT_TEAM = 9ZARAPZJX4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -578,8 +863,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.tomasen.Wordbook;
+				MARKETING_VERSION = 1.0.6;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -691,6 +976,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8833AC2B274FE90400637B61 /* Build configuration list for PBXNativeTarget "ShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8833AC2C274FE90400637B61 /* Debug */,
+				8833AC2D274FE90400637B61 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		88E02DEF27061D260015ECEA /* Build configuration list for PBXProject "Wordbook" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -738,13 +1032,42 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.13.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8833AC35274FF33B00637B61 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
+		};
+		8833AC37274FF53300637B61 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
+		};
+		8833AC39274FF53900637B61 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
+		};
+/* End XCSwiftPackageProductDependency section */
+
 /* Begin XCVersionGroup section */
-		88E02DF127061D260015ECEA /* Wordbook.xcdatamodeld */ = {
+		8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				88E02DF227061D260015ECEA /* Shared.xcdatamodel */,
+				8833AC12274FE35800637B61 /* Memorable.xcdatamodel */,
 			);
-			currentVersion = 88E02DF227061D260015ECEA /* Shared.xcdatamodel */;
+			currentVersion = 8833AC12274FE35800637B61 /* Memorable.xcdatamodel */;
 			path = Wordbook.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
