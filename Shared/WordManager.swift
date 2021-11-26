@@ -14,4 +14,9 @@ class WordManager {
     func NextWord() -> String {
         return WordDatabase.shared.RandomWord()
     }
+    
+    func ListWord() -> [String] {
+        
+        return []
+    }
 }

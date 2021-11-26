@@ -30,7 +30,7 @@ struct CoreDataManager {
     let container: NSPersistentCloudKitContainer
 
     init(inMemory: Bool = false) {
-        container = NSPersistentCloudKitContainer(name: "Memorable")
+        container = NSPersistentCloudKitContainer(name: "Wordbook")
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
