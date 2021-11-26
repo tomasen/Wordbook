@@ -8,19 +8,28 @@
 import SwiftUI
 
 struct CardView: View {
-    public var word: String = ""
+    @State var titleWord: String = ""
     @StateObject private var cardVM = CardViewModel()
     
+    init(_ word: String = "") {
+        _titleWord = State(initialValue: word)
+    }
+    
     var body: some View {
-        Text("\(cardVM.word)")
-            .onAppear{
-                cardVM.UpdateWord(word)
-            }
+        VStack {
+            Text("\(titleWord)")
+                .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
+                .foregroundColor(Color("fontTitle"))
+        }
+        .onAppear{
+            cardVM.UpdateWord(titleWord)
+        }
+        .background(Color("Background").edgesIgnoringSafeArea(.all))
     }
 }
 
 struct CardView_Previews: PreviewProvider {
     static var previews: some View {
-        CardView()
+        CardView("word")
     }
 }

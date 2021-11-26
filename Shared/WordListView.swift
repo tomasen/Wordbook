@@ -6,11 +6,22 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct WordListView: View {
     @StateObject private var WordListVM = WordListViewModel()
+    @FetchRequest var RecentAdded: FetchedResults<WordCard>
     
     private var didSave =  NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
+    
+    init() {
+        let req = NSFetchRequest<WordCard>(entityName: "WordCard")
+        req.predicate = NSPredicate(format:  "category >= %d",
+                                    CardCategory.NEW.rawValue)
+        req.sortDescriptors = [NSSortDescriptor(keyPath: \WordCard.createdAt, ascending: false)]
+        req.fetchLimit = 10
+        _RecentAdded = FetchRequest(fetchRequest: req)
+    }
     
     var body: some View {
         VStack {
@@ -26,11 +37,31 @@ struct WordListView: View {
                         }
                     }.padding(.vertical)) {
                         ForEach(WordListVM.Learned, id: \.self)  {word in
-                            NavigationLink(destination: CardView(word: word)){
+                            NavigationLink(destination: CardView(word)){
                                 HStack (alignment: .firstTextBaseline){
                                     Text("\(word)")
                                     Spacer()
                                     Text("review again")
+                                        .font(.caption)
+                                        .foregroundColor(Color("fontGray"))
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+                
+                if !RecentAdded.isEmpty {
+                    Section(header: HStack{
+                        Text("Recently Added")
+                        Spacer()
+                    }.padding(.vertical)) {
+                        ForEach(RecentAdded, id: \.self)  { it in
+                            NavigationLink(destination: CardView(it.word!)){
+                                HStack (alignment: .firstTextBaseline){
+                                    Text("\(it.word!)")
+                                    Spacer()
+                                    Text("review now")
                                         .font(.caption)
                                         .foregroundColor(Color("fontGray"))
                                 }

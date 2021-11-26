@@ -6,21 +6,14 @@
 //
 
 import Foundation
+import SwiftUI
+import CoreData
 
 class WordListViewModel: ObservableObject {
     @Published var Learned: [String] = []
-    @Published var RecentAdded: [EntryInfo] = []
-    @Published var NewWords: [String] = []
-    @Published var QueueWords: [String] = []
-    
-    init() {
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: true, block: { _ in
-            self.Learned.append(WordManager.shared.NextWord())
-        })
-    }
     
     func Update() {
-        
+        self.Learned.append(WordManager.shared.NextWord())
     }
 }
 
