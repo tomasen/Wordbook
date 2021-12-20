@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8803F37B276B34CA00E46DAF /* WrappingHStack in Frameworks */ = {isa = PBXBuildFile; productRef = 8803F37A276B34CA00E46DAF /* WrappingHStack */; };
+		8803F37D276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
+		8803F37E276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
+		8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37F276F8FAC00E46DAF /* WordCloudView.swift */; };
+		8803F381276F8FAC00E46DAF /* WordCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37F276F8FAC00E46DAF /* WordCloudView.swift */; };
+		8819C8FA2767B8D000FFD892 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 8819C8F92767B8D000FFD892 /* Introspect */; };
+		8819C8FC2767BACC00FFD892 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 8819C8FB2767BACC00FFD892 /* Introspect */; };
 		8833ABF3274F358B00637B61 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF2274F358B00637B61 /* CardView.swift */; };
 		8833ABF4274F358B00637B61 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF2274F358B00637B61 /* CardView.swift */; };
 		8833ABF6274F3F6C00637B61 /* SharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF5274F3F6C00637B61 /* SharingView.swift */; };
@@ -27,9 +34,9 @@
 		8833AC25274FE90400637B61 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC23274FE90400637B61 /* MainInterface.storyboard */; };
 		8833AC29274FE90400637B61 /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8833AC1F274FE90400637B61 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8833AC2F274FE98500637B61 /* wordnet-lite.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */; };
-		8833AC31274FF1A700637B61 /* WordDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabase.swift */; };
-		8833AC32274FF1A700637B61 /* WordDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabase.swift */; };
-		8833AC33274FF1A700637B61 /* WordDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabase.swift */; };
+		8833AC31274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */; };
+		8833AC32274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */; };
+		8833AC33274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */; };
 		8833AC36274FF33B00637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC35274FF33B00637B61 /* SQLite */; };
 		8833AC38274FF53300637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC37274FF53300637B61 /* SQLite */; };
 		8833AC3A274FF53900637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC39274FF53900637B61 /* SQLite */; };
@@ -53,6 +60,11 @@
 		88E02E2327061D280015ECEA /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* CoreDataManager.swift */; };
 		88E02E2427061D280015ECEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
 		88E02E2527061D280015ECEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
+		88F517D327524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
+		88F517D427524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
+		88F517D627553EED004C174B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
+		88F517D727553EED004C174B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
+		88F517D827553EED004C174B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +106,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8803F37C276F2B1200E46DAF /* SharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingViewModel.swift; sourceTree = "<group>"; };
+		8803F37F276F8FAC00E46DAF /* WordCloudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCloudView.swift; sourceTree = "<group>"; };
 		8833ABF2274F358B00637B61 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		8833ABF5274F3F6C00637B61 /* SharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingView.swift; sourceTree = "<group>"; };
 		8833ABF8274F3F9200637B61 /* WordListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordListView.swift; sourceTree = "<group>"; };
@@ -110,7 +124,7 @@
 		8833AC24274FE90400637B61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		8833AC26274FE90400637B61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8833AC2A274FE90400637B61 /* Wordbook.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wordbook.entitlements; sourceTree = "<group>"; };
-		8833AC30274FF1A700637B61 /* WordDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordDatabase.swift; sourceTree = "<group>"; };
+		8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordDatabaseLocal.swift; sourceTree = "<group>"; };
 		888C3CA92750B8BF003CE213 /* ViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHelper.swift; sourceTree = "<group>"; };
 		888C3CAD2750BBF7003CE213 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		888C3CB12750C865003CE213 /* WordListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordListViewModel.swift; sourceTree = "<group>"; };
@@ -128,6 +142,8 @@
 		88E02E1427061D280015ECEA /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		88E02E1827061D280015ECEA /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		88E02E1A27061D280015ECEA /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		88F517D227524C4F004C174B /* FlipView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlipView.swift; sourceTree = "<group>"; };
+		88F517D527553EED004C174B /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +152,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8833AC3A274FF53900637B61 /* SQLite in Frameworks */,
+				8819C8FC2767BACC00FFD892 /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,7 +160,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8803F37B276B34CA00E46DAF /* WrappingHStack in Frameworks */,
 				8833AC36274FF33B00637B61 /* SQLite in Frameworks */,
+				8819C8FA2767B8D000FFD892 /* Introspect in Frameworks */,
 				8833AC03274FDE9500637B61 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -181,7 +200,9 @@
 				8833ABF2274F358B00637B61 /* CardView.swift */,
 				8833ABF5274F3F6C00637B61 /* SharingView.swift */,
 				8833ABF8274F3F9200637B61 /* WordListView.swift */,
+				88F517D227524C4F004C174B /* FlipView.swift */,
 				888C3CA92750B8BF003CE213 /* ViewHelper.swift */,
+				8803F37F276F8FAC00E46DAF /* WordCloudView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -189,7 +210,7 @@
 		8833ABF0274F34F300637B61 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				8833AC30274FF1A700637B61 /* WordDatabase.swift */,
+				8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */,
 				88E02DF527061D260015ECEA /* CoreDataManager.swift */,
 				8833ABFB274F621F00637B61 /* WordManager.swift */,
 				8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */,
@@ -202,6 +223,7 @@
 			children = (
 				8833ABFE274F65D900637B61 /* CardViewModel.swift */,
 				888C3CB12750C865003CE213 /* WordListViewModel.swift */,
+				8803F37C276F2B1200E46DAF /* SharingViewModel.swift */,
 			);
 			name = "View Models";
 			sourceTree = "<group>";
@@ -252,6 +274,7 @@
 				8833AC16274FE8D000637B61 /* wordnet.sqlite */,
 				88E02DF627061D270015ECEA /* Assets.xcassets */,
 				888C3CAD2750BBF7003CE213 /* LaunchScreen.storyboard */,
+				88F517D527553EED004C174B /* Helper.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -312,6 +335,7 @@
 			name = ShareExtension;
 			packageProductDependencies = (
 				8833AC39274FF53900637B61 /* SQLite */,
+				8819C8FB2767BACC00FFD892 /* Introspect */,
 			);
 			productName = Wordbook;
 			productReference = 8833AC1F274FE90400637B61 /* ShareExtension.appex */;
@@ -334,6 +358,8 @@
 			name = "Wordbook (iOS)";
 			packageProductDependencies = (
 				8833AC35274FF33B00637B61 /* SQLite */,
+				8819C8F92767B8D000FFD892 /* Introspect */,
+				8803F37A276B34CA00E46DAF /* WrappingHStack */,
 			);
 			productName = "Wordbook (iOS)";
 			productReference = 88E02DFB27061D270015ECEA /* Wordbook.app */;
@@ -435,6 +461,8 @@
 			mainGroup = 88E02DEB27061D260015ECEA;
 			packageReferences = (
 				8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
+				8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
+				8803F379276B34CA00E46DAF /* XCRemoteSwiftPackageReference "WrappingHStack" */,
 			);
 			productRefGroup = 88E02DFC27061D270015ECEA /* Products */;
 			projectDirPath = "";
@@ -503,7 +531,8 @@
 			files = (
 				8833AC22274FE90400637B61 /* ShareViewController.swift in Sources */,
 				888C3CAC2750B8BF003CE213 /* ViewHelper.swift in Sources */,
-				8833AC33274FF1A700637B61 /* WordDatabase.swift in Sources */,
+				8833AC33274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
+				88F517D827553EED004C174B /* Helper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -512,14 +541,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				8833AC13274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
+				88F517D627553EED004C174B /* Helper.swift in Sources */,
 				88E02E1E27061D280015ECEA /* WordbookApp.swift in Sources */,
+				8803F37D276F2B1200E46DAF /* SharingViewModel.swift in Sources */,
 				8833ABFC274F621F00637B61 /* WordManager.swift in Sources */,
-				8833AC31274FF1A700637B61 /* WordDatabase.swift in Sources */,
+				8833AC31274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
+				88F517D327524C4F004C174B /* FlipView.swift in Sources */,
 				88E02E2227061D280015ECEA /* CoreDataManager.swift in Sources */,
 				8833ABF6274F3F6C00637B61 /* SharingView.swift in Sources */,
 				888C3CAA2750B8BF003CE213 /* ViewHelper.swift in Sources */,
 				8833ABF9274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF3274F358B00637B61 /* CardView.swift in Sources */,
+				8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
 				88E02E2027061D280015ECEA /* MasterView.swift in Sources */,
 				888C3CB22750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833ABFF274F65D900637B61 /* CardViewModel.swift in Sources */,
@@ -531,14 +564,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				8833AC14274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
+				88F517D727553EED004C174B /* Helper.swift in Sources */,
 				88E02E1F27061D280015ECEA /* WordbookApp.swift in Sources */,
+				8803F37E276F2B1200E46DAF /* SharingViewModel.swift in Sources */,
 				8833ABFD274F621F00637B61 /* WordManager.swift in Sources */,
-				8833AC32274FF1A700637B61 /* WordDatabase.swift in Sources */,
+				8833AC32274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
+				88F517D427524C4F004C174B /* FlipView.swift in Sources */,
 				88E02E2327061D280015ECEA /* CoreDataManager.swift in Sources */,
 				8833ABF7274F3F6C00637B61 /* SharingView.swift in Sources */,
 				888C3CAB2750B8BF003CE213 /* ViewHelper.swift in Sources */,
 				8833ABFA274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF4274F358B00637B61 /* CardView.swift in Sources */,
+				8803F381276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
 				88E02E2127061D280015ECEA /* MasterView.swift in Sources */,
 				888C3CB32750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833AC00274F65D900637B61 /* CardViewModel.swift in Sources */,
@@ -1057,6 +1094,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8803F379276B34CA00E46DAF /* XCRemoteSwiftPackageReference "WrappingHStack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dkk/WrappingHStack";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.3;
+			};
+		};
 		8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
@@ -1068,6 +1121,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8803F37A276B34CA00E46DAF /* WrappingHStack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8803F379276B34CA00E46DAF /* XCRemoteSwiftPackageReference "WrappingHStack" */;
+			productName = WrappingHStack;
+		};
+		8819C8F92767B8D000FFD892 /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
+		};
+		8819C8FB2767BACC00FFD892 /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
+		};
 		8833AC35274FF33B00637B61 /* SQLite */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */;

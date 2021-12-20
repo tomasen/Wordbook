@@ -9,15 +9,47 @@ import Foundation
 
 class CardViewModel: ObservableObject {
     @Published var word = ""
- 
-    func UpdateWord(_ w: String) {
-        if w == "" {
-            word = WordManager.shared.NextWord()
-        } else {
-            if word != w {
-                word = w
-                // TODO: fetch explanation
-            }
+    @Published var sound: Data? = nil
+    @Published var pronunciation: String? = ""
+    @Published var mnemonic: String? = nil
+    @Published var senses = [Sense]()
+    @Published var mores = [SimpleExplanation]()
+    
+    // fetch explanation of word
+    func fetchExplain() {
+        let result = WordDatabaseLocal.shared.explain(word)
+        senses = result.senses
+        pronunciation = result.pronunc
+        sound = result.sound
+    }
+    
+    // set next word if word is empty
+    func validate() {
+        if word == "" {
+            word = WordManager.shared.nextWord()
         }
     }
 }
+
+class APIRequest {
+    let url: URL
+    
+    init(url: URL) {
+        self.url = url
+    }
+    
+    func perform<T: Decodable>(with completion: @escaping (T?) -> Void) {
+        let session = URLSession(configuration: .default, delegate: nil, delegateQueue: .main)
+        let task = session.dataTask(with: url) { (data, _, _) in
+            guard let data = data else {
+                completion(nil)
+                return
+            }
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            completion(try? decoder.decode(T.self, from: data))
+        }
+        task.resume()
+    }
+}
+

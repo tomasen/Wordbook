@@ -18,12 +18,13 @@ class WordManager {
     let persistentContainer = CoreDataManager.shared
     static let shared = WordManager()
     
-    func NextWord() -> String {
-        return WordDatabase.shared.RandomWord()
+    func nextWord() -> String {
+        return WordDatabaseLocal.shared.randomWord()
     }
-    
-    func ListWord() -> [String] {
-        
-        return []
+
+    func explain(_ word: String) -> (word: String, senses: [Sense], pronunc: String?, sound: Data?) {
+        // if api avalible
+        let result = WordDatabaseLocal.shared.explain(word)
+        return result
     }
 }

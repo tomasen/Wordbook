@@ -13,7 +13,7 @@ class WordListViewModel: ObservableObject {
     @Published var Learned: [String] = []
     
     func Update() {
-        self.Learned.append(WordManager.shared.NextWord())
+        self.Learned.append(WordManager.shared.nextWord())
     }
 }
 
