@@ -18,13 +18,12 @@ struct CardView: View {
     @State private var editing = false
     @State private var popSheetWord = ""
     
+    private var initWord = ""
     
     init(_ word: String = "", _ showDefinition: Bool = false, _ disableFlip: Bool = false) {
         _showDefinition = State(initialValue: showDefinition)
         _disableFlip = State(initialValue: disableFlip)
-        if word != "" {
-            viewModel.word = word
-        }
+        initWord = word
     }
     
     var body: some View {
@@ -102,6 +101,9 @@ struct CardView: View {
                 .padding()
         }
         .onAppear{
+            if initWord != "" {
+                viewModel.word = initWord
+            }
             viewModel.validate()
             viewModel.fetchExplain()
             

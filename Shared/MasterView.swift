@@ -55,6 +55,11 @@ struct DefaultView: View {
                 Spacer()
             }
             Spacer()
+            NavigationLink(destination: SharingView()) {
+                Text("WordCloud")
+                    .foregroundColor(Color("fontLink"))
+            }
+            Spacer()
         }
         .padding(EdgeInsets(top: 12+25, leading: 25, bottom: 12, trailing: 25))
         .background(Color("Background").edgesIgnoringSafeArea(.all))

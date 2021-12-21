@@ -9,9 +9,7 @@ import SwiftUI
 
 struct SharingView: View {
     @StateObject var viewModel = SharingViewModel()
-    
-    @State var wordCloudSize: CGRect = CGRect.zero
-    
+        
     var body: some View {
         VStack{
             Text("2008 - 10 - 2")
@@ -20,8 +18,7 @@ struct SharingView: View {
             Text("Wordbook's Review")
                 .customFont(name: "AvenirNext-DemiBold", style: .caption2, weight: .semibold)
             
-            // TODO
-            EmptyView()
+            WordCloudView()
             
             HStack{
                 VStack{
@@ -49,7 +46,11 @@ struct SharingView: View {
                     .frame(width: 100, height: 100)
                 
             }
+            
             Spacer()
+                .padding()
+                
+            Divider()
             
             NextButtons()
         }
