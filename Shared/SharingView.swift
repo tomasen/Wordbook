@@ -47,8 +47,7 @@ struct SharingView: View {
                 
             }
             
-            Spacer()
-                .padding()
+            Spacer().padding()
                 
             Divider()
             
