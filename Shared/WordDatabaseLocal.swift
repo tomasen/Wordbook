@@ -18,6 +18,14 @@ struct SimpleExplanation: Identifiable {
     var expl: String
 }
 
+struct WordExplanation {
+    var word: String
+    var senses: [Sense]
+    var pronunc: String?
+    var sound: Data?
+    var extras: [SimpleExplanation]
+}
+
 struct WordDatabaseLocal {
     private let db = ((Bundle.main.path(forResource: "wordnet", ofType: "sqlite") != nil) ?
                       try! Connection(Bundle.main.path(forResource: "wordnet", ofType: "sqlite")!, readonly: true) :

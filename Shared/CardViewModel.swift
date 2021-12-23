@@ -13,10 +13,29 @@ class CardViewModel: ObservableObject {
     @Published var pronunciation: String? = ""
     @Published var mnemonic: String? = nil
     @Published var senses = [Sense]()
-    @Published var mores = [SimpleExplanation]()
+    @Published var extras = [SimpleExplanation]()
     
     // fetch explanation of word
     func fetchExplain() {
+        if AppStoreManager.shared.isProUser{
+            APIClient().query(term: word,
+                              completion: self.handleAPIExplanation)
+        } else {
+            fetchExplainFromLocalDatabase()
+        }
+    }
+    
+    private func handleAPIExplanation(_ result: WordExplanation?) {
+        guard let expl = result else {
+            fetchExplainFromLocalDatabase()
+            return
+        }
+        word = expl.word
+        senses = expl.senses
+        extras = expl.extras
+    }
+    
+    private func fetchExplainFromLocalDatabase() {
         let result = WordDatabaseLocal.shared.explain(word)
         senses = result.senses
         pronunciation = result.pronunc

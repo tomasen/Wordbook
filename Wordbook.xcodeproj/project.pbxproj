@@ -58,6 +58,20 @@
 		884EE6DA2770D8710038E990 /* SF-Pro-Text-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6C92770D8710038E990 /* SF-Pro-Text-Heavy.otf */; };
 		884EE6DB2770D8710038E990 /* SF-Pro-Text-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6CA2770D8710038E990 /* SF-Pro-Text-Semibold.otf */; };
 		884EE6DC2770D8710038E990 /* SF-Pro-Text-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6CA2770D8710038E990 /* SF-Pro-Text-Semibold.otf */; };
+		884EE6DE2773852D0038E990 /* WordCloudView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6DD2773852D0038E990 /* WordCloudView2.swift */; };
+		884EE6DF2773852D0038E990 /* WordCloudView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6DD2773852D0038E990 /* WordCloudView2.swift */; };
+		884EE6E127745E840038E990 /* AppStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E027745E840038E990 /* AppStoreManager.swift */; };
+		884EE6E227745E840038E990 /* AppStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E027745E840038E990 /* AppStoreManager.swift */; };
+		884EE6E52774600E0038E990 /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 884EE6E42774600E0038E990 /* SwiftyStoreKit */; };
+		884EE6E7277461120038E990 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
+		884EE6E8277461120038E990 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
+		884EE6EA277472990038E990 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E9277472990038E990 /* APIClient.swift */; };
+		884EE6EB277472990038E990 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E9277472990038E990 /* APIClient.swift */; };
+		884EE6EC2774729E0038E990 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E9277472990038E990 /* APIClient.swift */; };
+		884EE6EE27747DF20038E990 /* iCloudState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6ED27747DF20038E990 /* iCloudState.swift */; };
+		884EE6EF27747DF20038E990 /* iCloudState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6ED27747DF20038E990 /* iCloudState.swift */; };
+		884EE6F12774AAE20038E990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6F02774AAE20038E990 /* SettingsView.swift */; };
+		884EE6F22774AAE20038E990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6F02774AAE20038E990 /* SettingsView.swift */; };
 		888C3CAA2750B8BF003CE213 /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CA92750B8BF003CE213 /* ViewHelper.swift */; };
 		888C3CAB2750B8BF003CE213 /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CA92750B8BF003CE213 /* ViewHelper.swift */; };
 		888C3CAC2750B8BF003CE213 /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CA92750B8BF003CE213 /* ViewHelper.swift */; };
@@ -152,6 +166,12 @@
 		884EE6C82770D8710038E990 /* SF-Pro-Text-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Light.otf"; sourceTree = "<group>"; };
 		884EE6C92770D8710038E990 /* SF-Pro-Text-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Heavy.otf"; sourceTree = "<group>"; };
 		884EE6CA2770D8710038E990 /* SF-Pro-Text-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Semibold.otf"; sourceTree = "<group>"; };
+		884EE6DD2773852D0038E990 /* WordCloudView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCloudView2.swift; sourceTree = "<group>"; };
+		884EE6E027745E840038E990 /* AppStoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStoreManager.swift; sourceTree = "<group>"; };
+		884EE6E6277461120038E990 /* UserPreferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
+		884EE6E9277472990038E990 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		884EE6ED27747DF20038E990 /* iCloudState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudState.swift; sourceTree = "<group>"; };
+		884EE6F02774AAE20038E990 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		888C3CA92750B8BF003CE213 /* ViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHelper.swift; sourceTree = "<group>"; };
 		888C3CAD2750BBF7003CE213 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		888C3CB12750C865003CE213 /* WordListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordListViewModel.swift; sourceTree = "<group>"; };
@@ -190,6 +210,7 @@
 				8803F37B276B34CA00E46DAF /* WrappingHStack in Frameworks */,
 				8833AC36274FF33B00637B61 /* SQLite in Frameworks */,
 				8819C8FA2767B8D000FFD892 /* Introspect in Frameworks */,
+				884EE6E52774600E0038E990 /* SwiftyStoreKit in Frameworks */,
 				8833AC03274FDE9500637B61 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -230,6 +251,8 @@
 				88F517D227524C4F004C174B /* FlipView.swift */,
 				888C3CA92750B8BF003CE213 /* ViewHelper.swift */,
 				8803F37F276F8FAC00E46DAF /* WordCloudView.swift */,
+				884EE6DD2773852D0038E990 /* WordCloudView2.swift */,
+				884EE6F02774AAE20038E990 /* SettingsView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -237,10 +260,13 @@
 		8833ABF0274F34F300637B61 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				884EE6E6277461120038E990 /* UserPreferences.swift */,
+				884EE6E027745E840038E990 /* AppStoreManager.swift */,
 				8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */,
 				88E02DF527061D260015ECEA /* CoreDataManager.swift */,
 				8833ABFB274F621F00637B61 /* WordManager.swift */,
 				8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */,
+				884EE6E9277472990038E990 /* APIClient.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -251,6 +277,7 @@
 				8833ABFE274F65D900637B61 /* CardViewModel.swift */,
 				888C3CB12750C865003CE213 /* WordListViewModel.swift */,
 				8803F37C276F2B1200E46DAF /* SharingViewModel.swift */,
+				884EE6ED27747DF20038E990 /* iCloudState.swift */,
 			);
 			name = "View Models";
 			sourceTree = "<group>";
@@ -404,6 +431,7 @@
 				8833AC35274FF33B00637B61 /* SQLite */,
 				8819C8F92767B8D000FFD892 /* Introspect */,
 				8803F37A276B34CA00E46DAF /* WrappingHStack */,
+				884EE6E42774600E0038E990 /* SwiftyStoreKit */,
 			);
 			productName = "Wordbook (iOS)";
 			productReference = 88E02DFB27061D270015ECEA /* Wordbook.app */;
@@ -507,6 +535,7 @@
 				8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
 				8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				8803F379276B34CA00E46DAF /* XCRemoteSwiftPackageReference "WrappingHStack" */,
+				884EE6E32774600E0038E990 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 			);
 			productRefGroup = 88E02DFC27061D270015ECEA /* Products */;
 			projectDirPath = "";
@@ -594,6 +623,7 @@
 				8833AC22274FE90400637B61 /* ShareViewController.swift in Sources */,
 				888C3CAC2750B8BF003CE213 /* ViewHelper.swift in Sources */,
 				8833AC33274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
+				884EE6EC2774729E0038E990 /* APIClient.swift in Sources */,
 				88F517D827553EED004C174B /* Helper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -604,11 +634,16 @@
 			files = (
 				8833AC13274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
 				88F517D627553EED004C174B /* Helper.swift in Sources */,
+				884EE6F12774AAE20038E990 /* SettingsView.swift in Sources */,
 				88E02E1E27061D280015ECEA /* WordbookApp.swift in Sources */,
+				884EE6EA277472990038E990 /* APIClient.swift in Sources */,
 				8803F37D276F2B1200E46DAF /* SharingViewModel.swift in Sources */,
 				8833ABFC274F621F00637B61 /* WordManager.swift in Sources */,
 				8833AC31274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
+				884EE6E7277461120038E990 /* UserPreferences.swift in Sources */,
 				88F517D327524C4F004C174B /* FlipView.swift in Sources */,
+				884EE6EE27747DF20038E990 /* iCloudState.swift in Sources */,
+				884EE6DE2773852D0038E990 /* WordCloudView2.swift in Sources */,
 				88E02E2227061D280015ECEA /* CoreDataManager.swift in Sources */,
 				8833ABF6274F3F6C00637B61 /* SharingView.swift in Sources */,
 				888C3CAA2750B8BF003CE213 /* ViewHelper.swift in Sources */,
@@ -616,6 +651,7 @@
 				8833ABF3274F358B00637B61 /* CardView.swift in Sources */,
 				8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
 				88E02E2027061D280015ECEA /* MasterView.swift in Sources */,
+				884EE6E127745E840038E990 /* AppStoreManager.swift in Sources */,
 				888C3CB22750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833ABFF274F65D900637B61 /* CardViewModel.swift in Sources */,
 			);
@@ -627,11 +663,16 @@
 			files = (
 				8833AC14274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
 				88F517D727553EED004C174B /* Helper.swift in Sources */,
+				884EE6F22774AAE20038E990 /* SettingsView.swift in Sources */,
 				88E02E1F27061D280015ECEA /* WordbookApp.swift in Sources */,
+				884EE6EB277472990038E990 /* APIClient.swift in Sources */,
 				8803F37E276F2B1200E46DAF /* SharingViewModel.swift in Sources */,
 				8833ABFD274F621F00637B61 /* WordManager.swift in Sources */,
 				8833AC32274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
+				884EE6E8277461120038E990 /* UserPreferences.swift in Sources */,
 				88F517D427524C4F004C174B /* FlipView.swift in Sources */,
+				884EE6EF27747DF20038E990 /* iCloudState.swift in Sources */,
+				884EE6DF2773852D0038E990 /* WordCloudView2.swift in Sources */,
 				88E02E2327061D280015ECEA /* CoreDataManager.swift in Sources */,
 				8833ABF7274F3F6C00637B61 /* SharingView.swift in Sources */,
 				888C3CAB2750B8BF003CE213 /* ViewHelper.swift in Sources */,
@@ -639,6 +680,7 @@
 				8833ABF4274F358B00637B61 /* CardView.swift in Sources */,
 				8803F381276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
 				88E02E2127061D280015ECEA /* MasterView.swift in Sources */,
+				884EE6E227745E840038E990 /* AppStoreManager.swift in Sources */,
 				888C3CB32750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833AC00274F65D900637B61 /* CardViewModel.swift in Sources */,
 			);
@@ -1180,6 +1222,14 @@
 				minimumVersion = 0.13.1;
 			};
 		};
+		884EE6E32774600E0038E990 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1212,6 +1262,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
 			productName = SQLite;
+		};
+		884EE6E42774600E0038E990 /* SwiftyStoreKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 884EE6E32774600E0038E990 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
+			productName = SwiftyStoreKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 

@@ -14,6 +14,7 @@ struct WordbookApp: App {
     var body: some Scene {
         WindowGroup {
             MasterView()
+                .environment(\.colorScheme, .dark)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

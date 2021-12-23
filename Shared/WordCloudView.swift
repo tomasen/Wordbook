@@ -7,7 +7,15 @@
 
 import SwiftUI
 
+    
 struct WordCloudView: View {
+    
+    @State private var canvasRect = CGRect()
+    @State private var sizeArray: [CGSize]
+    
+    private var cloudItems: [WordCloudItem]
+    private var stateCache = WordCloudStateCache()
+    
     init(words: [String]) {
         self._sizeArray = State(initialValue:[CGSize](repeating: CGSize.zero, count: words.count))
         
@@ -37,12 +45,6 @@ struct WordCloudView: View {
         self.init(words: words)
     }
     
-    @State private var canvasRect = CGRect()
-    @State private var sizeArray: [CGSize]
-    
-    private var cloudItems: [WordCloudItem]
-    private var stateCache = WordCloudStateCache()
-    
     
     var body: some View {
         let pos = calcPositions(canvasSize: canvasRect.size, itemSizes: sizeArray)
@@ -66,6 +68,7 @@ struct WordCloudView: View {
                 
             }
         }
+        .frame(idealHeight: self.canvasRect.width)
         .background(RectGetter($canvasRect))
     }
     
@@ -93,6 +96,16 @@ struct WordCloudView: View {
         }
         
         return diff < 0.01
+    }
+    
+    func checkOutsideBoundry(canvasSize: CGSize, rect: CGRect) -> Bool {
+        if rect.maxY > canvasRect.height/2 {
+            return true
+        }
+        if rect.minY < -canvasRect.height/2 {
+            return true
+        }
+        return false
     }
     
     func calcPositions(canvasSize: CGSize, itemSizes: [CGSize]) -> [CGPoint] {
@@ -123,16 +136,17 @@ struct WordCloudView: View {
                                                   y: startPos.y - itemSize.height/2),
                                   size: itemSize)
             if index > 0 {
-                while checkIntersects(rect: nextRect, rects: rects) {
-                    nextRect.origin.x = ratio * step * cos(step) + startPos.x - itemSize.width/2
-                    nextRect.origin.y = step * sin(step) + startPos.y - itemSize.height/2
+                while checkOutsideBoundry(canvasSize: canvasSize,
+                                          rect: nextRect)
+                        || checkIntersects(rect: nextRect, rects: rects) {
+                    nextRect.origin.x = startPos.x + ratio * step * cos(step) + startPos.x - itemSize.width/2
+                    nextRect.origin.y = startPos.y + step * sin(step) + startPos.y - itemSize.height/2
                     step = step + 0.01
                 }
             }
             pos[index] = nextRect.center
             rects.append(nextRect)
         }
-        print(pos)
         return pos
     }
 }

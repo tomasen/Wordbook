@@ -19,7 +19,7 @@ struct SharingView: View {
                 .customFont(name: "AvenirNext-DemiBold", style: .caption2, weight: .semibold)
             
             WordCloudView()
-            
+                
             HStack{
                 VStack{
                     HStack{
@@ -38,7 +38,6 @@ struct SharingView: View {
                     Link("https://wordbook.cool/", destination: URL(string: "https://www.wordbook.cool/")!)
                         .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .semibold)
                 }
-                .frame(height: 90)
                 Spacer()
                 Image("qrcode")
                     .resizable()
@@ -46,8 +45,10 @@ struct SharingView: View {
                     .frame(width: 100, height: 100)
                 
             }
+            .frame(height: 90)
             
-            Spacer().padding()
+            Spacer()
+                .frame(idealHeight: 80)
                 
             Divider()
             

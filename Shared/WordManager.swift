@@ -21,10 +21,4 @@ class WordManager {
     func nextWord() -> String {
         return WordDatabaseLocal.shared.randomWord()
     }
-
-    func explain(_ word: String) -> (word: String, senses: [Sense], pronunc: String?, sound: Data?) {
-        // if api avalible
-        let result = WordDatabaseLocal.shared.explain(word)
-        return result
-    }
 }

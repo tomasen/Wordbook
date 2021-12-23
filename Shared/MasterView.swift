@@ -8,7 +8,9 @@
 import SwiftUI
 import CoreData
 
-struct MasterView: View {    
+struct MasterView: View {
+    @StateObject var icloud = iCloudState.shared
+    
     var body: some View {
         NavigationView {
             TabView{
@@ -18,6 +20,7 @@ struct MasterView: View {
                             Image(systemName: "play.rectangle")
                             Text("Today")
                         }
+                        .foregroundColor(Color("fontLink"))
                     }
                     .tag(1)
                 
@@ -27,23 +30,51 @@ struct MasterView: View {
                             Image(systemName: "book")
                             Text("Wordbook")
                         }
+                        .foregroundColor(Color("fontLink"))
                     }
                     .tag(2)
                 
             }
             .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
+            .navigationBarItems(leading: leadingBarItem(),
+                                trailing: trailingBarItem())
             
             EmptyView()
         }
         .navigationViewStyle(.stack)
-        
+    }
+    
+    func leadingBarItem() -> some View {
+        HStack{
+            Image(systemName: icloud.enabled ? "icloud" : "icloud.slash")
+                .padding()
+        }
+        .foregroundColor(Color("fontBody"))
+    }
+    
+    func trailingBarItem() -> some View {
+        HStack{
+            Button( action:{
+                //self.showingSearchSheet.toggle()
+            } ) {
+                Image(systemName: "magnifyingglass")
+                    .padding()
+            }
+            
+            NavigationLink(destination: SettingsView()) {
+                Image(systemName: "ellipsis")
+                    .rotationEffect(.degrees(-90))
+                    .padding()
+            }
+        }
+        .foregroundColor(Color("fontLink"))
     }
 }
 
 
 struct DefaultView: View {
     var body: some View {
-        VStack(){
+        VStack{
             Spacer()
             HStack{
                 Spacer()
@@ -62,6 +93,7 @@ struct DefaultView: View {
             Spacer()
         }
         .padding(EdgeInsets(top: 12+25, leading: 25, bottom: 12, trailing: 25))
+        .customFont(name: "AvenirNext-Regular", style: .body)
         .background(Color("Background").edgesIgnoringSafeArea(.all))
     }
 }

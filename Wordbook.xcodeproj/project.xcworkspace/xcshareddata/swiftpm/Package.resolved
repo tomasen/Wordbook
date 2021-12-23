@@ -20,6 +20,15 @@
         }
       },
       {
+        "package": "SwiftyStoreKit",
+        "repositoryURL": "https://github.com/bizz84/SwiftyStoreKit",
+        "state": {
+          "branch": null,
+          "revision": "9ce911639680113dac9b554d6243e406a9758ebe",
+          "version": "0.16.4"
+        }
+      },
+      {
         "package": "WrappingHStack",
         "repositoryURL": "https://github.com/dkk/WrappingHStack",
         "state": {
