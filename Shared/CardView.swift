@@ -18,12 +18,14 @@ struct CardView: View {
     @State private var editing = false
     @State private var popSheetWord = ""
     
-    private var initWord = ""
+    private var defaultWord = ""
     
-    init(_ word: String = "", _ showDefinition: Bool = false, _ disableFlip: Bool = false) {
+    init(_ word: String = "",
+         _ showDefinition: Bool = false,
+         _ disableFlip: Bool = false) {
         _showDefinition = State(initialValue: showDefinition)
         _disableFlip = State(initialValue: disableFlip)
-        initWord = word
+        defaultWord = word
     }
     
     var body: some View {
@@ -101,11 +103,13 @@ struct CardView: View {
                 .padding()
         }
         .onAppear{
-            if initWord != "" {
-                viewModel.word = initWord
+            if defaultWord != "" {
+                viewModel.word = defaultWord
             }
             viewModel.validate()
             viewModel.fetchExplain()
+            
+            PausableTimer.shared.restart()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.enableGoodButton.toggle()
@@ -124,7 +128,7 @@ struct CardView: View {
                         .fixedSize()
                 })
                 .simultaneousGesture(TapGesture().onEnded{
-                    //scheduler.AnswerCard(self.titleWord, .WELLKNOWN)
+                    viewModel.answer(.WELLKNOWN)
                 })
             .disabled(!self.enableGoodButton && !self.showDefinition)
             .buttonStyle(ChoiceButtonStyle(self.enableGoodButton || self.showDefinition))
@@ -137,7 +141,7 @@ struct CardView: View {
                 })
                 .isDetailLink(false)
                 .simultaneousGesture(TapGesture().onEnded{
-                    //scheduler.AnswerCard(self.titleWord, .VAGUE)
+                    viewModel.answer(.VAGUE)
                 })
             .disabled(!self.showDefinition)
             .buttonStyle(ChoiceButtonStyle(self.showDefinition))
@@ -150,7 +154,7 @@ struct CardView: View {
                 })
                 .isDetailLink(false)
                 .simultaneousGesture(TapGesture().onEnded{
-                    //scheduler.AnswerCard(self.titleWord, .NOIDEA)
+                    viewModel.answer(.NOIDEA)
                 })
             .disabled(!self.showDefinition)
             .buttonStyle(ChoiceButtonStyle(self.showDefinition))

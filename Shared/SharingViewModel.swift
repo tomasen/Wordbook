@@ -15,8 +15,8 @@ class SharingViewModel: ObservableObject {
                       "SFProText-Medium", "SFProText-Regular", "SFProText-Semibold"]
     
     
-    init() {
-        
+    var wordsOfToday: [String] {
+        WordManager.shared.wordsOfToday()
     }
 }
 

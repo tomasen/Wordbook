@@ -49,3 +49,15 @@ public extension CGFloat {
     }
 }
 
+public extension String {
+    static func getContentOfFile(_ name: String, _ type: String) -> String {
+        if let filepath = Bundle.main.path(forResource: name, ofType: type) {
+            do {
+                return try String(contentsOfFile: filepath)
+            } catch {
+                print("fail to read content from \(name)")
+            }
+        }
+        return ""
+    }
+}

@@ -48,6 +48,10 @@ class CardViewModel: ObservableObject {
             word = WordManager.shared.nextWord()
         }
     }
+    
+    func answer(_ rate: CardRating) {
+        WordManager.shared.answer(word, rate)
+    }
 }
 
 class APIRequest {

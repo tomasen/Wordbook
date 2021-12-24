@@ -8,11 +8,6 @@
 import SwiftUI
 
 struct SettingsView: View {
-    init() {
-//       UITableView.appearance().separatorStyle = .none
-//       UITableViewCell.appearance().backgroundColor = .none
-//       UITableView.appearance().backgroundColor = .none
-    }
     
     var body: some View {
         VStack{
@@ -20,13 +15,22 @@ struct SettingsView: View {
             List{
                 Section() {
                     HStack{
+                        Text("Preferred Vocab")
+                        Spacer()
+                        Text("SAT")
+                    }
+                    HStack{
                         Text("Language")
                         Spacer()
                         Text("CN")
                     }
                 }
                 Section() {
-                    NavigationLink(destination: EmptyView()){
+                    NavigationLink(destination: TextView(text: String.getContentOfFile("about", "txt"))
+                                    .onTapGesture(count: 5) {
+                        AppStoreManager.shared.enableProFeatures(true)
+                    }
+                    ){
                         Text("About")
                     }
                     NavigationLink(destination: EmptyView()){

@@ -18,7 +18,7 @@ struct SharingView: View {
             Text("Wordbook's Review")
                 .customFont(name: "AvenirNext-DemiBold", style: .caption2, weight: .semibold)
             
-            WordCloudView()
+            WordCloudView(viewModel.wordsOfToday)
                 
             HStack{
                 VStack{

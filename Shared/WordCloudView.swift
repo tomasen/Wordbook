@@ -16,7 +16,7 @@ struct WordCloudView: View {
     private var cloudItems: [WordCloudItem]
     private var stateCache = WordCloudStateCache()
     
-    init(words: [String]) {
+    init(_ words: [String]) {
         self._sizeArray = State(initialValue:[CGSize](repeating: CGSize.zero, count: words.count))
         
         self.cloudItems = [WordCloudItem]()
@@ -42,7 +42,7 @@ struct WordCloudView: View {
         for _ in 1...n {
             words.append(WordManager.shared.nextWord())
         }
-        self.init(words: words)
+        self.init(words)
     }
     
     

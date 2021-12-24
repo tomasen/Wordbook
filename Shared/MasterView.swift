@@ -73,6 +73,8 @@ struct MasterView: View {
 
 
 struct DefaultView: View {
+    @StateObject var app = AppStoreManager.shared
+    
     var body: some View {
         VStack{
             Spacer()
@@ -87,10 +89,21 @@ struct DefaultView: View {
             }
             Spacer()
             NavigationLink(destination: SharingView()) {
-                Text("WordCloud")
+                Text("SharingView")
                     .foregroundColor(Color("fontLink"))
             }
             Spacer()
+            if !app.isProUser {
+                Divider()
+                Button(action: {
+                    app.subscribe()
+                }) {
+                    Text("Subscribe")
+                        .font(.callout)
+                }
+                .customFont(name: "AvenirNext-Medium", style: .body, weight: .medium)
+                .buttonStyle(ChoiceButtonStyle())
+            }
         }
         .padding(EdgeInsets(top: 12+25, leading: 25, bottom: 12, trailing: 25))
         .customFont(name: "AvenirNext-Regular", style: .body)
