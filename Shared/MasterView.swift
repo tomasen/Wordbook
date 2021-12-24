@@ -12,36 +12,43 @@ struct MasterView: View {
     @StateObject var icloud = iCloudState.shared
     
     var body: some View {
-        NavigationView {
-            TabView{
+        TabView{
+            NavigationView {
                 DefaultView()
-                    .tabItem {
-                        VStack{
-                            Image(systemName: "play.rectangle")
-                            Text("Today")
-                        }
-                        .foregroundColor(Color("fontLink"))
-                    }
-                    .tag(1)
-                
-                WordListView()
-                    .tabItem {
-                        VStack{
-                            Image(systemName: "book")
-                            Text("Wordbook")
-                        }
-                        .foregroundColor(Color("fontLink"))
-                    }
-                    .tag(2)
-                
+                    .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
+                    .navigationBarItems(leading: leadingBarItem(),
+                                        trailing: trailingBarItem())
+                    
+                EmptyView()
             }
-            .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
-            .navigationBarItems(leading: leadingBarItem(),
-                                trailing: trailingBarItem())
+            .navigationViewStyle(.stack)
+            .tabItem {
+                VStack{
+                    Image(systemName: "play.rectangle")
+                    Text("Today")
+                }
+                .foregroundColor(Color("fontLink"))
+            }
+            .tag(1)
             
-            EmptyView()
+            NavigationView {
+                WordListView()
+                    .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
+                    .navigationBarItems(leading: leadingBarItem(),
+                                        trailing: trailingBarItem())
+                    
+                EmptyView()
+            }
+            .navigationViewStyle(.stack)
+            .tabItem {
+                VStack{
+                    Image(systemName: "book")
+                    Text("Wordbook")
+                }
+                .foregroundColor(Color("fontLink"))
+            }
+            .tag(2)
         }
-        .navigationViewStyle(.stack)
     }
     
     func leadingBarItem() -> some View {
