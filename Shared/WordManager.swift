@@ -22,14 +22,6 @@ enum CardRating : Int16 {
          WELLKNOWN           // well-known
 }
 
-struct ExtraExplain: Identifiable {
-    var id: Int = UUID().hashValue
-    var title: String
-    var source: ExtraExplainSource
-    var expl: String
-    var url: URL?
-}
-
 class WordManager {
     // ManagedObjectContext of CoreData / CloudKit / iCloud
     private let moc = CoreDataManager.shared.container.viewContext

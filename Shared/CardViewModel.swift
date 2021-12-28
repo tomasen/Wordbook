@@ -23,11 +23,11 @@ class CardViewModel: ObservableObject {
         } else {
             fetchExplainFromLocalDatabase()
         }
-        // TODO: get wiki
-        WikiExplainClient.shared.query(word, handleExtraExplain)
+        // check wiki
+        ExtraExplainManager.shared.queryWiki(word, handleExtraExplain)
         
-        // TODO: get vocab
-        // VocabClient.shared.query(word, handleExtraExplain)
+        // check vocab
+        ExtraExplainManager.shared.queryVocab(word, handleExtraExplain)
     }
     
     private func handleExtraExplain(_ result: ExtraExplain) {

@@ -102,16 +102,18 @@
 		88E02E2327061D280015ECEA /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* CoreDataManager.swift */; };
 		88E02E2427061D280015ECEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
 		88E02E2527061D280015ECEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
-		88F25273277B63270046BA15 /* WikiExplainClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* WikiExplainClient.swift */; };
-		88F25274277B63270046BA15 /* WikiExplainClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* WikiExplainClient.swift */; };
+		88F25273277B63270046BA15 /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
+		88F25274277B63270046BA15 /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
 		88F25276277B6EAD0046BA15 /* WordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFB274F621F00637B61 /* WordManager.swift */; };
-		88F25277277B6EB60046BA15 /* WikiExplainClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* WikiExplainClient.swift */; };
+		88F25277277B6EB60046BA15 /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
 		88F25278277B6EC00046BA15 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* CoreDataManager.swift */; };
 		88F25279277B6F2C0046BA15 /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */; };
 		88F2527A277B6F3B0046BA15 /* iCloudState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6ED27747DF20038E990 /* iCloudState.swift */; };
 		88F2527B277B6F430046BA15 /* PausableTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE7032775C0630038E990 /* PausableTimer.swift */; };
 		88F2527E277B71090046BA15 /* WikipediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88F2527D277B71090046BA15 /* WikipediaKit */; };
 		88F25280277B74410046BA15 /* WikipediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88F2527F277B74410046BA15 /* WikipediaKit */; };
+		88F25283277B7D920046BA15 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 88F25282277B7D920046BA15 /* SwiftSoup */; };
+		88F25285277B7E160046BA15 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 88F25284277B7E160046BA15 /* SwiftSoup */; };
 		88F517D327524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
 		88F517D427524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
 		88F517D627553EED004C174B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
@@ -213,7 +215,7 @@
 		88E02E1427061D280015ECEA /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		88E02E1827061D280015ECEA /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		88E02E1A27061D280015ECEA /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
-		88F25272277B63260046BA15 /* WikiExplainClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikiExplainClient.swift; sourceTree = "<group>"; };
+		88F25272277B63260046BA15 /* ExtraExplainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtraExplainManager.swift; sourceTree = "<group>"; };
 		88F517D227524C4F004C174B /* FlipView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlipView.swift; sourceTree = "<group>"; };
 		88F517D527553EED004C174B /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -224,6 +226,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8833AC3A274FF53900637B61 /* SQLite in Frameworks */,
+				88F25285277B7E160046BA15 /* SwiftSoup in Frameworks */,
 				8819C8FC2767BACC00FFD892 /* Introspect in Frameworks */,
 				88F25280277B74410046BA15 /* WikipediaKit in Frameworks */,
 			);
@@ -239,6 +242,7 @@
 				884EE6E52774600E0038E990 /* SwiftyStoreKit in Frameworks */,
 				88F2527E277B71090046BA15 /* WikipediaKit in Frameworks */,
 				8833AC03274FDE9500637B61 /* CloudKit.framework in Frameworks */,
+				88F25283277B7D920046BA15 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,7 +296,7 @@
 				88E02DF527061D260015ECEA /* CoreDataManager.swift */,
 				8833ABFB274F621F00637B61 /* WordManager.swift */,
 				8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */,
-				88F25272277B63260046BA15 /* WikiExplainClient.swift */,
+				88F25272277B63260046BA15 /* ExtraExplainManager.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -464,6 +468,7 @@
 				8833AC39274FF53900637B61 /* SQLite */,
 				8819C8FB2767BACC00FFD892 /* Introspect */,
 				88F2527F277B74410046BA15 /* WikipediaKit */,
+				88F25284277B7E160046BA15 /* SwiftSoup */,
 			);
 			productName = Wordbook;
 			productReference = 8833AC1F274FE90400637B61 /* ShareExtension.appex */;
@@ -490,6 +495,7 @@
 				884EE6E42774600E0038E990 /* SwiftyStoreKit */,
 				888C571E277B0BC20029090A /* WebView */,
 				88F2527D277B71090046BA15 /* WikipediaKit */,
+				88F25282277B7D920046BA15 /* SwiftSoup */,
 			);
 			productName = "Wordbook (iOS)";
 			productReference = 88E02DFB27061D270015ECEA /* Wordbook.app */;
@@ -595,6 +601,7 @@
 				884EE6E32774600E0038E990 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 				888C571D277B0BC20029090A /* XCRemoteSwiftPackageReference "SwiftUI-WebView" */,
 				88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */,
+				88F25281277B7D920046BA15 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 			);
 			productRefGroup = 88E02DFC27061D270015ECEA /* Products */;
 			projectDirPath = "";
@@ -691,7 +698,7 @@
 				88F2527A277B6F3B0046BA15 /* iCloudState.swift in Sources */,
 				88F25276277B6EAD0046BA15 /* WordManager.swift in Sources */,
 				884EE6EC2774729E0038E990 /* APIClient.swift in Sources */,
-				88F25277277B6EB60046BA15 /* WikiExplainClient.swift in Sources */,
+				88F25277277B6EB60046BA15 /* ExtraExplainManager.swift in Sources */,
 				88F2527B277B6F430046BA15 /* PausableTimer.swift in Sources */,
 				88F25278277B6EC00046BA15 /* CoreDataManager.swift in Sources */,
 				88F25279277B6F2C0046BA15 /* Wordbook.xcdatamodeld in Sources */,
@@ -725,7 +732,7 @@
 				88E02E2027061D280015ECEA /* MasterView.swift in Sources */,
 				884EE7042775C0630038E990 /* PausableTimer.swift in Sources */,
 				884EE6E127745E840038E990 /* AppStoreManager.swift in Sources */,
-				88F25273277B63270046BA15 /* WikiExplainClient.swift in Sources */,
+				88F25273277B63270046BA15 /* ExtraExplainManager.swift in Sources */,
 				888C3CB22750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833ABFF274F65D900637B61 /* CardViewModel.swift in Sources */,
 			);
@@ -757,7 +764,7 @@
 				88E02E2127061D280015ECEA /* MasterView.swift in Sources */,
 				884EE7052775C0630038E990 /* PausableTimer.swift in Sources */,
 				884EE6E227745E840038E990 /* AppStoreManager.swift in Sources */,
-				88F25274277B63270046BA15 /* WikiExplainClient.swift in Sources */,
+				88F25274277B63270046BA15 /* ExtraExplainManager.swift in Sources */,
 				888C3CB32750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833AC00274F65D900637B61 /* CardViewModel.swift in Sources */,
 			);
@@ -1315,6 +1322,14 @@
 				minimumVersion = 3.0.0;
 			};
 		};
+		88F25281277B7D920046BA15 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1362,6 +1377,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */;
 			productName = WikipediaKit;
+		};
+		88F25282277B7D920046BA15 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88F25281277B7D920046BA15 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+		88F25284277B7E160046BA15 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88F25281277B7D920046BA15 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
 		};
 /* End XCSwiftPackageProductDependency section */
 
