@@ -15,14 +15,10 @@ struct WordListView: View {
         VStack {
             List{
                 if WordListVM.Learned.count > 0 {
-                Text("3")
+                    Text("learned")
                 }
-                Text("4")
+                Text("default")
             }
-            .colorScheme(.dark)
-                Text("1")
-                Text("2")
-           
         }
         .foregroundColor(Color("fontBody"))
         .customFont(name: "AvenirNext-Regular", style: .body)

@@ -10,45 +10,53 @@ import CoreData
 
 struct MasterView: View {
     @StateObject var icloud = iCloudState.shared
+    @State var tabSelection = 1
     
     var body: some View {
-        TabView{
             NavigationView {
-                DefaultView()
-                    .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
-                    .navigationBarItems(leading: leadingBarItem(),
-                                        trailing: trailingBarItem())
+                VStack{
+                    switch tabSelection {
+                    case 2:
+                        WordListView()
+                    default:
+                        DefaultView()
+                    }
                     
+                    Divider()
+                    HStack{
+                        Spacer()
+                        VStack{
+                            Image(systemName: "play.rectangle")
+                                .padding(3)
+                            Text("Today")
+                                .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
+                        }
+                        .foregroundColor(tabSelection == 1 ? Color("fontLink") : Color("fontBody"))
+                        .onTapGesture {
+                            tabSelection = 1
+                        }
+                        
+                        Spacer()
+                            VStack{
+                                Image(systemName: "book")
+                                    .padding(3)
+                                Text("Lexicon")
+                                    .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
+                            }
+                            .foregroundColor(tabSelection == 2 ? Color("fontLink") : Color("fontBody"))
+                            .onTapGesture {
+                                tabSelection = 2
+                            }
+                        Spacer()
+                    }
+                }
+                .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
+                .navigationBarItems(leading: leadingBarItem(),
+                                    trailing:              trailingBarItem())
+                
                 EmptyView()
             }
             .navigationViewStyle(.stack)
-            .tabItem {
-                VStack{
-                    Image(systemName: "play.rectangle")
-                    Text("Today")
-                }
-                .foregroundColor(Color("fontLink"))
-            }
-            .tag(1)
-            
-            NavigationView {
-                WordListView()
-                    .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
-                    .navigationBarItems(leading: leadingBarItem(),
-                                        trailing: trailingBarItem())
-                    
-                EmptyView()
-            }
-            .navigationViewStyle(.stack)
-            .tabItem {
-                VStack{
-                    Image(systemName: "book")
-                    Text("Wordbook")
-                }
-                .foregroundColor(Color("fontLink"))
-            }
-            .tag(2)
-        }
     }
     
     func leadingBarItem() -> some View {
