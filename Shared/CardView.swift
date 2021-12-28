@@ -83,8 +83,15 @@ struct CardView: View {
                         Divider()
                     }
                     
-                    DefinitionView()
-                        .foregroundColor(Color("fontBody"))
+                    if #available(iOS 15.0, *) {
+                        DefinitionView()
+                            .scenePadding()
+                            .foregroundColor(Color("fontBody"))
+                    } else {
+                        // Fallback on earlier versions
+                        DefinitionView()
+                            .foregroundColor(Color("fontBody"))
+                    }
                 },
                 tap: {
                     if let sound = self.viewModel.sound {

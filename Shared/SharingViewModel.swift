@@ -15,8 +15,22 @@ class SharingViewModel: ObservableObject {
                       "SFProText-Medium", "SFProText-Regular", "SFProText-Semibold"]
     
     
-    var wordsOfToday: [String] {
-        WordManager.shared.wordsOfToday()
+    var wordsOfToday: [WordElement] {
+        var words = [WordElement]()
+        for word in WordManager.shared.wordsOfToday() {
+            words.append(
+                WordElement(text: word,
+                            color: Color(colorPlate.randomElement()!),
+                            fontName: fontPlate.randomElement()!,
+                            fontSize: CGFloat.random(in:20...50))
+            )
+        }
+#if DEBUG
+        if words.count == 0 {
+            words = [WordElement].generate(50)
+        }
+#endif
+        return words
     }
 }
 

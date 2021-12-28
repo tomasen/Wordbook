@@ -7,68 +7,51 @@
 
 import SwiftUI
 
-    
+struct WordElement {
+    let text: String
+    let color: Color
+    let fontName: String
+    let fontSize: CGFloat
+}
+
 struct WordCloudView: View {
+    private let words: [WordElement]
+    private var positionCache = WordCloudPositionCache()
     
     @State private var canvasRect = CGRect()
-    @State private var sizeArray: [CGSize]
-    
-    private var cloudItems: [WordCloudItem]
-    private var stateCache = WordCloudStateCache()
-    
-    init(_ words: [String]) {
-        self._sizeArray = State(initialValue:[CGSize](repeating: CGSize.zero, count: words.count))
-        
-        self.cloudItems = [WordCloudItem]()
-        
-        let colorPlate =  ["shareFont1", "shareFont2", "shareFont3",
-                           "shareFont1", "shareFont5"]
-        let fontPlate = [ "SFProText-Bold",
-                          "SFProText-Medium", "SFProText-Regular", "SFProText-Semibold"]
-        
-        for w in words {
-            self.cloudItems.append(
-                WordCloudItem(word: w,
-                              weight: CGFloat.random * 0.6 + 0.4,
-                              color: colorPlate.randomElement()!,
-                              font: fontPlate.randomElement()!)
-            )
-        }
-    }
+    @State private var wordSizes: [CGSize]
+    @State private var fontSizeRatio: CGFloat = 1
     
     init() {
-        var words = [String]()
-        let n = Int.random(in: 5...50)
-        for _ in 1...n {
-            words.append(WordManager.shared.nextWord())
-        }
-        self.init(words)
+        words = [WordElement].generate()
+        self._wordSizes = State(initialValue:[CGSize](repeating: CGSize.zero, count: words.count))
     }
     
+    init(_ words: [WordElement]) {
+        self.words = words
+        self._wordSizes = State(initialValue:[CGSize](repeating: CGSize.zero, count: words.count))
+    }
     
     var body: some View {
-        let pos = calcPositions(canvasSize: canvasRect.size, itemSizes: sizeArray)
-        // https://github.com/jasondavies/d3-cloud/blob/master/index.js
+        let pos = calcPositions(canvasSize: canvasRect.size, itemSizes: wordSizes)
+        
         return ZStack{
-            ForEach(Array(cloudItems.enumerated()), id: \.offset) {idx, item in
-                NavigationLink(destination: CardView(item.word)) {
-                    Text("\(item.word)")
-                        .foregroundColor(Color(item.color))
-                        .font(Font.custom(
-                            item.font,
-                            size: item.weight *
-                            (canvasRect.width + canvasRect.height) / (6*log(CGFloat(cloudItems.count)))))
+            ForEach(Array(words.enumerated()), id: \.offset) {idx, word in
+                NavigationLink(destination: Text("\(word.text)")) {
+                    Text("\(word.text)")
+                        .foregroundColor(word.color)
+                        .font(Font.custom(word.fontName,
+                                          size:word.fontSize * fontSizeRatio))
                         .lineLimit(1)
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(3)
-                        .background(SizeArrayGetter($sizeArray, idx))
+                        .background(WordSizeGetter($wordSizes, idx))
                 }
                 .position(x: canvasRect.width/2 + pos[idx].x,
                           y: canvasRect.height/2 + pos[idx].y)
                 
             }
         }
-        .frame(idealHeight: self.canvasRect.width)
         .background(RectGetter($canvasRect))
     }
     
@@ -81,7 +64,7 @@ struct WordCloudView: View {
         return false
     }
     
-    func simularSizeArray(a: [CGSize], b: [CGSize]) -> Bool {
+    func simularWordSizes(a: [CGSize], b: [CGSize]) -> Bool {
         if a == b {
             return true
         }
@@ -113,35 +96,56 @@ struct WordCloudView: View {
         if canvasSize.height == 0 {
             return pos
         }
-        if stateCache.lastCanvasSize == canvasSize
-            && simularSizeArray(a: stateCache.lastSizeArray, b: sizeArray) {
-            return stateCache.lastPositions
+        
+        if positionCache.canvasSize == canvasSize
+            && simularWordSizes(a: positionCache.wordSizes, b: wordSizes) {
+            return positionCache.positions
+        }
+        defer {
+            positionCache.canvasSize = canvasSize
+            positionCache.wordSizes = wordSizes
+            positionCache.positions = pos
         }
         
-        defer {
-            stateCache.lastCanvasSize = canvasSize
-            stateCache.lastSizeArray = sizeArray
-            stateCache.lastPositions = pos
+        if fontSizeRatio == 1 {
+            var totalItemArea: CGFloat = 0
+            for each in itemSizes {
+                totalItemArea += each.width * each.height
+            }
+            let areaRatio = totalItemArea / (canvasSize.width * canvasSize.height)
+            if areaRatio > 1.2 {
+                DispatchQueue.main.async {
+                    fontSizeRatio = sqrt(1/areaRatio)
+                }
+                return pos
+            }
         }
+        
         var rects = [CGRect]()
         
         var step : CGFloat = 0
         let ratio = canvasSize.width * 1.5 / canvasSize.height
         
-        let startPos = CGPoint(x: CGFloat.random * canvasSize.width * 0.1,
-                               y: CGFloat.random * canvasSize.height * 0.1)
-        
+        let startPos = CGPoint(x: CGFloat.random(in: 0...1) * canvasSize.width * 0.1,
+                               y: CGFloat.random(in: 0...1) * canvasSize.height * 0.1)
+        let maxArmLength = sqrt(pow(canvasSize.height/2, 2) + pow(canvasSize.width * 0.5, 2))
         for (index, itemSize) in itemSizes.enumerated() {
             var nextRect = CGRect(origin: CGPoint(x: startPos.x - itemSize.width/2,
                                                   y: startPos.y - itemSize.height/2),
                                   size: itemSize)
             if index > 0 {
-                while checkOutsideBoundry(canvasSize: canvasSize,
-                                          rect: nextRect)
-                        || checkIntersects(rect: nextRect, rects: rects) {
+                while (checkOutsideBoundry(canvasSize: canvasSize,
+                                             rect: nextRect)
+                         || checkIntersects(rect: nextRect, rects: rects)) {
+                    if step > maxArmLength {
+                        DispatchQueue.main.async {
+                            fontSizeRatio *= 0.9
+                        }
+                        return pos
+                    }
                     nextRect.origin.x = startPos.x + ratio * step * cos(step) + startPos.x - itemSize.width/2
-                    nextRect.origin.y = startPos.y + step * sin(step) + startPos.y - itemSize.height/2
-                    step = step + 0.01
+                    nextRect.origin.y = 1.5 * startPos.y + step * sin(step) + startPos.y - itemSize.height/2
+                    step = step + 0.1
                 }
             }
             pos[index] = nextRect.center
@@ -151,10 +155,10 @@ struct WordCloudView: View {
     }
 }
 
-class WordCloudStateCache {
-    var lastCanvasSize = CGSize.zero
-    var lastSizeArray = [CGSize]()
-    var lastPositions = [CGPoint]()
+class WordCloudPositionCache {
+    var canvasSize = CGSize.zero
+    var wordSizes = [CGSize]()
+    var positions = [CGPoint]()
 }
 
 extension CGRect {
@@ -164,12 +168,12 @@ extension CGRect {
     }
 }
 
-struct SizeArrayGetter: View {
-    @Binding var sizeArray: [CGSize]
+struct WordSizeGetter: View {
+    @Binding var sizeStorage: [CGSize]
     private var index: Int
     
-    init(_ sizeArray: Binding<[CGSize]>, _ index: Int) {
-        _sizeArray = sizeArray
+    init(_ sizeStorage: Binding<[CGSize]>, _ index: Int) {
+        _sizeStorage = sizeStorage
         self.index = index
     }
     
@@ -181,28 +185,31 @@ struct SizeArrayGetter: View {
     
     func createView(proxy: GeometryProxy) -> some View {
         DispatchQueue.main.async {
-            self.sizeArray[index] = proxy.frame(in: .global).size
+            self.sizeStorage[index] = proxy.frame(in: .global).size
         }
         
         return Rectangle().fill(Color.clear)
     }
 }
 
-
-
-struct WordCloudItem: Hashable {
-    var word: String
-    var weight: CGFloat
-    var color: String
-    var font: String
+extension Array where Element == WordElement {
+    static let colorPlate =  ["shareFont1", "shareFont2", "shareFont3",
+                              "shareFont1", "shareFont5"]
+    static let fontPlate = [ "SFProText-Bold",
+                             "SFProText-Medium", "SFProText-Regular", "SFProText-Semibold"]
     
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(word)
-    }
-    
-    static func == (lhs: WordCloudItem, rhs: WordCloudItem) -> Bool {
-        return lhs.word == rhs.word
-        // TODO: finish this
+    static func generate(_ cap: Int = Int.random(in: 1...50)) -> [WordElement] {
+        let letters = "abcdefghijklmnopqrstuvwxyz"
+        var words = [WordElement]()
+        for _ in 0...cap {
+            words.append(
+                WordElement(text: String((0...Int.random(in: 4...9)).map{ _ in letters.randomElement()! }),
+                            color: Color(colorPlate.randomElement()!),
+                            fontName: fontPlate.randomElement()!,
+                            fontSize: CGFloat.random(in:20...50))
+            )
+        }
+        return words
     }
 }
 
@@ -216,3 +223,5 @@ struct WordCloudView_Previews: PreviewProvider {
         .background(Color.black.edgesIgnoringSafeArea(.all))
     }
 }
+
+
