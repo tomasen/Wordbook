@@ -12,18 +12,12 @@ struct Sense: Identifiable {
     var synonyms: [String]
 }
 
-struct SimpleExplanation: Identifiable {
-    var id: String
-    var source: String
-    var expl: String
-}
-
-struct WordExplanation {
+struct WordDefinition {
     var word: String
     var senses: [Sense]
     var pronunc: String?
     var sound: Data?
-    var extras: [SimpleExplanation]
+    var extras: [ExtraExplain]
 }
 
 struct WordDatabaseLocal {

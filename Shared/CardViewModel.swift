@@ -13,7 +13,7 @@ class CardViewModel: ObservableObject {
     @Published var pronunciation: String? = ""
     @Published var mnemonic: String? = nil
     @Published var senses = [Sense]()
-    @Published var extras = [SimpleExplanation]()
+    @Published var extras = [ExtraExplain]()
     
     // fetch explanation of word
     func fetchExplain() {
@@ -23,9 +23,18 @@ class CardViewModel: ObservableObject {
         } else {
             fetchExplainFromLocalDatabase()
         }
+        // TODO: get wiki
+        WikiExplainClient.shared.query(word, handleExtraExplain)
+        
+        // TODO: get vocab
+        // VocabClient.shared.query(word, handleExtraExplain)
     }
     
-    private func handleAPIExplanation(_ result: WordExplanation?) {
+    private func handleExtraExplain(_ result: ExtraExplain) {
+        extras.append(result)
+    }
+    
+    private func handleAPIExplanation(_ result: WordDefinition?) {
         guard let expl = result else {
             fetchExplainFromLocalDatabase()
             return

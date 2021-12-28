@@ -31,7 +31,7 @@ class APIClient {
         var Antonyms:        [String]?
     }
     
-    public func query(term: String, nest: Int = 0, completion: @escaping (_ result: WordExplanation?)->()) {
+    public func query(term: String, nest: Int = 0, completion: @escaping (_ result: WordDefinition?)->()) {
         guard let term = term.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed) else {
             completion(nil)
             return
@@ -57,15 +57,15 @@ class APIClient {
                                                     synonyms: s0.Synonyms ?? []))
                             }
                         }
-                        var extras = [SimpleExplanation]()
+                        var extras = [ExtraExplain]()
                         if let re = ret.Etymologies {
                             for s1 in re {
-                                extras.append(SimpleExplanation(id: UUID().uuidString,
-                                                                source: "Origin",
-                                                                expl: s1))
+                                extras.append(ExtraExplain(title: ret.Word,
+                                                           source: .ORIGIN,
+                                                           expl: s1))
                             }
                         }
-                        completion(WordExplanation(word: ret.Word, senses: senses, pronunc: nil, sound: nil, extras: extras))
+                        completion(WordDefinition(word: ret.Word, senses: senses, pronunc: nil, sound: nil, extras: extras))
                     }
                 } else {
                     if let der = ret.Derivatives?.first {

@@ -174,8 +174,17 @@ struct CardView: View {
         VStack {
             ScrollView(.vertical) {
                 VStack(alignment: .leading) {
-                    ForEach(self.viewModel.senses) { ss in
+                    ForEach(viewModel.senses) { ss in
                         GlossView(ss: ss)
+                    }
+                    
+                    if viewModel.extras.count > 0 {
+                        VStack (spacing: 9) {
+                            ForEach(viewModel.extras) { extra in
+                                ExtraExplainSummeryView(simpleExpl: extra)
+                            }
+                        }
+                        .padding(.top, 25)
                     }
                 }
             }
@@ -270,6 +279,88 @@ struct CardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
+
+struct ExtraExplainSummeryView: View {
+    let simpleExpl: ExtraExplain
+    @State private var popFullExpl = false
+    
+    var body: some View {
+        VStack{
+            VStack(alignment: .leading) {
+                Text(simpleExpl.source.desc)
+                    .customFont(name: "AvenirNext-Bold", style: .title3, weight: .bold)
+                Text("\(simpleExpl.expl)")
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(3)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+            }
+            .sheet(isPresented: $popFullExpl) {
+                ExtraExplainDetailView(extraExpl: simpleExpl, closeMyself: $popFullExpl)
+                    .environment(\.colorScheme, .dark)
+            }
+            .padding(.init(top: 9, leading: 15, bottom: 9, trailing: 15))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color("fontGray"), lineWidth: 1)
+            )
+            .onTapGesture{
+                self.popFullExpl.toggle()
+            }
+        }
+        .padding(3)
+    }
+}
+
+struct ExtraExplainDetailView: View {
+    let extraExpl: ExtraExplain
+    @Binding var closeMyself: Bool
+    @State private var popWebLink: Bool = false
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                Text("\(extraExpl.title)")
+                    .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
+                    .foregroundColor(Color("fontTitle"))
+                    .padding(.bottom, 17.6)
+                    .padding(.top, 30)
+                    
+                Text("\(extraExpl.expl)")
+                
+                Spacer()
+                
+                if extraExpl.url != nil {
+                    Divider()
+                    
+                    Button(action: {
+                        self.popWebLink.toggle()
+                    }) {
+                        Text("MORE")
+                    }.modifier(FootViewStyle())
+                }
+            }
+            .customFont(name: "AvenirNext-Regular", style: .body)
+            .padding(EdgeInsets(top: 11, leading: 25, bottom: 11, trailing: 25))
+            .navigationBarTitle(Text("\(extraExpl.title) - \(extraExpl.source.desc)"), displayMode: .inline)
+            .navigationBarItems(trailing: Button(action: {
+                    closeMyself.toggle()
+                }) {
+                    Text("Close")
+                })
+        }
+        .sheet(isPresented: $popWebLink) {
+            if let url = extraExpl.url {
+                WebPageView(url: url)
+                    .environment(\.colorScheme, .dark)
+            } else {
+                // TODO: toast error
+            }
+        }
+        .background(Color("Background").edgesIgnoringSafeArea(.all))
+    }
+}
+
 
 struct CardView_Previews: PreviewProvider {
     static var previews: some View {

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8803F37B276B34CA00E46DAF /* WrappingHStack in Frameworks */ = {isa = PBXBuildFile; productRef = 8803F37A276B34CA00E46DAF /* WrappingHStack */; };
 		8803F37D276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
 		8803F37E276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
 		8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37F276F8FAC00E46DAF /* WordCloudView.swift */; };
@@ -88,6 +87,9 @@
 		888C3CB02750BBF7003CE213 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 888C3CAD2750BBF7003CE213 /* LaunchScreen.storyboard */; };
 		888C3CB22750C865003CE213 /* WordListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CB12750C865003CE213 /* WordListViewModel.swift */; };
 		888C3CB32750C865003CE213 /* WordListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CB12750C865003CE213 /* WordListViewModel.swift */; };
+		888C571B277B0B060029090A /* WebPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C571A277B0B050029090A /* WebPageView.swift */; };
+		888C571C277B0B060029090A /* WebPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C571A277B0B050029090A /* WebPageView.swift */; };
+		888C571F277B0BC20029090A /* WebView in Frameworks */ = {isa = PBXBuildFile; productRef = 888C571E277B0BC20029090A /* WebView */; };
 		88E02E0D27061D280015ECEA /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02E0C27061D280015ECEA /* Tests_iOS.swift */; };
 		88E02E0F27061D280015ECEA /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02E0E27061D280015ECEA /* Tests_iOSLaunchTests.swift */; };
 		88E02E1927061D280015ECEA /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02E1827061D280015ECEA /* Tests_macOS.swift */; };
@@ -100,6 +102,16 @@
 		88E02E2327061D280015ECEA /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* CoreDataManager.swift */; };
 		88E02E2427061D280015ECEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
 		88E02E2527061D280015ECEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
+		88F25273277B63270046BA15 /* WikiExplainClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* WikiExplainClient.swift */; };
+		88F25274277B63270046BA15 /* WikiExplainClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* WikiExplainClient.swift */; };
+		88F25276277B6EAD0046BA15 /* WordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFB274F621F00637B61 /* WordManager.swift */; };
+		88F25277277B6EB60046BA15 /* WikiExplainClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* WikiExplainClient.swift */; };
+		88F25278277B6EC00046BA15 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* CoreDataManager.swift */; };
+		88F25279277B6F2C0046BA15 /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */; };
+		88F2527A277B6F3B0046BA15 /* iCloudState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6ED27747DF20038E990 /* iCloudState.swift */; };
+		88F2527B277B6F430046BA15 /* PausableTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE7032775C0630038E990 /* PausableTimer.swift */; };
+		88F2527E277B71090046BA15 /* WikipediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88F2527D277B71090046BA15 /* WikipediaKit */; };
+		88F25280277B74410046BA15 /* WikipediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88F2527F277B74410046BA15 /* WikipediaKit */; };
 		88F517D327524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
 		88F517D427524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
 		88F517D627553EED004C174B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
@@ -186,6 +198,7 @@
 		888C3CA92750B8BF003CE213 /* ViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHelper.swift; sourceTree = "<group>"; };
 		888C3CAD2750BBF7003CE213 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		888C3CB12750C865003CE213 /* WordListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordListViewModel.swift; sourceTree = "<group>"; };
+		888C571A277B0B050029090A /* WebPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebPageView.swift; sourceTree = "<group>"; };
 		888EB1292722BF400067EA72 /* Wordbook (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Wordbook (iOS).entitlements"; sourceTree = "<group>"; };
 		88E02DF327061D260015ECEA /* WordbookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookApp.swift; sourceTree = "<group>"; };
 		88E02DF427061D260015ECEA /* MasterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterView.swift; sourceTree = "<group>"; };
@@ -200,6 +213,7 @@
 		88E02E1427061D280015ECEA /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		88E02E1827061D280015ECEA /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		88E02E1A27061D280015ECEA /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		88F25272277B63260046BA15 /* WikiExplainClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikiExplainClient.swift; sourceTree = "<group>"; };
 		88F517D227524C4F004C174B /* FlipView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlipView.swift; sourceTree = "<group>"; };
 		88F517D527553EED004C174B /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -211,6 +225,7 @@
 			files = (
 				8833AC3A274FF53900637B61 /* SQLite in Frameworks */,
 				8819C8FC2767BACC00FFD892 /* Introspect in Frameworks */,
+				88F25280277B74410046BA15 /* WikipediaKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,10 +233,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8803F37B276B34CA00E46DAF /* WrappingHStack in Frameworks */,
+				888C571F277B0BC20029090A /* WebView in Frameworks */,
 				8833AC36274FF33B00637B61 /* SQLite in Frameworks */,
 				8819C8FA2767B8D000FFD892 /* Introspect in Frameworks */,
 				884EE6E52774600E0038E990 /* SwiftyStoreKit in Frameworks */,
+				88F2527E277B71090046BA15 /* WikipediaKit in Frameworks */,
 				8833AC03274FDE9500637B61 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -270,11 +286,13 @@
 			isa = PBXGroup;
 			children = (
 				884EE6E6277461120038E990 /* UserPreferences.swift */,
+				884EE6E9277472990038E990 /* APIClient.swift */,
 				884EE6E027745E840038E990 /* AppStoreManager.swift */,
 				8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */,
 				88E02DF527061D260015ECEA /* CoreDataManager.swift */,
 				8833ABFB274F621F00637B61 /* WordManager.swift */,
 				8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */,
+				88F25272277B63260046BA15 /* WikiExplainClient.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -342,6 +360,7 @@
 		884EE6FF277579E30038E990 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				888C571A277B0B050029090A /* WebPageView.swift */,
 				88F517D227524C4F004C174B /* FlipView.swift */,
 				888C3CA92750B8BF003CE213 /* ViewHelper.swift */,
 				884EE6F3277575780038E990 /* TextView.swift */,
@@ -352,7 +371,6 @@
 		884EE70027757AC10038E990 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
-				884EE6E9277472990038E990 /* APIClient.swift */,
 				88F517D527553EED004C174B /* Helper.swift */,
 				884EE7032775C0630038E990 /* PausableTimer.swift */,
 			);
@@ -445,6 +463,7 @@
 			packageProductDependencies = (
 				8833AC39274FF53900637B61 /* SQLite */,
 				8819C8FB2767BACC00FFD892 /* Introspect */,
+				88F2527F277B74410046BA15 /* WikipediaKit */,
 			);
 			productName = Wordbook;
 			productReference = 8833AC1F274FE90400637B61 /* ShareExtension.appex */;
@@ -468,8 +487,9 @@
 			packageProductDependencies = (
 				8833AC35274FF33B00637B61 /* SQLite */,
 				8819C8F92767B8D000FFD892 /* Introspect */,
-				8803F37A276B34CA00E46DAF /* WrappingHStack */,
 				884EE6E42774600E0038E990 /* SwiftyStoreKit */,
+				888C571E277B0BC20029090A /* WebView */,
+				88F2527D277B71090046BA15 /* WikipediaKit */,
 			);
 			productName = "Wordbook (iOS)";
 			productReference = 88E02DFB27061D270015ECEA /* Wordbook.app */;
@@ -572,8 +592,9 @@
 			packageReferences = (
 				8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
 				8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
-				8803F379276B34CA00E46DAF /* XCRemoteSwiftPackageReference "WrappingHStack" */,
 				884EE6E32774600E0038E990 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
+				888C571D277B0BC20029090A /* XCRemoteSwiftPackageReference "SwiftUI-WebView" */,
+				88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */,
 			);
 			productRefGroup = 88E02DFC27061D270015ECEA /* Products */;
 			projectDirPath = "";
@@ -667,7 +688,13 @@
 				8833AC22274FE90400637B61 /* ShareViewController.swift in Sources */,
 				888C3CAC2750B8BF003CE213 /* ViewHelper.swift in Sources */,
 				8833AC33274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
+				88F2527A277B6F3B0046BA15 /* iCloudState.swift in Sources */,
+				88F25276277B6EAD0046BA15 /* WordManager.swift in Sources */,
 				884EE6EC2774729E0038E990 /* APIClient.swift in Sources */,
+				88F25277277B6EB60046BA15 /* WikiExplainClient.swift in Sources */,
+				88F2527B277B6F430046BA15 /* PausableTimer.swift in Sources */,
+				88F25278277B6EC00046BA15 /* CoreDataManager.swift in Sources */,
+				88F25279277B6F2C0046BA15 /* Wordbook.xcdatamodeld in Sources */,
 				88F517D827553EED004C174B /* Helper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -694,9 +721,11 @@
 				8833ABF9274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF3274F358B00637B61 /* CardView.swift in Sources */,
 				8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
+				888C571B277B0B060029090A /* WebPageView.swift in Sources */,
 				88E02E2027061D280015ECEA /* MasterView.swift in Sources */,
 				884EE7042775C0630038E990 /* PausableTimer.swift in Sources */,
 				884EE6E127745E840038E990 /* AppStoreManager.swift in Sources */,
+				88F25273277B63270046BA15 /* WikiExplainClient.swift in Sources */,
 				888C3CB22750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833ABFF274F65D900637B61 /* CardViewModel.swift in Sources */,
 			);
@@ -724,9 +753,11 @@
 				8833ABFA274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF4274F358B00637B61 /* CardView.swift in Sources */,
 				8803F381276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
+				888C571C277B0B060029090A /* WebPageView.swift in Sources */,
 				88E02E2127061D280015ECEA /* MasterView.swift in Sources */,
 				884EE7052775C0630038E990 /* PausableTimer.swift in Sources */,
 				884EE6E227745E840038E990 /* AppStoreManager.swift in Sources */,
+				88F25274277B63270046BA15 /* WikiExplainClient.swift in Sources */,
 				888C3CB32750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833AC00274F65D900637B61 /* CardViewModel.swift in Sources */,
 			);
@@ -1244,14 +1275,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		8803F379276B34CA00E46DAF /* XCRemoteSwiftPackageReference "WrappingHStack" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/dkk/WrappingHStack";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
 		8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
@@ -1276,14 +1299,25 @@
 				minimumVersion = 0.9.3;
 			};
 		};
+		888C571D277B0BC20029090A /* XCRemoteSwiftPackageReference "SwiftUI-WebView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kylehickinson/SwiftUI-WebView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.0;
+			};
+		};
+		88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Raureif/WikipediaKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		8803F37A276B34CA00E46DAF /* WrappingHStack */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8803F379276B34CA00E46DAF /* XCRemoteSwiftPackageReference "WrappingHStack" */;
-			productName = WrappingHStack;
-		};
 		8819C8F92767B8D000FFD892 /* Introspect */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
@@ -1313,6 +1347,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 884EE6E32774600E0038E990 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
 			productName = SwiftyStoreKit;
+		};
+		888C571E277B0BC20029090A /* WebView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 888C571D277B0BC20029090A /* XCRemoteSwiftPackageReference "SwiftUI-WebView" */;
+			productName = WebView;
+		};
+		88F2527D277B71090046BA15 /* WikipediaKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */;
+			productName = WikipediaKit;
+		};
+		88F2527F277B74410046BA15 /* WikipediaKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */;
+			productName = WikipediaKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 

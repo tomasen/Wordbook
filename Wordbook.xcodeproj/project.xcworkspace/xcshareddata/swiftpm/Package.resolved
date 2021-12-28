@@ -20,6 +20,15 @@
         }
       },
       {
+        "package": "WebView",
+        "repositoryURL": "https://github.com/kylehickinson/SwiftUI-WebView",
+        "state": {
+          "branch": null,
+          "revision": "a67dcaff2377573a51f75761bb6e768b78931909",
+          "version": "0.3.0"
+        }
+      },
+      {
         "package": "SwiftyStoreKit",
         "repositoryURL": "https://github.com/bizz84/SwiftyStoreKit",
         "state": {
@@ -29,12 +38,12 @@
         }
       },
       {
-        "package": "WrappingHStack",
-        "repositoryURL": "https://github.com/dkk/WrappingHStack",
+        "package": "WikipediaKit",
+        "repositoryURL": "https://github.com/Raureif/WikipediaKit",
         "state": {
           "branch": null,
-          "revision": "3cc84e786aa996da32f476d89dab4e02d30ce691",
-          "version": "2.1.3"
+          "revision": "be13ff505b88b3e2161c4f187fc4a5a2a1af4ba4",
+          "version": "3.0.3"
         }
       }
     ]

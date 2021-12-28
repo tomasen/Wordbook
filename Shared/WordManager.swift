@@ -22,8 +22,15 @@ enum CardRating : Int16 {
          WELLKNOWN           // well-known
 }
 
+struct ExtraExplain: Identifiable {
+    var id: Int = UUID().hashValue
+    var title: String
+    var source: ExtraExplainSource
+    var expl: String
+    var url: URL?
+}
+
 class WordManager {
-    
     // ManagedObjectContext of CoreData / CloudKit / iCloud
     private let moc = CoreDataManager.shared.container.viewContext
     
@@ -127,6 +134,41 @@ class WordManager {
             return ret.randomElement()
         }
         return nil
+    }
+    
+    // ------- Cache -------
+    func getCache(word: String, source: ExtraExplainSource) -> ExtraExplain? {
+        if let ref = getCachedReference(word: word, source: source) {
+            if ref.valid {
+                if let desc = ref.desc {
+                    if desc.trimmingCharacters(in: .whitespaces).count != 0 {
+                        return ExtraExplain(title: word, source: source, expl: desc)
+                    }
+                }
+            }
+        }
+        return nil
+    }
+    
+    func getCachedReference(word: String, source: ExtraExplainSource) -> Reference? {
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "Reference")
+        req.predicate = NSPredicate(format: "word = %@ AND source = %d", word, source.rawValue)
+        req.fetchLimit = 1
+        
+        if let ref = (try! moc.fetch(req) as! [Reference]).first {
+            return ref
+        }
+        return nil
+    }
+    
+    func setCache(word: String, extraExplain: ExtraExplain) {
+        let ref = getCachedReference(word: word, source: extraExplain.source) ?? Reference.init(context: moc)
+        
+        ref.valid = true
+        ref.word = word
+        ref.desc = extraExplain.expl
+        ref.source = extraExplain.source.rawValue
+        ref.word = word
     }
     
     // ------- Answer -------

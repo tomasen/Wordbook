@@ -60,4 +60,8 @@ public extension String {
         }
         return ""
     }
+
+    func urlencode() -> String {
+        return self.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed) ?? ""
+    }
 }
