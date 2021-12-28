@@ -44,12 +44,13 @@ class SharingViewModel: ObservableObject {
         return nil
     }
     
-    var todayWordsTotal: Int {
-        return 12
+    var todayWordsTotal: Int16 {
+        let e = WordManager.shared.fetchEngagement()
+        return e.working + e.good
     }
     
     var todayStudyTimeInSeconds: TimeInterval {
-        return 182
+        return WordManager.shared.fetchEngagement().duration
     }
 }
 

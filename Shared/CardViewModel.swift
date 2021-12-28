@@ -31,17 +31,21 @@ class CardViewModel: ObservableObject {
     }
     
     private func handleExtraExplain(_ result: ExtraExplain) {
-        extras.append(result)
+        DispatchQueue.main.async {
+            self.extras.append(result)
+        }
     }
     
     private func handleAPIExplanation(_ result: WordDefinition?) {
-        guard let expl = result else {
-            fetchExplainFromLocalDatabase()
-            return
+        DispatchQueue.main.async {
+            guard let expl = result else {
+                self.fetchExplainFromLocalDatabase()
+                return
+            }
+            self.word = expl.word
+            self.senses = expl.senses
+            self.extras = expl.extras
         }
-        word = expl.word
-        senses = expl.senses
-        extras = expl.extras
     }
     
     private func fetchExplainFromLocalDatabase() {

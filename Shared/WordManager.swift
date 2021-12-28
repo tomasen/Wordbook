@@ -28,6 +28,8 @@ class WordManager {
     
     static let shared = WordManager()
     
+    private let cardsPerDay = 15
+    
     func nextWord() -> String {
         if iCloudState.shared.enabled {
             // next vague or no idea Word of today
@@ -172,18 +174,13 @@ class WordManager {
             try! moc.save()
         }
         print ("Answering \(word) -> \(rate)")
-        // TODO: add timer to record the time spent on
-        // pausing and hesitation before answering
+        
         AnswerHistory.add(rate, card: card, duration: PausableTimer.shared.end())
         
         if rate == .NOIDEA && card.category > CardCategory.NEW.rawValue {
             // if not a new card, and forgot, means it possiblly is a leech card
             card.leech+=1
         }
-        //        if card.category == CardCategory.NEW.rawValue {
-        //            // update NEW counter in engagement record
-        //            Engagement.fetch(today).new += 1
-        //        }
         
         // become LEARNING after answered amd priotize
         card.category = CardCategory.LEARNING.rawValue
@@ -201,12 +198,30 @@ class WordManager {
             card.updateDueByMinute(1)
         }
         
-        //
-        //        DispatchQueue.global(qos: .background).async {
-        //            self.updateEngagement()
-        //        }
+        fetchEngagement(today).update()
     }
     
+    // ------ Engagement ------
+    func fetchEngagement() -> Engagement {
+        fetchEngagement(today)
+    }
+    
+    func fetchEngagement(_ day: Int32) -> Engagement {
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "Engagement")
+        req.predicate = NSPredicate(format: "day = %d", day)
+        req.fetchLimit = 1
+        let res = try! moc.fetch(req) as! [Engagement]
+        guard let ret = res.first else {
+            let eg = Engagement.init(context: moc)
+            eg.day = day
+            eg.goal = Int16(cardsPerDay)
+            return eg
+        }
+        return ret
+    }
+    
+    
+    // ---------
     func wordsOfToday() -> [String] {
         var ret = [String]()
         
@@ -319,8 +334,7 @@ extension WordCard {
     static func bury(_ word: String) {
         if let wc = WordCard.fetch(word) {
             wc.category = CardCategory.BURIED.rawValue
-            // scheduler.updateEngagement()
-            // Engagement.fetch(scheduler.today).buried += 1
+            WordManager.shared.fetchEngagement().buried += 1
         }
     }
     
@@ -328,11 +342,11 @@ extension WordCard {
         if let wc = WordCard.fetch(word) {
             wc.category = CardCategory.NEW.rawValue
             wc.duedate = nil
-            // scheduler.updateEngagement()
-            // let e = Engagement.fetch(scheduler.today)
-            //            if e.buried > 0 {
-            //                e.buried -= 1
-            //            }
+            
+            let e = WordManager.shared.fetchEngagement()
+            if e.buried > 0 {
+                e.buried -= 1
+            }
         }
     }
     
@@ -398,3 +412,62 @@ extension AnswerHistory {
     }
 }
 
+extension Engagement {
+    // update every part of engagement record
+    func update() {
+        var timespend = Double(0)
+        let begin = WordManager.shared.BeginOfTheDay(day)
+        let end = WordManager.shared.EndOfTheDay(day)
+        
+        let res = AnswerHistory.fetch(begin, end)
+        
+        var worstAnswer = [String: Int16]()
+        var bestAnswer = [String: Int16]()
+        for rec in res {
+            timespend += rec.duration
+            if let word = rec.word?.word {
+                if let ans = worstAnswer[word] {
+                    worstAnswer[word] = min(ans, rec.answer)
+                } else {
+                    worstAnswer[word] = rec.answer
+                }
+                
+                if let ans = bestAnswer[word] {
+                    bestAnswer[word] = max(ans, rec.answer)
+                } else {
+                    bestAnswer[word] = rec.answer
+                }
+            }
+        }
+        
+        var goodAnswerCount: Int16 = 0
+        var vagueAnswerCount: Int16 = 0
+        var noideaAnswerCount: Int16 = 0
+        var noGoodAnswerCount: Int16 = 0
+        for ans in bestAnswer {
+            switch ans.value {
+            case CardRating.WELLKNOWN.rawValue:
+                goodAnswerCount += 1
+            case CardRating.NOIDEA.rawValue:
+                noGoodAnswerCount += 1
+                noideaAnswerCount += 1
+            case CardRating.VAGUE.rawValue:
+                noGoodAnswerCount += 1
+                vagueAnswerCount += 1
+            default:
+                print("should not happening")
+            }
+        }
+        
+        self.noidea = noideaAnswerCount
+        self.vague = vagueAnswerCount
+        self.good = goodAnswerCount
+        
+        // how many answered today but due day is tommorow
+        self.finished = goodAnswerCount
+        self.working = noGoodAnswerCount
+        
+        // update time spend
+        self.duration = timespend
+    }
+}
