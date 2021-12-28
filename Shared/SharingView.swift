@@ -9,23 +9,34 @@ import SwiftUI
 
 struct SharingView: View {
     @StateObject var viewModel = SharingViewModel()
+    
+    private let dateFormatter = DateFormatter()
+    private let durationFormatter = DateComponentsFormatter()
+    
+    init() {
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
         
+        durationFormatter.allowedUnits = [.minute, .second]
+    }
+    
     var body: some View {
         VStack{
-            Text("2008 - 10 - 2")
+            Text(dateFormatter.string(from: viewModel.todayDate))
                 .foregroundColor(Color("fontTitle"))
                 .customFont(name: "Baskerville-SemiBold", style: .largeTitle, weight: .heavy)
             Text("Wordbook's Review")
                 .customFont(name: "AvenirNext-DemiBold", style: .caption2, weight: .semibold)
             
             WordCloudView(viewModel.wordsOfToday)
-                
+                .frame(height: viewModel.minCanvasHeight)
+            
             HStack{
                 VStack{
                     HStack{
-                        Text("12 Words")
+                        Text("\(viewModel.todayWordsTotal) Words")
                         Spacer()
-                        Text("3 min.")
+                        Text("\(durationFormatter.string(from:  viewModel.todayStudyTimeInSeconds) ?? "0") min.")
                     }
                     .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 0))
                     .customFont(name: "AvenirNext-DemiBold", style: .footnote, weight: .semibold)
@@ -48,8 +59,8 @@ struct SharingView: View {
             .frame(height: 90)
             
             Spacer()
-                .frame(idealHeight: 80)
-                
+                .padding()
+            
             Divider()
             
             NextButtons()
@@ -67,15 +78,7 @@ struct SharingView: View {
             .buttonStyle(ChoiceButtonStyle(true))
             Divider()
             Button(action: {
-                let window = UIApplication.shared.connectedScenes
-                    .filter { $0.activationState == .foregroundActive }
-                    .map { $0 as? UIWindowScene }
-                    .compactMap { $0 }
-                    .first?.windows
-                    .filter { $0.isKeyWindow }
-                    .first
-                let nvc = window?.rootViewController?.children.first as? UINavigationController
-                nvc?.popToRootViewController(animated: true)
+                NavigationUtil.popToRootView()
             }) {
                 Text("CLOSE")
             }
@@ -89,7 +92,7 @@ struct SharingView: View {
 struct SizeGetter: View {
     @Binding var sizeArray: [CGSize]
     var idx: Int = 0
-
+    
     init(_ sizeArray: Binding<[CGSize]>, _ index: Int) {
         _sizeArray = sizeArray
         idx = index
@@ -100,13 +103,36 @@ struct SizeGetter: View {
             self.createView(proxy: proxy)
         }
     }
-
+    
     func createView(proxy: GeometryProxy) -> some View {
         DispatchQueue.main.async {
             sizeArray[idx] = proxy.frame(in: .global).size
         }
-
+        
         return Rectangle().fill(Color.clear)
+    }
+}
+
+struct NavigationUtil {
+    static func popToRootView() {
+        findNavigationController(viewController: UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController)?
+            .popToRootViewController(animated: true)
+    }
+    
+    static func findNavigationController(viewController: UIViewController?) -> UINavigationController? {
+        guard let viewController = viewController else {
+            return nil
+        }
+        
+        if let navigationController = viewController as? UINavigationController {
+            return navigationController
+        }
+        
+        for childViewController in viewController.children {
+            return findNavigationController(viewController: childViewController)
+        }
+        
+        return nil
     }
 }
 

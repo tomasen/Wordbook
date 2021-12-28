@@ -30,14 +30,6 @@ extension View {
         weight: Font.Weight = .regular) -> some View {
         return self.modifier(CustomFont(name: name, style: style, weight: weight))
     }
-    
-    func dynamicDeviceNavigationViewStyle(stack: Bool) -> AnyView {
-        if stack {
-            return AnyView(self.navigationViewStyle(StackNavigationViewStyle()))
-        } else {
-            return AnyView(self.navigationViewStyle(DefaultNavigationViewStyle()))
-        }
-    }
 }
 
 extension Binding where Value == Bool {
@@ -94,5 +86,3 @@ struct RectGetter: View {
         return Rectangle().fill(Color.clear)
     }
 }
-
-

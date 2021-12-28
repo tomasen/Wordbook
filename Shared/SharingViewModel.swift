@@ -32,6 +32,25 @@ class SharingViewModel: ObservableObject {
 #endif
         return words
     }
+    
+    var todayDate: Date {
+        WordManager.shared.date(from: WordManager.shared.today)
+    }
+    
+    var minCanvasHeight: CGFloat? {
+        if UIScreen.main.bounds.width < UIScreen.main.bounds.height {
+            return UIScreen.main.bounds.width
+        }
+        return nil
+    }
+    
+    var todayWordsTotal: Int {
+        return 12
+    }
+    
+    var todayStudyTimeInSeconds: TimeInterval {
+        return 182
+    }
 }
 
 
