@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="6SA-pK-cjY">
+    <device id="ipad12_9rounded" orientation="landscape" layout="splitview1_3" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Share View Controller-->
+        <scene sceneID="ceB-am-kn3">
+            <objects>
+                <viewController modalPresentationStyle="fullScreen" id="j1y-V4-xli" customClass="ShareViewController" customModule="ShareExtension" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" opaque="NO" clipsSubviews="YES" contentMode="center" id="wbc-yd-nQP">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="0.10417583626760564" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="dN0-AJ-AfG"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="L1v-TD-GlN">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="35b-gr-UTQ">
+                            <connections>
+                                <action selector="onCancel:" destination="j1y-V4-xli" id="ZXe-Of-T2l"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Send to Wordbook" id="kMz-pE-Bmb">
+                            <connections>
+                                <action selector="didSelectPost:" destination="j1y-V4-xli" id="v2w-8d-nff"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CEy-Cv-SGf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="831.47877013177151" y="99.609375"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Ya1-n2-776">
+            <objects>
+                <navigationController id="6SA-pK-cjY" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ycO-CR-5WA">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="j1y-V4-xli" kind="relationship" relationship="rootViewController" id="Kv8-cP-Fjx"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fz3-DQ-pVP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="137.48169838945827" y="99.609375"/>
+        </scene>
+    </scenes>
+</document>

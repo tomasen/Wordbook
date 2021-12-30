@@ -35,5 +35,17 @@ class UserPreferences {
             NSUbiquitousKeyValueStore.default.set(v, forKey: key)
         #endif
     }
+    
+    func set(_ v: Date, forKey key: String) {
+        mySharedDefaults.set(v, forKey: key)
+        #if !os(watchOS)
+            NSUbiquitousKeyValueStore.default.set(v, forKey: key)
+        #endif
+    }
+    
+    
+    func addToWordbook(_ word: String) {
+        set(Date(), forKey: UserPreferences.SHARED_WORDKEY_PREFIX + word)
+    }
 }
 

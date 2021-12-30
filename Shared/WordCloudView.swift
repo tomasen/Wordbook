@@ -93,7 +93,7 @@ struct WordCloudView: View {
     
     func calcPositions(canvasSize: CGSize, itemSizes: [CGSize]) -> [CGPoint] {
         var pos = [CGPoint](repeating: CGPoint.zero, count: itemSizes.count)
-        if canvasSize.height == 0 {
+        if canvasSize.height == 0 || words.count == 0 {
             return pos
         }
         

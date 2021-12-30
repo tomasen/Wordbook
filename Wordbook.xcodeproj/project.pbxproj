@@ -114,6 +114,12 @@
 		88F25280277B74410046BA15 /* WikipediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88F2527F277B74410046BA15 /* WikipediaKit */; };
 		88F25283277B7D920046BA15 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 88F25282277B7D920046BA15 /* SwiftSoup */; };
 		88F25285277B7E160046BA15 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 88F25284277B7E160046BA15 /* SwiftSoup */; };
+		88F25288277CD7030046BA15 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
+		88F2528A277CD9F00046BA15 /* SharedExtensionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25289277CD9F00046BA15 /* SharedExtensionView.swift */; };
+		88F2528C277CDA0E0046BA15 /* WordFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F2528B277CDA0E0046BA15 /* WordFilter.swift */; };
+		88F2528D277CDA0E0046BA15 /* WordFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F2528B277CDA0E0046BA15 /* WordFilter.swift */; };
+		88F2528E277CDA0E0046BA15 /* WordFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F2528B277CDA0E0046BA15 /* WordFilter.swift */; };
+		88F2528F277E1DD70046BA15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
 		88F517D327524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
 		88F517D427524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
 		88F517D627553EED004C174B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
@@ -177,7 +183,7 @@
 		8833AC21274FE90400637B61 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		8833AC24274FE90400637B61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		8833AC26274FE90400637B61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8833AC2A274FE90400637B61 /* Wordbook.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wordbook.entitlements; sourceTree = "<group>"; };
+		8833AC2A274FE90400637B61 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
 		8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordDatabaseLocal.swift; sourceTree = "<group>"; };
 		884EE6C22770D8710038E990 /* SF-Pro-Text-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Bold.otf"; sourceTree = "<group>"; };
 		884EE6C32770D8710038E990 /* SF-Pro-Text-Ultralight.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Ultralight.otf"; sourceTree = "<group>"; };
@@ -216,6 +222,8 @@
 		88E02E1827061D280015ECEA /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		88E02E1A27061D280015ECEA /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
 		88F25272277B63260046BA15 /* ExtraExplainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtraExplainManager.swift; sourceTree = "<group>"; };
+		88F25289277CD9F00046BA15 /* SharedExtensionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedExtensionView.swift; sourceTree = "<group>"; };
+		88F2528B277CDA0E0046BA15 /* WordFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordFilter.swift; sourceTree = "<group>"; };
 		88F517D227524C4F004C174B /* FlipView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlipView.swift; sourceTree = "<group>"; };
 		88F517D527553EED004C174B /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -321,15 +329,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		8833AC20274FE90400637B61 /* Wordbook */ = {
+		8833AC20274FE90400637B61 /* ShareExtension */ = {
 			isa = PBXGroup;
 			children = (
-				8833AC2A274FE90400637B61 /* Wordbook.entitlements */,
+				88F25289277CD9F00046BA15 /* SharedExtensionView.swift */,
+				8833AC2A274FE90400637B61 /* ShareExtension.entitlements */,
 				8833AC21274FE90400637B61 /* ShareViewController.swift */,
 				8833AC23274FE90400637B61 /* MainInterface.storyboard */,
 				8833AC26274FE90400637B61 /* Info.plist */,
 			);
-			path = Wordbook;
+			path = ShareExtension;
 			sourceTree = "<group>";
 		};
 		884EE6C12770D85B0038E990 /* Fonts */ = {
@@ -375,6 +384,7 @@
 		884EE70027757AC10038E990 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				88F2528B277CDA0E0046BA15 /* WordFilter.swift */,
 				88F517D527553EED004C174B /* Helper.swift */,
 				884EE7032775C0630038E990 /* PausableTimer.swift */,
 			);
@@ -390,7 +400,7 @@
 				88E02E0227061D270015ECEA /* macOS */,
 				88E02E0B27061D280015ECEA /* Tests iOS */,
 				88E02E1727061D280015ECEA /* Tests macOS */,
-				8833AC20274FE90400637B61 /* Wordbook */,
+				8833AC20274FE90400637B61 /* ShareExtension */,
 				88E02DFC27061D270015ECEA /* Products */,
 				8833AC01274FDE9500637B61 /* Frameworks */,
 			);
@@ -625,6 +635,7 @@
 				884EE6FB277577CF0038E990 /* plans.txt in Resources */,
 				884EE6FE277577CF0038E990 /* about.txt in Resources */,
 				8833AC25274FE90400637B61 /* MainInterface.storyboard in Resources */,
+				88F2528F277E1DD70046BA15 /* Assets.xcassets in Resources */,
 				8833AC2F274FE98500637B61 /* wordnet-lite.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -692,13 +703,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88F2528A277CD9F00046BA15 /* SharedExtensionView.swift in Sources */,
 				8833AC22274FE90400637B61 /* ShareViewController.swift in Sources */,
+				88F25288277CD7030046BA15 /* UserPreferences.swift in Sources */,
 				888C3CAC2750B8BF003CE213 /* ViewHelper.swift in Sources */,
 				8833AC33274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
 				88F2527A277B6F3B0046BA15 /* iCloudState.swift in Sources */,
 				88F25276277B6EAD0046BA15 /* WordManager.swift in Sources */,
 				884EE6EC2774729E0038E990 /* APIClient.swift in Sources */,
 				88F25277277B6EB60046BA15 /* ExtraExplainManager.swift in Sources */,
+				88F2528E277CDA0E0046BA15 /* WordFilter.swift in Sources */,
 				88F2527B277B6F430046BA15 /* PausableTimer.swift in Sources */,
 				88F25278277B6EC00046BA15 /* CoreDataManager.swift in Sources */,
 				88F25279277B6F2C0046BA15 /* Wordbook.xcdatamodeld in Sources */,
@@ -725,6 +739,7 @@
 				88E02E2227061D280015ECEA /* CoreDataManager.swift in Sources */,
 				8833ABF6274F3F6C00637B61 /* SharingView.swift in Sources */,
 				888C3CAA2750B8BF003CE213 /* ViewHelper.swift in Sources */,
+				88F2528C277CDA0E0046BA15 /* WordFilter.swift in Sources */,
 				8833ABF9274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF3274F358B00637B61 /* CardView.swift in Sources */,
 				8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
@@ -757,6 +772,7 @@
 				88E02E2327061D280015ECEA /* CoreDataManager.swift in Sources */,
 				8833ABF7274F3F6C00637B61 /* SharingView.swift in Sources */,
 				888C3CAB2750B8BF003CE213 /* ViewHelper.swift in Sources */,
+				88F2528D277CDA0E0046BA15 /* WordFilter.swift in Sources */,
 				8833ABFA274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF4274F358B00637B61 /* CardView.swift in Sources */,
 				8803F381276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
@@ -823,12 +839,12 @@
 		8833AC2C274FE90400637B61 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Wordbook/Wordbook.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9ZARAPZJX4;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Wordbook/Info.plist;
+				INFOPLIST_FILE = ShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Wordbook;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -852,12 +868,12 @@
 		8833AC2D274FE90400637B61 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Wordbook/Wordbook.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9ZARAPZJX4;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Wordbook/Info.plist;
+				INFOPLIST_FILE = ShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Wordbook;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;

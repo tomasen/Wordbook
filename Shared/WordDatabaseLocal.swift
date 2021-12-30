@@ -200,4 +200,37 @@ struct WordDatabaseLocal {
         
         fatalError("error: out of random word impossibly")
     }
+    
+    func explainAlias(_ word: String) -> [String] {
+        let stmt = try! db.prepare("""
+        SELECT word.word, alias.reason
+        FROM word, alias WHERE alias.alias LIKE ?
+        AND word.id = alias.wordid
+        LIMIT 1
+        """)
+        for row in try! stmt.run(word) {
+            let originWord = row[0] as! String
+            return explainExact(originWord)
+        }
+        return [String]()
+    }
+    
+    func explainExact(_ word: String) -> [String] {
+        var ret = [String]()
+        
+        let stmt = try! db.prepare("""
+        SELECT sense.sstype, gloss.gloss
+        FROM word, sense, gloss WHERE word.word LIKE ?
+        AND sense.wordid = word.id
+        AND gloss.id = sense.glossid
+        """)
+        
+        for row in try! stmt.run(word) {
+            // let ssType = row[0] as! String
+            let gloss = row[1] as! String
+            
+            ret.append(gloss)
+        }
+        return ret
+    }
 }
