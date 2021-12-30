@@ -141,11 +141,19 @@ struct WordDatabaseLocal {
         return examples
     }
     
-    
-    func find(_ lex: String) -> String? {
+    func exist(_ lex: String) -> String? {
         var stmt = try! db.prepare("""
         SELECT word
         FROM word WHERE word = ?
+        LIMIT 1
+        """)
+        for row in try! stmt.run(lex) {
+            return row[0] as? String
+        }
+        
+        stmt = try! db.prepare("""
+        SELECT word
+        FROM word WHERE word LIKE ?
         LIMIT 1
         """)
         for row in try! stmt.run(lex) {

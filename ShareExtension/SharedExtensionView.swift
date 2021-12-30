@@ -15,6 +15,10 @@ class SharedExtensionViewModel: ObservableObject {
         }
     }
     @Published var words = [String]()
+    
+    func setContent(_ text: String) {
+        contentText = WordFilter.shared.filter(from: text).joined(separator: ", ")
+    }
 }
 
 struct SharedExtensionView : View {

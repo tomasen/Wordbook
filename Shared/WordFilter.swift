@@ -16,7 +16,7 @@ class WordFilter {
     let skipWords = ["of", "is", "he", "she", "on", "in", "into", "the", "to",
                      "this", "that", "or", "a", "and", "their", "us", "we", "what",
                      "which", "whether", "it", "its", "with", "at", "by", "onto",
-                     "for", "when"][]=l.
+                     "for", "when"]
     
     
     // remove english words put to array of .words, space seperated .plainText
@@ -24,17 +24,16 @@ class WordFilter {
     func filter(from text:String) -> [String] {
         var words: [String] = []
         
-        let substrings = text.split(whereSeparator: { !$0.isASCII || !$0.isLetter })
+        let substrings = text.lowercased().split(whereSeparator: { !$0.isASCII || !$0.isLetter })
         var lexemes = [String]()
         substrings.forEach { word in
-            // remove words not worth the time like of, is, he, she, I
-            let w = word.lowercased()
-            lexemes.append(w)
+            lexemes.append(String(word))
         }
 
         // now start to find phrase
         while lexemes.count > 0 {
-            let w = findNextPhrase(words: &lexemes)
+            let w = longestNextPhrase(words: &lexemes)
+            // remove words not worth the time like of, is, he, she, I
             if !self.skipWords.contains(w) && w.count>1{
                 words.append(w)
             }
@@ -43,7 +42,7 @@ class WordFilter {
         return words
     }
     
-    private func findNextPhrase(words: inout [String]) -> String {
+    private func longestNextPhrase(words: inout [String]) -> String {
         if words.count <= 0 {
             return ""
         }
@@ -53,7 +52,7 @@ class WordFilter {
             if self.skipWords.contains(q) {
                 break
             }
-            if let w = WordDatabaseLocal.shared.find(q) {
+            if let w = WordDatabaseLocal.shared.exist(q) {
                 words.removeSubrange(0...n)
                 return w
             }
