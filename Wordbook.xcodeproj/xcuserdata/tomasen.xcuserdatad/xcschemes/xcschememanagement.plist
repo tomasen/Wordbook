@@ -23,12 +23,27 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>2</integer>
 		</dict>
 		<key>ShareExtension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>Watch (Complication).xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
+		<key>Watch (Notification).xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
+		<key>WatchApp.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>8</integer>
 		</dict>
 		<key>Wordbook (iOS).xcscheme_^#shared#^_</key>
 		<dict>
@@ -38,7 +53,7 @@
 		<key>Wordbook (macOS).xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<key>Wordbook.xcscheme_^#shared#^_</key>
 		<dict>
@@ -48,6 +63,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>88129511277F1EEA008F1B1B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>8833AC1E274FE90400637B61</key>
 		<dict>
 			<key>primary</key>

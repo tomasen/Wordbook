@@ -22,7 +22,7 @@ class ShareViewController: UIViewController {
         
         getShareExtensionText{ text in
             DispatchQueue.main.async {
-                self.viewModel.setContent(text)
+                self.viewModel.contentText = text
             }
         }
         

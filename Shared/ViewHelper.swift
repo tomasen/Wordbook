@@ -9,7 +9,6 @@ import SwiftUI
 
 struct CustomFont: ViewModifier {
     @Environment(\.sizeCategory) var sizeCategory
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
 
     var name: String
     var style: UIFont.TextStyle

@@ -9,15 +9,10 @@
 import SwiftUI
 
 class SharedExtensionViewModel: ObservableObject {
-    @Published var contentText: String = "" {
-        didSet {
-            words = WordFilter.shared.filter(from: contentText)
-        }
-    }
-    @Published var words = [String]()
+    @Published var contentText: String = ""
     
-    func setContent(_ text: String) {
-        contentText = WordFilter.shared.filter(from: text).joined(separator: ", ")
+    var words: [String] {
+        WordFilter.shared.filter(from: contentText)
     }
 }
 

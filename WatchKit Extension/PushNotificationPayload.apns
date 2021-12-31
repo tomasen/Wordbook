@@ -1,0 +1,21 @@
+{
+    "aps": {
+        "alert": {
+            "body": "do you still remember fiction",
+            "title": "Wordbook"
+        },
+        "category": "wordReminder",
+        "thread-id": "wordbook-word"
+    },
+    
+    "WatchKit Simulator Actions": [
+        {
+            "title": "First Button",
+            "identifier": "firstButtonAction"
+        }
+    ],
+    
+    "Simulator Target Bundle": "ai.sagittarius.memorable",
+    
+    "word": "fiction"
+}

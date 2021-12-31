@@ -11,6 +11,36 @@
 		8803F37E276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
 		8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37F276F8FAC00E46DAF /* WordCloudView.swift */; };
 		8803F381276F8FAC00E46DAF /* WordCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37F276F8FAC00E46DAF /* WordCloudView.swift */; };
+		8812951B277F1EEC008F1B1B /* WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8812951A277F1EEC008F1B1B /* WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		88129520277F1EEC008F1B1B /* WordbookApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8812951F277F1EEC008F1B1B /* WordbookApp.swift */; };
+		88129522277F1EEC008F1B1B /* WatchMasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88129521277F1EEC008F1B1B /* WatchMasterView.swift */; };
+		88129524277F1EEC008F1B1B /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88129523277F1EEC008F1B1B /* NotificationController.swift */; };
+		88129526277F1EEC008F1B1B /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88129525277F1EEC008F1B1B /* NotificationView.swift */; };
+		88129528277F1EEC008F1B1B /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88129527277F1EEC008F1B1B /* ComplicationController.swift */; };
+		8812952A277F1EEC008F1B1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88129529277F1EEC008F1B1B /* Assets.xcassets */; };
+		8812952D277F1EEC008F1B1B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8812952C277F1EEC008F1B1B /* Preview Assets.xcassets */; };
+		88129532277F1EEC008F1B1B /* Wordbook.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 88129512277F1EEA008F1B1B /* Wordbook.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8812953B277F1F19008F1B1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
+		8812953C277F26B9008F1B1B /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */; };
+		8812953E277F26DF008F1B1B /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8812953D277F26DF008F1B1B /* CloudKit.framework */; };
+		8812953F277F26F0008F1B1B /* iCloudState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6ED27747DF20038E990 /* iCloudState.swift */; };
+		88129543277F31C8008F1B1B /* WatchCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88129541277F31C8008F1B1B /* WatchCardView.swift */; };
+		88129545277F6B61008F1B1B /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CA92750B8BF003CE213 /* ViewHelper.swift */; };
+		88129546277F6FA3008F1B1B /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFE274F65D900637B61 /* CardViewModel.swift */; };
+		88129547277F6FB1008F1B1B /* WordDatabaseLocal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */; };
+		88129549277F6FC8008F1B1B /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 88129548277F6FC8008F1B1B /* SQLite */; };
+		8812954A277F7000008F1B1B /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
+		8812954C277F7019008F1B1B /* WikipediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8812954B277F7019008F1B1B /* WikipediaKit */; };
+		8812954E277F7023008F1B1B /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 8812954D277F7023008F1B1B /* SwiftSoup */; };
+		8812954F277F709A008F1B1B /* WordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFB274F621F00637B61 /* WordManager.swift */; };
+		88129550277F70A4008F1B1B /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* CoreDataManager.swift */; };
+		88129551277F70B2008F1B1B /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E9277472990038E990 /* APIClient.swift */; };
+		88129552277F70BE008F1B1B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
+		88129553277F70CA008F1B1B /* PausableTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE7032775C0630038E990 /* PausableTimer.swift */; };
+		88129554277F70D7008F1B1B /* AppStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E027745E840038E990 /* AppStoreManager.swift */; };
+		88129556277F7106008F1B1B /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88129555277F7106008F1B1B /* SwiftyStoreKit */; };
+		88129557277F7138008F1B1B /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
+		88129558277F7225008F1B1B /* wordnet-lite.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */; };
 		8819C8FA2767B8D000FFD892 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 8819C8F92767B8D000FFD892 /* Introspect */; };
 		8819C8FC2767BACC00FFD892 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 8819C8FB2767BACC00FFD892 /* Introspect */; };
 		8833ABF3274F358B00637B61 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF2274F358B00637B61 /* CardView.swift */; };
@@ -128,6 +158,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8812951C277F1EEC008F1B1B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88E02DEC27061D260015ECEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 88129519277F1EEC008F1B1B;
+			remoteInfo = "Watch WatchKit Extension";
+		};
+		88129530277F1EEC008F1B1B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88E02DEC27061D260015ECEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 88129511277F1EEA008F1B1B;
+			remoteInfo = Watch;
+		};
 		8833AC27274FE90400637B61 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 88E02DEC27061D260015ECEA /* Project object */;
@@ -152,6 +196,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		88129533277F1EEC008F1B1B /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				88129532277F1EEC008F1B1B /* Wordbook.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88129536277F1EEC008F1B1B /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8812951B277F1EEC008F1B1B /* WatchKit Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8833AC2E274FE90400637B61 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -168,6 +234,20 @@
 /* Begin PBXFileReference section */
 		8803F37C276F2B1200E46DAF /* SharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingViewModel.swift; sourceTree = "<group>"; };
 		8803F37F276F8FAC00E46DAF /* WordCloudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCloudView.swift; sourceTree = "<group>"; };
+		88129512277F1EEA008F1B1B /* Wordbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wordbook.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8812951A277F1EEC008F1B1B /* WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8812951F277F1EEC008F1B1B /* WordbookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookApp.swift; sourceTree = "<group>"; };
+		88129521277F1EEC008F1B1B /* WatchMasterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMasterView.swift; sourceTree = "<group>"; };
+		88129523277F1EEC008F1B1B /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		88129525277F1EEC008F1B1B /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
+		88129527277F1EEC008F1B1B /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
+		88129529277F1EEC008F1B1B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8812952C277F1EEC008F1B1B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8812952E277F1EEC008F1B1B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8812952F277F1EEC008F1B1B /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
+		8812953D277F26DF008F1B1B /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS8.0.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
+		88129540277F280F008F1B1B /* WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WatchKit Extension.entitlements"; sourceTree = "<group>"; };
+		88129541277F31C8008F1B1B /* WatchCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCardView.swift; sourceTree = "<group>"; };
 		8833ABF2274F358B00637B61 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		8833ABF5274F3F6C00637B61 /* SharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingView.swift; sourceTree = "<group>"; };
 		8833ABF8274F3F9200637B61 /* WordListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordListView.swift; sourceTree = "<group>"; };
@@ -229,6 +309,18 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		88129517277F1EEC008F1B1B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88129549277F6FC8008F1B1B /* SQLite in Frameworks */,
+				8812954E277F7023008F1B1B /* SwiftSoup in Frameworks */,
+				8812953E277F26DF008F1B1B /* CloudKit.framework in Frameworks */,
+				88129556277F7106008F1B1B /* SwiftyStoreKit in Frameworks */,
+				8812954C277F7019008F1B1B /* WikipediaKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8833AC1C274FE90400637B61 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -280,6 +372,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8812951E277F1EEC008F1B1B /* WatchKit Extension */ = {
+			isa = PBXGroup;
+			children = (
+				88129540277F280F008F1B1B /* WatchKit Extension.entitlements */,
+				8812951F277F1EEC008F1B1B /* WordbookApp.swift */,
+				88129521277F1EEC008F1B1B /* WatchMasterView.swift */,
+				88129541277F31C8008F1B1B /* WatchCardView.swift */,
+				88129523277F1EEC008F1B1B /* NotificationController.swift */,
+				88129525277F1EEC008F1B1B /* NotificationView.swift */,
+				88129527277F1EEC008F1B1B /* ComplicationController.swift */,
+				88129529277F1EEC008F1B1B /* Assets.xcassets */,
+				8812952E277F1EEC008F1B1B /* Info.plist */,
+				8812952F277F1EEC008F1B1B /* PushNotificationPayload.apns */,
+				8812952B277F1EEC008F1B1B /* Preview Content */,
+			);
+			path = "WatchKit Extension";
+			sourceTree = "<group>";
+		};
+		8812952B277F1EEC008F1B1B /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				8812952C277F1EEC008F1B1B /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		8833ABEF274F34D800637B61 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -323,6 +441,7 @@
 		8833AC01274FDE9500637B61 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8812953D277F26DF008F1B1B /* CloudKit.framework */,
 				8833AC05274FDEDC00637B61 /* CloudKit.framework */,
 				8833AC02274FDE9500637B61 /* CloudKit.framework */,
 			);
@@ -401,6 +520,7 @@
 				88E02E0B27061D280015ECEA /* Tests iOS */,
 				88E02E1727061D280015ECEA /* Tests macOS */,
 				8833AC20274FE90400637B61 /* ShareExtension */,
+				8812951E277F1EEC008F1B1B /* WatchKit Extension */,
 				88E02DFC27061D270015ECEA /* Products */,
 				8833AC01274FDE9500637B61 /* Frameworks */,
 			);
@@ -428,6 +548,8 @@
 				88E02E0827061D280015ECEA /* Tests iOS.xctest */,
 				88E02E1427061D280015ECEA /* Tests macOS.xctest */,
 				8833AC1F274FE90400637B61 /* ShareExtension.appex */,
+				88129512277F1EEA008F1B1B /* Wordbook.app */,
+				8812951A277F1EEC008F1B1B /* WatchKit Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -461,6 +583,46 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		88129511277F1EEA008F1B1B /* WatchApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8812953A277F1EEC008F1B1B /* Build configuration list for PBXNativeTarget "WatchApp" */;
+			buildPhases = (
+				88129510277F1EEA008F1B1B /* Resources */,
+				88129536277F1EEC008F1B1B /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8812951D277F1EEC008F1B1B /* PBXTargetDependency */,
+			);
+			name = WatchApp;
+			productName = Watch;
+			productReference = 88129512277F1EEA008F1B1B /* Wordbook.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		88129519277F1EEC008F1B1B /* WatchKit Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88129539277F1EEC008F1B1B /* Build configuration list for PBXNativeTarget "WatchKit Extension" */;
+			buildPhases = (
+				88129516277F1EEC008F1B1B /* Sources */,
+				88129517277F1EEC008F1B1B /* Frameworks */,
+				88129518277F1EEC008F1B1B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "WatchKit Extension";
+			packageProductDependencies = (
+				88129548277F6FC8008F1B1B /* SQLite */,
+				8812954B277F7019008F1B1B /* WikipediaKit */,
+				8812954D277F7023008F1B1B /* SwiftSoup */,
+				88129555277F7106008F1B1B /* SwiftyStoreKit */,
+			);
+			productName = "Watch WatchKit Extension";
+			productReference = 8812951A277F1EEC008F1B1B /* WatchKit Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
+		};
 		8833AC1E274FE90400637B61 /* ShareExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8833AC2B274FE90400637B61 /* Build configuration list for PBXNativeTarget "ShareExtension" */;
@@ -492,11 +654,13 @@
 				88E02DF827061D270015ECEA /* Frameworks */,
 				88E02DF927061D270015ECEA /* Resources */,
 				8833AC2E274FE90400637B61 /* Embed App Extensions */,
+				88129533277F1EEC008F1B1B /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				8833AC28274FE90400637B61 /* PBXTargetDependency */,
+				88129531277F1EEC008F1B1B /* PBXTargetDependency */,
 			);
 			name = "Wordbook (iOS)";
 			packageProductDependencies = (
@@ -577,6 +741,12 @@
 				LastSwiftUpdateCheck = 1310;
 				LastUpgradeCheck = 1310;
 				TargetAttributes = {
+					88129511277F1EEA008F1B1B = {
+						CreatedOnToolsVersion = 13.1;
+					};
+					88129519277F1EEC008F1B1B = {
+						CreatedOnToolsVersion = 13.1;
+					};
 					8833AC1E274FE90400637B61 = {
 						CreatedOnToolsVersion = 13.1;
 					};
@@ -622,11 +792,31 @@
 				88E02E0727061D280015ECEA /* Tests iOS */,
 				88E02E1327061D280015ECEA /* Tests macOS */,
 				8833AC1E274FE90400637B61 /* ShareExtension */,
+				88129511277F1EEA008F1B1B /* WatchApp */,
+				88129519277F1EEC008F1B1B /* WatchKit Extension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		88129510277F1EEA008F1B1B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88129518277F1EEC008F1B1B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8812952D277F1EEC008F1B1B /* Preview Assets.xcassets in Resources */,
+				88129558277F7225008F1B1B /* wordnet-lite.sqlite in Resources */,
+				8812953B277F1F19008F1B1B /* Assets.xcassets in Resources */,
+				8812952A277F1EEC008F1B1B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8833AC1D274FE90400637B61 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -699,6 +889,32 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		88129516277F1EEC008F1B1B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88129524277F1EEC008F1B1B /* NotificationController.swift in Sources */,
+				88129554277F70D7008F1B1B /* AppStoreManager.swift in Sources */,
+				88129545277F6B61008F1B1B /* ViewHelper.swift in Sources */,
+				8812954F277F709A008F1B1B /* WordManager.swift in Sources */,
+				88129522277F1EEC008F1B1B /* WatchMasterView.swift in Sources */,
+				88129543277F31C8008F1B1B /* WatchCardView.swift in Sources */,
+				8812954A277F7000008F1B1B /* ExtraExplainManager.swift in Sources */,
+				88129547277F6FB1008F1B1B /* WordDatabaseLocal.swift in Sources */,
+				88129557277F7138008F1B1B /* UserPreferences.swift in Sources */,
+				88129552277F70BE008F1B1B /* Helper.swift in Sources */,
+				88129553277F70CA008F1B1B /* PausableTimer.swift in Sources */,
+				88129546277F6FA3008F1B1B /* CardViewModel.swift in Sources */,
+				88129551277F70B2008F1B1B /* APIClient.swift in Sources */,
+				8812953F277F26F0008F1B1B /* iCloudState.swift in Sources */,
+				88129528277F1EEC008F1B1B /* ComplicationController.swift in Sources */,
+				88129520277F1EEC008F1B1B /* WordbookApp.swift in Sources */,
+				8812953C277F26B9008F1B1B /* Wordbook.xcdatamodeld in Sources */,
+				88129550277F70A4008F1B1B /* CoreDataManager.swift in Sources */,
+				88129526277F1EEC008F1B1B /* NotificationView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8833AC1B274FE90400637B61 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -807,6 +1023,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8812951D277F1EEC008F1B1B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 88129519277F1EEC008F1B1B /* WatchKit Extension */;
+			targetProxy = 8812951C277F1EEC008F1B1B /* PBXContainerItemProxy */;
+		};
+		88129531277F1EEC008F1B1B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 88129511277F1EEA008F1B1B /* WatchApp */;
+			targetProxy = 88129530277F1EEC008F1B1B /* PBXContainerItemProxy */;
+		};
 		8833AC28274FE90400637B61 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8833AC1E274FE90400637B61 /* ShareExtension */;
@@ -836,6 +1062,128 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		88129534277F1EEC008F1B1B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = WatchIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9ZARAPZJX4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IBSC_MODULE = Watch_WatchKit_Extension;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = ai.sagittarius.memorable;
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.watchkitapp;
+				PRODUCT_NAME = Wordbook;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+			};
+			name = Debug;
+		};
+		88129535277F1EEC008F1B1B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = WatchIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9ZARAPZJX4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IBSC_MODULE = Watch_WatchKit_Extension;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = ai.sagittarius.memorable;
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.watchkitapp;
+				PRODUCT_NAME = Wordbook;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+			};
+			name = Release;
+		};
+		88129537277F1EEC008F1B1B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = WatchNavigationBarTitleColor;
+				CODE_SIGN_ENTITLEMENTS = "WatchKit Extension/WatchKit Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"WatchKit Extension/Preview Content\"";
+				DEVELOPMENT_TEAM = 9ZARAPZJX4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "WatchKit Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Wordbook;
+				INFOPLIST_KEY_CLKComplicationPrincipalClass = Watch_WatchKit_Extension.ComplicationController;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+			};
+			name = Debug;
+		};
+		88129538277F1EEC008F1B1B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = WatchNavigationBarTitleColor;
+				CODE_SIGN_ENTITLEMENTS = "WatchKit Extension/WatchKit Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"WatchKit Extension/Preview Content\"";
+				DEVELOPMENT_TEAM = 9ZARAPZJX4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "WatchKit Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Wordbook;
+				INFOPLIST_KEY_CLKComplicationPrincipalClass = Watch_WatchKit_Extension.ComplicationController;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+			};
+			name = Release;
+		};
 		8833AC2C274FE90400637B61 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -853,7 +1201,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.words;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -882,7 +1230,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.words;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1031,7 +1379,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = iphoneos;
@@ -1067,7 +1415,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = iphoneos;
@@ -1099,7 +1447,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = macosx;
@@ -1128,7 +1476,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = macosx;
@@ -1241,6 +1589,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		88129539277F1EEC008F1B1B /* Build configuration list for PBXNativeTarget "WatchKit Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88129537277F1EEC008F1B1B /* Debug */,
+				88129538277F1EEC008F1B1B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8812953A277F1EEC008F1B1B /* Build configuration list for PBXNativeTarget "WatchApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88129534277F1EEC008F1B1B /* Debug */,
+				88129535277F1EEC008F1B1B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8833AC2B274FE90400637B61 /* Build configuration list for PBXNativeTarget "ShareExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1349,6 +1715,26 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		88129548277F6FC8008F1B1B /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
+		};
+		8812954B277F7019008F1B1B /* WikipediaKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */;
+			productName = WikipediaKit;
+		};
+		8812954D277F7023008F1B1B /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88F25281277B7D920046BA15 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+		88129555277F7106008F1B1B /* SwiftyStoreKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 884EE6E32774600E0038E990 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
+			productName = SwiftyStoreKit;
+		};
 		8819C8F92767B8D000FFD892 /* Introspect */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;

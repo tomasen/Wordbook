@@ -62,24 +62,36 @@ struct MasterView: View {
     func leadingBarItem() -> some View {
         HStack{
             Image(systemName: icloud.enabled ? "icloud" : "icloud.slash")
-                .padding()
+                .resizable()
+                .scaledToFit()
+                .frame(height: 20)
+                .padding(5)
+            Spacer()
         }
         .foregroundColor(Color("fontBody"))
     }
     
     func trailingBarItem() -> some View {
         HStack{
+            Spacer()
+            
             Button( action:{
                 //self.showingSearchSheet.toggle()
             } ) {
                 Image(systemName: "magnifyingglass")
-                    .padding()
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 20)
+                    .padding(5)
             }
             
             NavigationLink(destination: SettingsView()) {
                 Image(systemName: "ellipsis")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20)
                     .rotationEffect(.degrees(-90))
-                    .padding()
+                    .padding(5)
             }
         }
         .foregroundColor(Color("fontLink"))

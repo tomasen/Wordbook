@@ -165,9 +165,74 @@ class WordManager {
         ref.word = word
     }
     
+    // ------- WordCard ------
+    
+    func addWordCard(_ word: String) -> WordCard? {
+        if let wc = fetchWordCard(word) {
+            // skip this already existed word
+            wc.category = CardCategory.NEW.rawValue
+            wc.duedate = WordManager.shared.now()
+            return nil
+        }
+        
+        let wc = WordCard.init(context: moc)
+        wc.word = word
+        wc.createdAt = WordManager.shared.now()
+        return wc
+    }
+    
+    func fetchWordCard(_ word: String) -> WordCard? {
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
+        req.predicate = NSPredicate(format: "word LIKE %@", word)
+        req.fetchLimit = 1
+        
+        let res = try! moc.fetch(req) as! [WordCard]
+        return res.first
+    }
+    
+    func ensureWordCard(_ word: String) -> WordCard? {
+        if let card = fetchWordCard(word) {
+            return card
+        }
+        return addWordCard(word)
+    }
+    
+    func IsWordCardExist(_ word: String) -> Bool {
+        // check is the word is in the wordbook
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
+        req.predicate = NSPredicate(format: "word LIKE %@", word)
+        req.fetchLimit = 1
+        do {
+            return try moc.count(for: req) > 0
+        } catch let error {
+            print("count error \(error.localizedDescription)")
+        }
+        return false
+    }
+    
+    func buryWordCard(_ word: String) {
+        if let wc = fetchWordCard(word) {
+            wc.category = CardCategory.BURIED.rawValue
+            WordManager.shared.fetchEngagement().buried += 1
+        }
+    }
+    
+    func unburyWordCard(_ word: String) {
+        if let wc = fetchWordCard(word) {
+            wc.category = CardCategory.NEW.rawValue
+            wc.duedate = nil
+            
+            let e = WordManager.shared.fetchEngagement()
+            if e.buried > 0 {
+                e.buried -= 1
+            }
+        }
+    }
+    
+    
     // ------- Answer -------
     func answer(_ word: String, _ rate: CardRating) {
-        guard let card = WordCard.ensure(word) else {
+        guard let card = ensureWordCard(word) else {
             fatalError()
         }
         defer {
@@ -282,75 +347,6 @@ class WordManager {
 }
 
 extension WordCard {
-    static let moc = CoreDataManager.shared.container.viewContext
-    
-    static func add(_ word: String) -> WordCard? {
-        defer {
-            try! moc.save()
-        }
-        
-        if let wc = WordCard.fetch(word) {
-            // skip this already existed word
-            wc.category = CardCategory.NEW.rawValue
-            wc.duedate = WordManager.shared.now()
-            return nil
-        }
-        
-        let wc = WordCard.init(context: moc)
-        wc.word = word
-        wc.createdAt = WordManager.shared.now()
-        return wc
-    }
-    
-    static func fetch(_ word: String) -> WordCard? {
-        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
-        req.predicate = NSPredicate(format: "word LIKE %@", word)
-        req.fetchLimit = 1
-        
-        let res = try! moc.fetch(req) as! [WordCard]
-        return res.first
-    }
-    
-    static func ensure(_ word: String) -> WordCard? {
-        if let card = WordCard.fetch(word) {
-            return card
-        }
-        return WordCard.add(word)
-    }
-    
-    static func IsExist(_ word: String) -> Bool {
-        // check is the word is in the wordbook
-        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
-        req.predicate = NSPredicate(format: "word LIKE %@", word)
-        req.fetchLimit = 1
-        do {
-            return try moc.count(for: req) > 0
-        } catch let error {
-            print("count error \(error.localizedDescription)")
-        }
-        return false
-    }
-    
-    static func bury(_ word: String) {
-        if let wc = WordCard.fetch(word) {
-            wc.category = CardCategory.BURIED.rawValue
-            WordManager.shared.fetchEngagement().buried += 1
-        }
-    }
-    
-    static func unbury(_ word: String) {
-        if let wc = WordCard.fetch(word) {
-            wc.category = CardCategory.NEW.rawValue
-            wc.duedate = nil
-            
-            let e = WordManager.shared.fetchEngagement()
-            if e.buried > 0 {
-                e.buried -= 1
-            }
-        }
-    }
-    
-    
     func extendDuedate(from day: Int32) {
         // TODO: consider lastseen
         // TODO: add viration

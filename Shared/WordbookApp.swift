@@ -52,7 +52,7 @@ struct WordbookApp: App {
             if var word = k as String? {
                 // add word to wordbook
                 word = String(word.dropFirst(UserPreferences.SHARED_WORDKEY_PREFIX.count))
-                if let wc = WordCard.add(word) {
+                if let wc = WordManager.shared.addWordCard(word) {
                     wc.duedate = v
                 }
                 // remove key
