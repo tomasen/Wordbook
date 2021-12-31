@@ -47,5 +47,13 @@ class UserPreferences {
     func addToWordbook(_ word: String) {
         set(Date(), forKey: UserPreferences.SHARED_WORDKEY_PREFIX + word)
     }
+    
+    func dictionaryRepresentation() -> [String : Any] {
+        mySharedDefaults.dictionaryRepresentation()
+    }
+    
+    func removeObject(forKey key: String) {
+        mySharedDefaults.removeObject(forKey: key)
+    }
 }
 
