@@ -10,7 +10,8 @@ import CoreData
 
 struct MasterView: View {
     @StateObject var icloud = iCloudState.shared
-    @State var tabSelection = 1
+    @State private var tabSelection = 1
+    @State private var popSearchView = false
     
     var body: some View {
             NavigationView {
@@ -53,6 +54,9 @@ struct MasterView: View {
                 .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
                 .navigationBarItems(leading: leadingBarItem(),
                                     trailing:              trailingBarItem())
+                .sheet(isPresented: $popSearchView ) {
+                    SearchView(closeMyself: $popSearchView)
+                }
                 
                 EmptyView()
             }
@@ -76,7 +80,7 @@ struct MasterView: View {
             Spacer()
             
             Button( action:{
-                //self.showingSearchSheet.toggle()
+                popSearchView.toggle()
             } ) {
                 Image(systemName: "magnifyingglass")
                     .resizable()

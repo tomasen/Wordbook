@@ -31,38 +31,34 @@ class WordManager {
     private let cardsPerDay = 15
     
     func nextWord() -> String {
-        if iCloudState.shared.enabled {
-            // next vague or no idea Word of today
-            if let w = nextNoGoodWord() {
-                return w
-            }
-            
-            // next due word, LEARNING > NEW > LEARN
-            if let w = nextDueWord(before: now(), catagory: .LEARNING) {
-                return w
-            }
-            
-            if let w = nextDueWord(before: now(), catagory: .NEW) {
-                return w
-            }
-            
-            if let w = nextDueWord(before: now(), catagory: .LEARN) {
-                return w
-            }
-            
-            // next word that I shoud review before the end of today
-            if let w = nextDueWord(before: EndOfTheDay(today), catagory: .LEARNING) {
-                return w
-            }
-            
-            // TODO: next in perfered vocalbulary (SAT, GRE)
-            
-            // TODO: Engagement.checkin(day: scheduler.today)
-            
-            return ""
-        } else {
-            return WordDatabaseLocal.shared.randomWord()
+        // next vague or no idea Word of today
+        if let w = nextNoGoodWord() {
+            return w
         }
+        
+        // next due word, LEARNING > NEW > LEARN
+        if let w = nextDueWord(before: now(), catagory: .LEARNING) {
+            return w
+        }
+        
+        if let w = nextDueWord(before: now(), catagory: .NEW) {
+            return w
+        }
+        
+        if let w = nextDueWord(before: now(), catagory: .LEARN) {
+            return w
+        }
+        
+        // next word that I shoud review before the end of today
+        if let w = nextDueWord(before: EndOfTheDay(today), catagory: .LEARNING) {
+            return w
+        }
+        
+        // TODO: next in perfered vocalbulary (SAT, GRE)
+        
+        // TODO: Engagement.checkin(day: scheduler.today)
+        
+        return ""
     }
     
     func nextDueWord(before due: Date, catagory: CardCategory) -> String? {
@@ -163,6 +159,11 @@ class WordManager {
         ref.desc = extraExplain.expl
         ref.source = extraExplain.source.rawValue
         ref.word = word
+    }
+    
+    // ------- Search ------
+    func searchHints(_ input: String) -> [String]? {
+        WordDatabaseLocal.shared.searchHints(input)
     }
     
     // ------- WordCard ------

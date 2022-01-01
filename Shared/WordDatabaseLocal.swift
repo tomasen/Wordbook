@@ -27,7 +27,7 @@ struct WordDatabaseLocal {
     
     static let shared = WordDatabaseLocal()
     
-    func searchHints(input: String) -> [String]? {
+    func searchHints(_ input: String) -> [String]? {
         if (input.count < 2) {
             return nil
         }

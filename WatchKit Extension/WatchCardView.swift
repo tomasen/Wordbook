@@ -14,7 +14,8 @@ struct WatchCardView: View {
         VStack{
             ScrollView{
                 Text("\(viewModel.word)")
-                    .font(.headline)
+                    .font(.title2)
+                    .foregroundColor(Color("fontTitle"))
                 
                 Spacer()
                 
@@ -28,20 +29,21 @@ struct WatchCardView: View {
                 VStack(alignment: .leading) {
                     ForEach(viewModel.senses) { ss in
                         VStack(alignment: .leading){
-                            Text("\(ss.gloss)")
+                            Text("\(ss.gloss).")
                                 .multilineTextAlignment(.leading)
-                                .padding(.bottom, 2.5)
+                                .padding(.bottom, 2)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .padding(3)
                     }
                     
                     Spacer()
                 }
-                .lineSpacing(2.25)
+                .font(.caption2)
+                .lineSpacing(2)
             }
         }
+        .foregroundColor(Color("fontBody"))
         .onAppear{
             viewModel.validate()
             viewModel.fetchExplain()

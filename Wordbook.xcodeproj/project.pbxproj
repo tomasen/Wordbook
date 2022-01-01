@@ -41,6 +41,8 @@
 		88129556277F7106008F1B1B /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88129555277F7106008F1B1B /* SwiftyStoreKit */; };
 		88129557277F7138008F1B1B /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
 		88129558277F7225008F1B1B /* wordnet-lite.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */; };
+		8812955A2780BACF008F1B1B /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881295592780BACF008F1B1B /* SearchView.swift */; };
+		8812955B2780BACF008F1B1B /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881295592780BACF008F1B1B /* SearchView.swift */; };
 		8819C8FA2767B8D000FFD892 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 8819C8F92767B8D000FFD892 /* Introspect */; };
 		8819C8FC2767BACC00FFD892 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 8819C8FB2767BACC00FFD892 /* Introspect */; };
 		8833ABF3274F358B00637B61 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABF2274F358B00637B61 /* CardView.swift */; };
@@ -248,6 +250,7 @@
 		8812953D277F26DF008F1B1B /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS8.0.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 		88129540277F280F008F1B1B /* WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WatchKit Extension.entitlements"; sourceTree = "<group>"; };
 		88129541277F31C8008F1B1B /* WatchCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCardView.swift; sourceTree = "<group>"; };
+		881295592780BACF008F1B1B /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		8833ABF2274F358B00637B61 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		8833ABF5274F3F6C00637B61 /* SharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingView.swift; sourceTree = "<group>"; };
 		8833ABF8274F3F9200637B61 /* WordListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordListView.swift; sourceTree = "<group>"; };
@@ -408,6 +411,7 @@
 				8833ABF8274F3F9200637B61 /* WordListView.swift */,
 				8803F37F276F8FAC00E46DAF /* WordCloudView.swift */,
 				884EE6F02774AAE20038E990 /* SettingsView.swift */,
+				881295592780BACF008F1B1B /* SearchView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -959,6 +963,7 @@
 				8833ABF9274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF3274F358B00637B61 /* CardView.swift in Sources */,
 				8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
+				8812955A2780BACF008F1B1B /* SearchView.swift in Sources */,
 				888C571B277B0B060029090A /* WebPageView.swift in Sources */,
 				88E02E2027061D280015ECEA /* MasterView.swift in Sources */,
 				884EE7042775C0630038E990 /* PausableTimer.swift in Sources */,
@@ -992,6 +997,7 @@
 				8833ABFA274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF4274F358B00637B61 /* CardView.swift in Sources */,
 				8803F381276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
+				8812955B2780BACF008F1B1B /* SearchView.swift in Sources */,
 				888C571C277B0B060029090A /* WebPageView.swift in Sources */,
 				88E02E2127061D280015ECEA /* MasterView.swift in Sources */,
 				884EE7052775C0630038E990 /* PausableTimer.swift in Sources */,

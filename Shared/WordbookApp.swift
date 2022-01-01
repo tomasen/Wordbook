@@ -29,6 +29,7 @@ struct WordbookApp: App {
                         print("scene is now inactive!")
                     case .background:
                         PausableTimer.shared.pause()
+                        scheduleWordReminderNotification()
                         print("scene is now in the background!")
                     @unknown default:
                         print("Apple must have added something new!")
@@ -58,6 +59,53 @@ struct WordbookApp: App {
                 // remove key
                 UserPreferences.shared.removeObject(forKey:k)
             }
+        }
+    }
+    
+    private func scheduleWordReminderNotification() {
+        func notify() {
+            let word = WordManager.shared.nextWord()
+            if word.count == 0 {
+                return
+            }
+            
+            let content = UNMutableNotificationContent()
+            content.title = "Wordbook"
+            content.body = "Do you still remember \(word)?"
+            content.userInfo = ["word": word]
+            content.categoryIdentifier = "wordReminder"
+            content.threadIdentifier = "wordbook-word"
+            content.sound = UNNotificationSound.default
+
+            // Create the trigger as a repeating event.
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 15*60, repeats: false)
+            
+            let request = UNNotificationRequest(identifier: "wordbook.notify",
+                        content: content, trigger: trigger)
+            
+            // Schedule the request with the system.
+            let notificationCenter = UNUserNotificationCenter.current()
+            notificationCenter.add(request) { (error) in
+                if error != nil {
+                    // Handle any errors.
+                    print(error ?? "unknown error")
+                }
+            }
+        }
+        
+        let center = UNUserNotificationCenter.current()
+        center.getNotificationSettings { settings in
+            guard (settings.authorizationStatus == .authorized) ||
+                  (settings.authorizationStatus == .provisional) else {
+                center.requestAuthorization(options: [.alert, .provisional]) { (granted, error) in
+                    if granted {
+                        notify()
+                    }
+                }
+                return
+            }
+
+            notify()
         }
     }
 }
