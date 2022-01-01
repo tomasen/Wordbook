@@ -73,7 +73,7 @@ struct SearchView: View {
                     
                     Spacer()
                     
-                    // TODO: DefinitionView()
+                    DefinitionView(viewModel: CardViewModel(viewModel.keyword))
                     
                     HStack{
                         Spacer()
@@ -118,6 +118,8 @@ struct SearchView: View {
         }
         .customFont(name: "AvenirNext-Regular", style: .body)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: Alignment.topLeading)
+        .foregroundColor(Color("fontBody"))
+        .background(Color(UIColor.secondarySystemBackground).edgesIgnoringSafeArea(.all))
     }
 }
 

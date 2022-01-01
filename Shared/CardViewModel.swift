@@ -15,6 +15,10 @@ class CardViewModel: ObservableObject {
     @Published var senses = [Sense]()
     @Published var extras = [ExtraExplain]()
     
+    init(_ w: String = "") {
+        word = w
+    }
+    
     // fetch explanation of word
     func fetchExplain() {
         if AppStoreManager.shared.isProUser{
@@ -57,8 +61,11 @@ class CardViewModel: ObservableObject {
     
     // set next word if word is empty
     func validate() {
-        if word == "" {
+        if word.count == 0 {
             word = WordManager.shared.nextWord()
+            if word.count == 0 {
+                word = WordManager.shared.nextRandomWord()
+            }
         }
     }
     

@@ -61,6 +61,10 @@ class WordManager {
         return ""
     }
     
+    func nextRandomWord() -> String {
+        WordDatabaseLocal.shared.randomWord()
+    }
+    
     func nextDueWord(before due: Date, catagory: CardCategory) -> String? {
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
         // earliest due for LEARN and then NEW word

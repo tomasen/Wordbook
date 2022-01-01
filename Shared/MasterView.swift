@@ -54,9 +54,6 @@ struct MasterView: View {
                 .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
                 .navigationBarItems(leading: leadingBarItem(),
                                     trailing:              trailingBarItem())
-                .sheet(isPresented: $popSearchView ) {
-                    SearchView(closeMyself: $popSearchView)
-                }
                 
                 EmptyView()
             }
@@ -97,6 +94,10 @@ struct MasterView: View {
                     .rotationEffect(.degrees(-90))
                     .padding(5)
             }
+        }
+        .sheet(isPresented: $popSearchView ) {
+            SearchView(closeMyself: $popSearchView)
+                .environment(\.colorScheme, .dark)
         }
         .foregroundColor(Color("fontLink"))
     }

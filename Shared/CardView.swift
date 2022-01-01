@@ -84,12 +84,11 @@ struct CardView: View {
                     }
                     
                     if #available(iOS 15.0, *) {
-                        DefinitionView()
-                            .scenePadding()
+                        DefinitionView(viewModel: viewModel)
                             .foregroundColor(Color("fontBody"))
                     } else {
                         // Fallback on earlier versions
-                        DefinitionView()
+                        DefinitionView(viewModel: viewModel)
                             .foregroundColor(Color("fontBody"))
                     }
                 },
@@ -114,7 +113,6 @@ struct CardView: View {
                 viewModel.word = defaultWord
             }
             viewModel.validate()
-            viewModel.fetchExplain()
             
             PausableTimer.shared.restart()
             
@@ -169,8 +167,13 @@ struct CardView: View {
         }
         .modifier(FootViewStyle())
     }
+}
+
+struct DefinitionView: View {
+    @ObservedObject var viewModel: CardViewModel
+    @State private var popSheetWord = ""
     
-    func DefinitionView() -> some View  {
+    var body: some View {
         VStack {
             ScrollView(.vertical) {
                 VStack(alignment: .leading) {
@@ -189,6 +192,10 @@ struct CardView: View {
                 }
             }
             Spacer()
+        }
+        .foregroundColor(Color("fontBody"))
+        .onAppear{
+            viewModel.fetchExplain()
         }
     }
     
