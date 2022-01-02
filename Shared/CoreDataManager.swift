@@ -65,4 +65,15 @@ struct CoreDataManager {
             }
         }
     }
+    
+    func countBy(_ entity: String, pred: NSPredicate) -> Int {
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
+        req.predicate = pred
+        do {
+            return try container.viewContext.count(for: req)
+        } catch let error {
+            print("count error \(error.localizedDescription)")
+        }
+        return 0
+    }
 }

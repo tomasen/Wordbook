@@ -103,8 +103,23 @@ struct MasterView: View {
     }
 }
 
+class MasterViewModel: ObservableObject {
+    @Published var totalWords: Int = 0
+    @Published var totalLearningDays: Int = 0
+    
+    private let moc = CoreDataManager.shared.container.viewContext
+    
+    func update() {
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
+        req.predicate = NSPredicate(format: "category >= 0")
+        totalWords = try! moc.count(for: req)
+        
+        totalLearningDays = CoreDataManager.shared.countBy("Engagement", pred: NSPredicate(format: "checked = true"))
+    }
+}
 
 struct DefaultView: View {
+    @StateObject var viewModel = MasterViewModel()
     @StateObject var app = AppStoreManager.shared
     
     var body: some View {
@@ -112,6 +127,11 @@ struct DefaultView: View {
             NavigationLink(destination: SharingView()) {
                 TodayStatusView()
             }
+            
+            OverallStatusView()
+                .onAppear{
+                    viewModel.update()
+                }
             
             Spacer()
             HStack{
@@ -139,6 +159,40 @@ struct DefaultView: View {
         .padding(EdgeInsets(top: 12+25, leading: 25, bottom: 12, trailing: 25))
         .customFont(name: "AvenirNext-Regular", style: .body)
         .background(Color("Background").edgesIgnoringSafeArea(.all))
+    }
+    
+    func OverallStatusView() -> some View {
+        VStack{
+            HStack {
+                VStack(alignment: .leading){
+                    Text("Total")
+                        .foregroundColor(Color("fontGray"))
+                        .padding(.bottom, 4)
+                    HStack (alignment: .firstTextBaseline) {
+                        Text("\(viewModel.totalWords)")
+                            .customFont(name: "Avenir-Medium", style: .title3)
+                        Text("words")
+                            .customFont(name: "AvenirNext-Regular", style: .footnote)
+                        Spacer()
+                    }
+                }
+                Spacer()
+                VStack(alignment: .trailing){
+                    Text("Ring Closed")
+                        .foregroundColor(Color("fontGray"))
+                        .padding(.bottom, 4)
+                    HStack (alignment: .firstTextBaseline) {
+                        Spacer()
+                        Text("\(viewModel.totalLearningDays)")
+                            .customFont(name: "Avenir-Medium", style: .title3)
+                        Text("days")
+                            .customFont(name: "AvenirNext-Regular", style: .footnote)
+                    }
+                }
+            }
+            .foregroundColor(Color("fontBody"))
+            .padding(20)
+        }
     }
 }
 
