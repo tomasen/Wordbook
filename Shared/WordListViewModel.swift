@@ -10,24 +10,22 @@ import SwiftUI
 import CoreData
 
 class WordListViewModel: ObservableObject {
-    @Published var recentLearned = WordEntryList(fetchLimit: -1)
+    @Published var recentLearned = WordEntryList()
     @Published var recentAdded = WordEntryList()
     @Published var queueWords = WordEntryList()
+    
+    private let moc = CoreDataManager.shared.container.viewContext
     
     func delete(word: String) {
         
     }
     
     func updateRecentLearned() {
-        let moc = CoreDataManager.shared.container.viewContext
-        
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "AnswerHistory")
-        // req.predicate = NSPredicate(format: "date < %@")
+        req.predicate = NSPredicate(format: "word.category >= 0") // AND date < %@
         //                            WordManager.shared.now() as NSDate)
         req.sortDescriptors = [NSSortDescriptor(keyPath: \AnswerHistory.date, ascending: false)]
         req.resultType = NSFetchRequestResultType.dictionaryResultType
-        // req.propertiesToFetch = ["word"]
-        // req.propertiesToGroupBy = [#keyPath(AnswerHistory.word)]
         req.propertiesToFetch   = [#keyPath(AnswerHistory.word.word)]
         req.returnsDistinctResults = true;
         recentLearned.total = try! moc.count(for: req)
@@ -44,7 +42,6 @@ class WordListViewModel: ObservableObject {
     }
     
     func updateQueueWords() {
-        let moc = CoreDataManager.shared.container.viewContext
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
         req.predicate = NSPredicate(format: "(duedate < %@ OR duedate = NULL) AND category >= 0",
                                     WordManager.shared.now() as NSDate)
@@ -64,7 +61,6 @@ class WordListViewModel: ObservableObject {
     
     
     func updateRecentAdded() {
-        let moc = CoreDataManager.shared.container.viewContext
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
         req.predicate = NSPredicate(format: "(duedate < %@ OR duedate = NULL) AND category >= 0",
                                     WordManager.shared.now() as NSDate)

@@ -82,10 +82,10 @@ struct WordCloudView: View {
     }
     
     func checkOutsideBoundry(canvasSize: CGSize, rect: CGRect) -> Bool {
-        if rect.maxY > canvasRect.height/2 {
-            return true
-        }
-        if rect.minY < -canvasRect.height/2 {
+        if rect.maxY > canvasRect.height/2
+            || rect.minY < -canvasRect.height/2
+            || rect.center.x > canvasRect.width/2
+            || rect.center.x < -canvasRect.width/2 {
             return true
         }
         return false
@@ -135,8 +135,8 @@ struct WordCloudView: View {
                                   size: itemSize)
             if index > 0 {
                 while (checkOutsideBoundry(canvasSize: canvasSize,
-                                             rect: nextRect)
-                         || checkIntersects(rect: nextRect, rects: rects)) {
+                                           rect: nextRect)
+                       || checkIntersects(rect: nextRect, rects: rects)) {
                     if step > maxArmLength {
                         DispatchQueue.main.async {
                             fontSizeRatio *= 0.9

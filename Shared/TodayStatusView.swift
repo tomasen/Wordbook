@@ -25,7 +25,7 @@ class TodayStatusViewModel: ObservableObject {
 struct TodayStatusView: View {
     @StateObject private var viewModel = TodayStatusViewModel()
     
-    private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
+    private let didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
     
     var body: some View {
         VStack{

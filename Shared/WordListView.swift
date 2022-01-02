@@ -11,6 +11,7 @@ import CoreData
 struct WordListView: View {
     @StateObject private var viewModel = WordListViewModel()
     private let formatter = RelativeDateTimeFormatter()
+    private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
     
     var body: some View {
         VStack {
@@ -19,23 +20,35 @@ struct WordListView: View {
                     SectionListView(name: "Recently Learned",
                                     list: viewModel.recentLearned,
                                     withCopy: true,
-                                    actionMore: {viewModel.recentLearned.increaseLimit()})
+                                    actionMore: {
+                        viewModel.recentLearned.increaseLimit()
+                        viewModel.updateRecentLearned()
+                    })
                 }
                 
                 if viewModel.recentAdded.count > 0 {
                     SectionListView(name: "Recently Added",
                                     list: viewModel.recentAdded,
                                     withCopy: true,
-                                    actionMore: {viewModel.recentAdded.increaseLimit()})
+                                    actionMore: {
+                        viewModel.recentAdded.increaseLimit()
+                        viewModel.updateRecentAdded()
+                    })
                 }
                 
                 if viewModel.queueWords.count > 0 {
                     SectionListView(name: "Queue",
                                     list: viewModel.queueWords,
-                                    actionMore: {viewModel.recentAdded.increaseLimit()})
+                                    actionMore: {
+                        viewModel.recentAdded.increaseLimit()
+                        viewModel.updateQueueWords()
+                    })
                 }
             }
             .onAppear{
+                viewModel.update()
+            }
+            .onReceive(didDataChange) { _ in
                 viewModel.update()
             }
         }

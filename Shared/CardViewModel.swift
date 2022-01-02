@@ -49,7 +49,9 @@ class CardViewModel: ObservableObject {
             }
             
             self.senses = expl.senses
-            self.extras = expl.extras
+            for e in expl.extras {
+                self.extras.append(e)
+            }
         }
     }
     
