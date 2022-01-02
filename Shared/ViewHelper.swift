@@ -86,3 +86,25 @@ struct RectGetter: View {
     }
 }
 
+extension Binding where Value == String {
+    func toBool() -> Binding<Bool> {
+        return Binding<Bool>( get: { self.wrappedValue != "" },
+                              set: { v in
+                                if v == false {
+                                    self.wrappedValue = ""
+                                }
+                                })
+    }
+}
+
+extension Binding where Value == String? {
+    func toBool() -> Binding<Bool> {
+        return Binding<Bool>( get: { self.wrappedValue != nil },
+                              set: { v in
+                                if v == false {
+                                    self.wrappedValue = nil
+                                }
+                                })
+    }
+}
+

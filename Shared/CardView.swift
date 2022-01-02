@@ -17,6 +17,7 @@ struct CardView: View {
     
     @State private var editing = false
     @State private var popSheetWord = ""
+    @State private var popWebPage = ""
     
     private var defaultWord = ""
     
@@ -90,6 +91,36 @@ struct CardView: View {
                         // Fallback on earlier versions
                         DefinitionView(viewModel: viewModel)
                             .foregroundColor(Color("fontBody"))
+                    }
+                    
+                    HStack {
+                        Button(action:{
+                            popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us&tbm=nws"
+                        }) {
+                            Text("news")
+                        }
+                        
+                        Button(action:{
+                            popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us&tbm=isch"
+                        }) {
+                            Text("images")
+                        }
+                        
+                        Button(action:{
+                            popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us"
+                        }) {
+                            Text("web")
+                        }
+                        
+                        Button(action:{
+                            popWebPage = "https://www.deepl.com/en/translator#en/auto/\(viewModel.word.urlencode())"
+                        }) {
+                            Text("translate")
+                        }
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                    .sheet(isPresented: $popWebPage.toBool()) {
+                        WebPageView(url: URL(string: popWebPage)!)
                     }
                 },
                 tap: {
@@ -368,6 +399,21 @@ struct ExtraExplainDetailView: View {
     }
 }
 
+struct LinkButtonStyle: ButtonStyle {
+    private let isEnabled: Bool
+    init(_ isEnabled: Bool = true) {
+        self.isEnabled = isEnabled
+    }
+    
+    public func makeBody(configuration: ChoiceButtonStyle.Configuration) -> some View {
+        configuration.label
+            .foregroundColor(isEnabled ? Color("fontGray") : Color("textFieldBackground"))
+            .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
+            .background(RoundedRectangle(cornerRadius: 4)
+                .fill(Color("todayBackground")))
+            .opacity(configuration.isPressed ? 0.5 : 1.0)
+    }
+}
 
 struct CardView_Previews: PreviewProvider {
     static var previews: some View {
