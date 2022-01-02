@@ -37,7 +37,7 @@ struct WordCloudView: View {
         
         return ZStack{
             ForEach(Array(words.enumerated()), id: \.offset) {idx, word in
-                NavigationLink(destination: Text("\(word.text)")) {
+                NavigationLink(destination: CardView(word.text, true, true)) {
                     Text("\(word.text)")
                         .foregroundColor(word.color)
                         .font(Font.custom(word.fontName,
