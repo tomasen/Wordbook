@@ -9,9 +9,12 @@ import Foundation
 import SwiftUI
 
 class SharingViewModel: ObservableObject {
-    let colorPlate = ["shareFont1", "shareFont2", "shareFont3",
+    var shareViewRect: CGRect = CGRect.zero
+    var systemSharingImage: UIImage?
+    
+    private let colorPlate = ["shareFont1", "shareFont2", "shareFont3",
                       "shareFont1", "shareFont5"]
-    let fontPlate = [ "SFProText-Bold",
+    private let fontPlate = [ "SFProText-Bold",
                       "SFProText-Medium", "SFProText-Regular", "SFProText-Semibold"]
     
     
@@ -25,7 +28,7 @@ class SharingViewModel: ObservableObject {
                             fontSize: CGFloat.random(in:20...50))
             )
         }
-#if DEBUG
+#if targetEnvironment(simulator)
         if words.count == 0 {
             words = [WordElement].generate(50)
         }

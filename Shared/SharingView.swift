@@ -10,6 +10,8 @@ import SwiftUI
 struct SharingView: View {
     @StateObject var viewModel = SharingViewModel()
     
+    @State private var popSystemShareView = false
+    
     private let dateFormatter = DateFormatter()
     private let durationFormatter = DateComponentsFormatter()
     
@@ -22,41 +24,45 @@ struct SharingView: View {
     
     var body: some View {
         VStack{
-            Text(dateFormatter.string(from: viewModel.todayDate))
-                .foregroundColor(Color("fontTitle"))
-                .customFont(name: "Baskerville-SemiBold", style: .largeTitle, weight: .heavy)
-            Text("Wordbook's Review")
-                .customFont(name: "AvenirNext-DemiBold", style: .caption2, weight: .semibold)
-            
-            WordCloudView(viewModel.wordsOfToday)
-                .frame(height: viewModel.minCanvasHeight)
-            
-            HStack{
-                VStack{
-                    HStack{
-                        Text("\(viewModel.todayWordsTotal) Words")
-                        Spacer()
-                        Text("\(durationFormatter.string(from:  viewModel.todayStudyTimeInSeconds) ?? "0") min.")
-                    }
-                    .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 0))
-                    .customFont(name: "AvenirNext-DemiBold", style: .footnote, weight: .semibold)
-                    
-                    Spacer()
-                    
-                    Text("Wordbook - Grab Words Anytime")
-                        .customFont(name: "AvenirNext-DemiBold", style: .subheadline, weight: .semibold)
-                    
-                    Link("https://wordbook.cool/", destination: URL(string: "https://www.wordbook.cool/")!)
-                        .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .semibold)
-                }
-                Spacer()
-                Image("qrcode")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 100)
+            VStack{
+                Text(dateFormatter.string(from: viewModel.todayDate))
+                    .foregroundColor(Color("fontTitle"))
+                    .customFont(name: "Baskerville-SemiBold", style: .largeTitle, weight: .heavy)
+                Text("Wordbook's Review")
+                    .customFont(name: "AvenirNext-DemiBold", style: .caption2, weight: .semibold)
                 
+                WordCloudView(viewModel.wordsOfToday)
+                    .frame(height: viewModel.minCanvasHeight)
+                
+                HStack{
+                    VStack{
+                        HStack{
+                            Text("\(viewModel.todayWordsTotal) Words")
+                            Spacer()
+                            Text("\(durationFormatter.string(from:  viewModel.todayStudyTimeInSeconds) ?? "0") min.")
+                        }
+                        .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 0))
+                        .customFont(name: "AvenirNext-DemiBold", style: .footnote, weight: .semibold)
+                        
+                        Spacer()
+                        
+                        Text("Wordbook - Grab Words Anytime")
+                            .customFont(name: "AvenirNext-DemiBold", style: .subheadline, weight: .semibold)
+                        
+                        Link("https://wordbook.cool/", destination: URL(string: "https://www.wordbook.cool/")!)
+                            .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .semibold)
+                    }
+                    Spacer()
+                    Image("qrcode")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                    
+                }
+                .frame(height: 90)
             }
-            .frame(height: 90)
+            .padding(10)
+            .background(RectGetter($viewModel.shareViewRect))
             
             Spacer()
                 .padding()
@@ -65,8 +71,25 @@ struct SharingView: View {
             
             NextButtons()
         }
+        .navigationBarItems(trailing: trailingBarItem())
         .foregroundColor(Color("fontBody"))
         .background(Color("Background").edgesIgnoringSafeArea(.all))
+    }
+    
+    func trailingBarItem() -> some View {
+        Button(action: {
+            viewModel.systemSharingImage = NavigationUtil.findRootViewController()!.view.asImage(rect: viewModel.shareViewRect)
+            popSystemShareView.toggle()
+        }){
+            Image(systemName: "square.and.arrow.up")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 20)
+                .padding(5)
+        }
+        .sheet(isPresented: $popSystemShareView, content: {
+            ActivityViewController(activityItems: [ viewModel.systemSharingImage! ])
+        })
     }
     
     func NextButtons() -> some View {
@@ -115,8 +138,12 @@ struct SizeGetter: View {
 
 struct NavigationUtil {
     static func popToRootView() {
-        findNavigationController(viewController: UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController)?
+        findNavigationController(viewController: findRootViewController())?
             .popToRootViewController(animated: true)
+    }
+    
+    static func findRootViewController() -> UIViewController? {
+        UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController
     }
     
     static func findNavigationController(viewController: UIViewController?) -> UINavigationController? {
@@ -133,6 +160,29 @@ struct NavigationUtil {
         }
         
         return nil
+    }
+}
+
+struct ActivityViewController: UIViewControllerRepresentable {
+
+    var activityItems: [Any]
+    var applicationActivities: [UIActivity]? = nil
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityViewController>) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ActivityViewController>) {}
+
+}
+
+extension UIView {
+    func asImage(rect: CGRect) -> UIImage {
+        let renderer = UIGraphicsImageRenderer(bounds: rect)
+        return renderer.image { rendererContext in
+            layer.render(in: rendererContext.cgContext)
+        }
     }
 }
 

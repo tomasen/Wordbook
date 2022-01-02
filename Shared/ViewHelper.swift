@@ -85,3 +85,4 @@ struct RectGetter: View {
         return Rectangle().fill(Color.clear)
     }
 }
+
