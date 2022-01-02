@@ -31,16 +31,6 @@ extension View {
     }
 }
 
-extension Binding where Value == Bool {
-    static func ||(_ lhs: Binding<Bool>, _ rhs: Binding<Bool>) -> Binding<Bool> {
-        return Binding<Bool>( get: { lhs.wrappedValue || rhs.wrappedValue },
-                              set: { v in
-                                lhs.wrappedValue = v
-                                rhs.wrappedValue = v
-                                })
-    }
-}
-
 struct FootViewStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
@@ -108,3 +98,12 @@ extension Binding where Value == String? {
     }
 }
 
+extension Binding where Value == Bool {
+    static func ||(_ lhs: Binding<Bool>, _ rhs: Binding<Bool>) -> Binding<Bool> {
+        return Binding<Bool>( get: { lhs.wrappedValue || rhs.wrappedValue },
+                              set: { v in
+                                lhs.wrappedValue = v
+                                rhs.wrappedValue = v
+                                })
+    }
+}

@@ -32,7 +32,6 @@ class AppStoreManager: ObservableObject {
         }
         self.isProUser = v
         UserPreferences.shared.set(v, forKey: "WBCFG_PROVALID")
-        print("set proUser= \(self.isProUser)")
     }
     
     private func onLaunch() {

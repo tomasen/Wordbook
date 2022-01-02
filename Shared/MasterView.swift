@@ -14,50 +14,50 @@ struct MasterView: View {
     @State private var popSearchView = false
     
     var body: some View {
-            NavigationView {
-                VStack{
-                    switch tabSelection {
-                    case 2:
-                        WordListView()
-                    default:
-                        DefaultView()
+        NavigationView {
+            VStack{
+                switch tabSelection {
+                case 2:
+                    WordListView()
+                default:
+                    DefaultView()
+                }
+                
+                Divider()
+                HStack{
+                    Spacer()
+                    VStack{
+                        Image(systemName: "play.rectangle")
+                            .padding(3)
+                        Text("Today")
+                            .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
+                    }
+                    .foregroundColor(tabSelection == 1 ? Color("fontLink") : Color("fontBody"))
+                    .onTapGesture {
+                        tabSelection = 1
                     }
                     
-                    Divider()
-                    HStack{
-                        Spacer()
-                        VStack{
-                            Image(systemName: "play.rectangle")
-                                .padding(3)
-                            Text("Today")
-                                .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
-                        }
-                        .foregroundColor(tabSelection == 1 ? Color("fontLink") : Color("fontBody"))
-                        .onTapGesture {
-                            tabSelection = 1
-                        }
-                        
-                        Spacer()
-                            VStack{
-                                Image(systemName: "book")
-                                    .padding(3)
-                                Text("Lexicon")
-                                    .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
-                            }
-                            .foregroundColor(tabSelection == 2 ? Color("fontLink") : Color("fontBody"))
-                            .onTapGesture {
-                                tabSelection = 2
-                            }
-                        Spacer()
+                    Spacer()
+                    VStack{
+                        Image(systemName: "book")
+                            .padding(3)
+                        Text("Lexicon")
+                            .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
                     }
+                    .foregroundColor(tabSelection == 2 ? Color("fontLink") : Color("fontBody"))
+                    .onTapGesture {
+                        tabSelection = 2
+                    }
+                    Spacer()
                 }
-                .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
-                .navigationBarItems(leading: leadingBarItem(),
-                                    trailing:              trailingBarItem())
-                
-                EmptyView()
             }
-            .navigationViewStyle(.stack)
+            .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
+            .navigationBarItems(leading: leadingBarItem(),
+                                trailing:              trailingBarItem())
+            
+            EmptyView()
+        }
+        .navigationViewStyle(.stack)
     }
     
     func leadingBarItem() -> some View {
@@ -122,15 +122,6 @@ struct DefaultView: View {
                         .foregroundColor(Color("fontLink"))
                 }
                 Spacer()
-            }
-            Spacer()
-            Button(action: {
-                let e = WordManager.shared.fetchEngagement()
-                e.working = e.working + 1
-                // CoreDataManager.shared.save()
-            }){
-                Text("Background Update")
-                    .foregroundColor(Color("fontLink"))
             }
             Spacer()
             if !app.isProUser {

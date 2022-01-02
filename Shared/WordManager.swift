@@ -307,8 +307,6 @@ class WordManager {
             }
         }
         
-        print(ret)
-        
         return ret
     }
     

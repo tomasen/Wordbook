@@ -10,23 +10,114 @@ import SwiftUI
 import CoreData
 
 class WordListViewModel: ObservableObject {
-    @Published var Learned: [String] = []
+    @Published var recentLearned = WordEntryList(fetchLimit: -1)
+    @Published var recentAdded = WordEntryList()
+    @Published var queueWords = WordEntryList()
     
-    func Update() {
-        self.Learned.append(WordManager.shared.nextWord())
+    func delete(word: String) {
+        
+    }
+    
+    func updateRecentLearned() {
+        let moc = CoreDataManager.shared.container.viewContext
+        
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "AnswerHistory")
+        // req.predicate = NSPredicate(format: "date < %@")
+        //                            WordManager.shared.now() as NSDate)
+        req.sortDescriptors = [NSSortDescriptor(keyPath: \AnswerHistory.date, ascending: false)]
+        req.resultType = NSFetchRequestResultType.dictionaryResultType
+        // req.propertiesToFetch = ["word"]
+        // req.propertiesToGroupBy = [#keyPath(AnswerHistory.word)]
+        req.propertiesToFetch   = [#keyPath(AnswerHistory.word.word)]
+        req.returnsDistinctResults = true;
+        recentLearned.total = try! moc.count(for: req)
+        if recentLearned.fetchLimit > 0 {
+            req.fetchLimit = recentLearned.fetchLimit
+        }
+        recentLearned.words.removeAll()
+        let res = try! moc.fetch(req) as! [NSDictionary]
+        for key in res {
+            if let w = key.allValues[0] as? String {
+                recentLearned.words.append(WordEntry(text: w, dueDate: nil))
+            }
+        }
+    }
+    
+    func updateQueueWords() {
+        let moc = CoreDataManager.shared.container.viewContext
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
+        req.predicate = NSPredicate(format: "(duedate < %@ OR duedate = NULL) AND category >= 0",
+                                    WordManager.shared.now() as NSDate)
+        req.sortDescriptors = [NSSortDescriptor(keyPath: \WordCard.duedate, ascending: true)]
+        queueWords.total = try! moc.count(for: req)
+        if queueWords.fetchLimit > 0 {
+            req.fetchLimit = queueWords.fetchLimit
+        }
+        queueWords.words.removeAll()
+        let res = try! moc.fetch(req) as! [WordCard]
+        for c in res {
+            if let w = c.word {
+                queueWords.words.append(WordEntry(text: w, dueDate: c.duedate))
+            }
+        }
+    }
+    
+    
+    func updateRecentAdded() {
+        let moc = CoreDataManager.shared.container.viewContext
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
+        req.predicate = NSPredicate(format: "(duedate < %@ OR duedate = NULL) AND category >= 0",
+                                    WordManager.shared.now() as NSDate)
+        req.sortDescriptors = [NSSortDescriptor(keyPath: \WordCard.createdAt, ascending: false)]
+        recentAdded.total = try! moc.count(for: req)
+        if recentAdded.fetchLimit > 0 {
+            req.fetchLimit = recentAdded.fetchLimit
+        }
+        recentAdded.words.removeAll()
+        let res = try! moc.fetch(req) as! [WordCard]
+        for c in res {
+            if let w = c.word {
+                recentAdded.words.append(WordEntry(text: w, dueDate: c.duedate))
+            }
+        }
+    }
+    
+    func update() {
+        updateQueueWords()
+        updateRecentAdded()
+        updateRecentLearned()
     }
 }
 
-struct EntryInfo: Hashable {
-    var Word : String
-    var Date : Date?
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(Word)
-        hasher.combine(Date)
+struct WordEntryList {
+    var words: [WordEntry] = []
+    var fetchLimit: Int = 10
+    var total: Int = -1
+    var count: Int {
+        words.count
     }
     
-    static func == (lhs: EntryInfo, rhs: EntryInfo) -> Bool {
-        return lhs.Word == rhs.Word && lhs.Date == rhs.Date
+    mutating func increaseLimit() {
+        fetchLimit = fetchLimit + 10
+        if total > 0 && fetchLimit > total + 10{
+            fetchLimit = total
+        }
+    }
+}
+
+struct WordEntry: Identifiable {
+    var id: String { text }
+    
+    var text: String
+    var dueDate : Date?
+}
+
+extension Array where Element == WordEntry {
+    func array() -> [String] {
+        var out = [String]()
+        for e in self {
+            out.append(e.text)
+        }
+        return out
     }
 }
