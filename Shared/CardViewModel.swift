@@ -9,6 +9,7 @@ import Foundation
 
 class CardViewModel: ObservableObject {
     @Published var word = ""
+    @Published var alsoKnownAs: String? = nil
     @Published var sound: Data? = nil
     @Published var pronunciation: String? = ""
     @Published var mnemonic: String? = nil
@@ -21,12 +22,9 @@ class CardViewModel: ObservableObject {
     
     // fetch explanation of word
     func fetchExplain() {
-        if AppStoreManager.shared.isProUser{
-            APIClient().query(term: word,
-                              completion: self.handleAPIExplanation)
-        } else {
-            fetchExplainFromLocalDatabase()
-        }
+        APIClient().query(term: word,
+                          completion: self.handleAPIExplanation)
+        
         // check wiki
         ExtraExplainManager.shared.queryWiki(word, handleExtraExplain)
         
@@ -46,7 +44,10 @@ class CardViewModel: ObservableObject {
                 self.fetchExplainFromLocalDatabase()
                 return
             }
-            self.word = expl.word
+            if self.word != expl.word {
+                self.alsoKnownAs = expl.word
+            }
+            
             self.senses = expl.senses
             self.extras = expl.extras
         }

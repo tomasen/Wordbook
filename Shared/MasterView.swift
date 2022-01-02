@@ -109,6 +109,10 @@ struct DefaultView: View {
     
     var body: some View {
         VStack{
+            NavigationLink(destination: SharingView()) {
+                TodayStatusView()
+            }
+            
             Spacer()
             HStack{
                 Spacer()
@@ -120,8 +124,12 @@ struct DefaultView: View {
                 Spacer()
             }
             Spacer()
-            NavigationLink(destination: SharingView()) {
-                Text("SharingView")
+            Button(action: {
+                let e = WordManager.shared.fetchEngagement()
+                e.working = e.working + 1
+                // CoreDataManager.shared.save()
+            }){
+                Text("Background Update")
                     .foregroundColor(Color("fontLink"))
             }
             Spacer()
@@ -130,7 +138,7 @@ struct DefaultView: View {
                 Button(action: {
                     app.subscribe()
                 }) {
-                    Text("Subscribe")
+                    Text("Upgrade")
                         .font(.callout)
                 }
                 .customFont(name: "AvenirNext-Medium", style: .body, weight: .medium)

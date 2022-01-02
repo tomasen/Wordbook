@@ -56,9 +56,14 @@ struct CardView: View {
                                 }
                             }
                         
+                        if let alsoKnownAs = viewModel.alsoKnownAs {
+                            Text("as. \(alsoKnownAs)")
+                                .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
+                                .foregroundColor(Color("fontGray"))
+                        }
                         
-                        if (self.viewModel.pronunciation != nil) {
-                            Text("\(self.viewModel.pronunciation!)")
+                        if let pronunciation = viewModel.pronunciation {
+                            Text("\(pronunciation)")
                                 .customFont(name: "AvenirNext-Regular", style: .caption1, weight: .regular)
                                 .foregroundColor(Color("fontBody"))
                         }
@@ -419,7 +424,7 @@ struct CardView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             NavigationView{
-                CardView("line", true)
+                CardView("mycelia", true)
                     .navigationBarTitle("", displayMode: .inline)
             }
         }

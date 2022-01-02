@@ -269,6 +269,8 @@ class WordManager {
         }
         
         fetchEngagement(today).update()
+        
+        CoreDataManager.shared.save()
     }
     
     // ------ Engagement ------
