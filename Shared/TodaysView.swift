@@ -60,7 +60,7 @@ struct TodaysView: View {
                         .foregroundColor(Color("fontGray"))
                         .padding(.bottom, 4)
                     HStack (alignment: .firstTextBaseline) {
-                        Text("\(viewModel.totalWords)")
+                        Text("\(viewModel.totalWordsInWordbook)")
                             .customFont(name: "Avenir-Medium", style: .title3)
                         Text("words")
                             .customFont(name: "AvenirNext-Regular", style: .footnote)

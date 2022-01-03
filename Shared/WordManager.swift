@@ -234,7 +234,6 @@ class WordManager {
         }
     }
     
-    
     // ------- Answer -------
     func answer(_ word: String, _ rate: CardRating) {
         guard let card = ensureWordCard(word) else {
@@ -291,7 +290,6 @@ class WordManager {
         }
         return ret
     }
-    
     
     // ---------
     func wordsOfToday() -> [String] {
@@ -470,5 +468,9 @@ extension Engagement {
         
         // update time spend
         self.duration = timespend
+        
+        if (self.goal <= self.finished ) {
+            self.checked = true
+        }
     }
 }

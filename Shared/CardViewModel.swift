@@ -20,6 +20,14 @@ class CardViewModel: ObservableObject {
         word = w
     }
     
+    var summaryExplain: String {
+        var ret = [String]()
+        for s in senses {
+            ret.append(s.gloss)
+        }
+        return ret.joined(separator: "; ")
+    }
+    
     // fetch explanation of word
     func fetchExplain() {
         APIClient().query(term: word,
@@ -55,7 +63,7 @@ class CardViewModel: ObservableObject {
         }
     }
     
-    private func fetchExplainFromLocalDatabase() {
+    func fetchExplainFromLocalDatabase() {
         let result = WordDatabaseLocal.shared.explain(word)
         senses = result.senses
         pronunciation = result.pronunc

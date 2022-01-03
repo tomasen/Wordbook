@@ -12,7 +12,7 @@
 		8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37F276F8FAC00E46DAF /* WordCloudView.swift */; };
 		8803F381276F8FAC00E46DAF /* WordCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37F276F8FAC00E46DAF /* WordCloudView.swift */; };
 		8812951B277F1EEC008F1B1B /* WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8812951A277F1EEC008F1B1B /* WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		88129520277F1EEC008F1B1B /* WordbookApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8812951F277F1EEC008F1B1B /* WordbookApp.swift */; };
+		88129520277F1EEC008F1B1B /* WatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8812951F277F1EEC008F1B1B /* WatchApp.swift */; };
 		88129522277F1EEC008F1B1B /* WatchMasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88129521277F1EEC008F1B1B /* WatchMasterView.swift */; };
 		88129524277F1EEC008F1B1B /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88129523277F1EEC008F1B1B /* NotificationController.swift */; };
 		88129526277F1EEC008F1B1B /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88129525277F1EEC008F1B1B /* NotificationView.swift */; };
@@ -160,6 +160,8 @@
 		88F319802782DDD2001FEACE /* TodaysViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F3197E2782DDD2001FEACE /* TodaysViewModel.swift */; };
 		88F319812782DDD2001FEACE /* TodaysViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F3197E2782DDD2001FEACE /* TodaysViewModel.swift */; };
 		88F319822782DDD2001FEACE /* TodaysViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F3197E2782DDD2001FEACE /* TodaysViewModel.swift */; };
+		88F31983278300D8001FEACE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
+		88F31985278301AC001FEACE /* WordListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CB12750C865003CE213 /* WordListViewModel.swift */; };
 		88F517D327524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
 		88F517D427524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
 		88F517D627553EED004C174B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
@@ -246,7 +248,7 @@
 		8803F37F276F8FAC00E46DAF /* WordCloudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCloudView.swift; sourceTree = "<group>"; };
 		88129512277F1EEA008F1B1B /* Wordbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wordbook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8812951A277F1EEC008F1B1B /* WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		8812951F277F1EEC008F1B1B /* WordbookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookApp.swift; sourceTree = "<group>"; };
+		8812951F277F1EEC008F1B1B /* WatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchApp.swift; sourceTree = "<group>"; };
 		88129521277F1EEC008F1B1B /* WatchMasterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMasterView.swift; sourceTree = "<group>"; };
 		88129523277F1EEC008F1B1B /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		88129525277F1EEC008F1B1B /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
@@ -390,7 +392,7 @@
 			isa = PBXGroup;
 			children = (
 				88129540277F280F008F1B1B /* WatchKit Extension.entitlements */,
-				8812951F277F1EEC008F1B1B /* WordbookApp.swift */,
+				8812951F277F1EEC008F1B1B /* WatchApp.swift */,
 				88129521277F1EEC008F1B1B /* WatchMasterView.swift */,
 				88129541277F31C8008F1B1B /* WatchCardView.swift */,
 				88129523277F1EEC008F1B1B /* NotificationController.swift */,
@@ -821,6 +823,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88F31983278300D8001FEACE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -915,6 +918,7 @@
 				88129554277F70D7008F1B1B /* AppStoreManager.swift in Sources */,
 				88129545277F6B61008F1B1B /* ViewHelper.swift in Sources */,
 				8812954F277F709A008F1B1B /* WordManager.swift in Sources */,
+				88F31985278301AC001FEACE /* WordListViewModel.swift in Sources */,
 				88129522277F1EEC008F1B1B /* WatchMasterView.swift in Sources */,
 				88129543277F31C8008F1B1B /* WatchCardView.swift in Sources */,
 				8812954A277F7000008F1B1B /* ExtraExplainManager.swift in Sources */,
@@ -927,7 +931,7 @@
 				88129551277F70B2008F1B1B /* APIClient.swift in Sources */,
 				8812953F277F26F0008F1B1B /* iCloudState.swift in Sources */,
 				88129528277F1EEC008F1B1B /* ComplicationController.swift in Sources */,
-				88129520277F1EEC008F1B1B /* WordbookApp.swift in Sources */,
+				88129520277F1EEC008F1B1B /* WatchApp.swift in Sources */,
 				8812953C277F26B9008F1B1B /* Wordbook.xcdatamodeld in Sources */,
 				88129550277F70A4008F1B1B /* CoreDataManager.swift in Sources */,
 				88129526277F1EEC008F1B1B /* NotificationView.swift in Sources */,

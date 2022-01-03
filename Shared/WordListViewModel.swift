@@ -17,13 +17,12 @@ class WordListViewModel: ObservableObject {
     private let moc = CoreDataManager.shared.container.viewContext
     
     func delete(word: String) {
-        
+        // TODO:
     }
     
     func updateRecentLearned() {
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "AnswerHistory")
-        req.predicate = NSPredicate(format: "word.category >= 0") // AND date < %@
-        //                            WordManager.shared.now() as NSDate)
+        req.predicate = NSPredicate(format: "word.category >= 0")
         req.sortDescriptors = [NSSortDescriptor(keyPath: \AnswerHistory.date, ascending: false)]
         req.resultType = NSFetchRequestResultType.dictionaryResultType
         req.propertiesToFetch   = [#keyPath(AnswerHistory.word.word)]
@@ -82,6 +81,15 @@ class WordListViewModel: ObservableObject {
         updateQueueWords()
         updateRecentAdded()
         updateRecentLearned()
+        
+        #if DEBUG
+        if recentLearned.words.count == 0 {
+            recentLearned.total = 10
+            for _ in 0...recentLearned.total {
+                recentLearned.words.append(WordEntry(text: WordManager.shared.nextRandomWord()))
+            }
+        }
+        #endif
     }
 }
 

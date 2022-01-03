@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct WatchCardView: View {
-    @StateObject private var viewModel = CardViewModel()
+    @StateObject private var viewModel: CardViewModel
+    
+    init(_ word: String = "") {
+        _viewModel = StateObject(wrappedValue: CardViewModel(word))
+    }
     
     var body: some View {
         VStack{
             ScrollView{
                 Text("\(viewModel.word)")
-                    .font(.title2)
-                    .foregroundColor(Color("fontTitle"))
+                    .font(.title3)
+                    .foregroundColor(Color("WatchListItemTitle"))
                 
                 Spacer()
                 
@@ -43,7 +47,7 @@ struct WatchCardView: View {
                 .lineSpacing(2)
             }
         }
-        .foregroundColor(Color("fontBody"))
+        .foregroundColor(Color("WatchListItemContent"))
         .onAppear{
             viewModel.validate()
             viewModel.fetchExplain()

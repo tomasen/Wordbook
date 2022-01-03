@@ -12,11 +12,14 @@ import CoreData
 class TodaysViewModel: ObservableObject {
     var todayDateString = WordManager.shared.todayDateString()
     
+    // not so good yet, including vague
     @Published var working: Int16 = 0
+    // finished with good
     @Published var good: Int16    = 0
+    // how many words left till reach daily goal
     @Published var queue: Int16   = 0
-
-    @Published var totalWords: Int = 0
+    
+    @Published var totalWordsInWordbook: Int = 0
     @Published var totalLearningDays: Int = 0
     
     private let moc = CoreDataManager.shared.container.viewContext
@@ -24,7 +27,7 @@ class TodaysViewModel: ObservableObject {
     func update() {
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
         req.predicate = NSPredicate(format: "category >= 0")
-        totalWords = try! moc.count(for: req)
+        totalWordsInWordbook = try! moc.count(for: req)
         
         totalLearningDays = CoreDataManager.shared.countBy("Engagement", pred: NSPredicate(format: "checked = true"))
     }
