@@ -7,25 +7,8 @@
 
 import SwiftUI
 
-class TodayStatusViewModel: ObservableObject {
-    var todayDateString = WordManager.shared.todayDateString()
-    
-    @Published var working: Int16 = 0
-    @Published var good: Int16    = 0
-    @Published var queue: Int16   = 0
-    
-    func updateStat() {
-        let e = WordManager.shared.fetchEngagement()
-        working = e.working
-        good = e.good
-        queue = max(e.goal - e.working, 0)
-    }
-}
-
 struct TodayStatusView: View {
-    @StateObject private var viewModel = TodayStatusViewModel()
-    
-    private let didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
+    @ObservedObject var viewModel: TodaysViewModel
     
     var body: some View {
         VStack{
@@ -44,23 +27,17 @@ struct TodayStatusView: View {
                 HStack{
                     TodayWordsColumn(label: "Working",
                                      num: viewModel.working,
-                                     color: Color("progressGood"))
+                                     color: Color("progressWorking"))
                     Divider()
                         .frame(height: 20)
                     TodayWordsColumn(label: "Good",
                                      num: viewModel.good,
-                                     color: Color("progressBad"))
+                                     color: Color("progressGood"))
                     Divider()
                         .frame(height: 20)
                     TodayWordsColumn(label: "Queue",
                                      num: viewModel.queue,
                                      color: Color("progressBackground"))
-                }
-                .onAppear{
-                    viewModel.updateStat()
-                }
-                .onReceive(didDataChange) { _ in
-                    viewModel.updateStat()
                 }
             }
             .padding(EdgeInsets(top: 18, leading: 20, bottom: 28, trailing: 20))
@@ -86,11 +63,10 @@ struct TodayStatusView: View {
             Spacer()
         }
     }
-    
 }
 
 struct TodayStatusView_Previews: PreviewProvider {
     static var previews: some View {
-        TodayStatusView()
+        TodayStatusView(viewModel: TodaysViewModel())
     }
 }

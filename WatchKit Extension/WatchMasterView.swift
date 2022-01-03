@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WatchMasterView: View {
-    @StateObject var icloud = iCloudState.shared
+    @ObservedObject var icloud = iCloudState.shared
     
     var body: some View {
         VStack{

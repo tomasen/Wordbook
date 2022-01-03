@@ -154,6 +154,12 @@
 		88F2528F277E1DD70046BA15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
 		88F319792781A0E8001FEACE /* TodayStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F319782781A0E8001FEACE /* TodayStatusView.swift */; };
 		88F3197A2781A0E8001FEACE /* TodayStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F319782781A0E8001FEACE /* TodayStatusView.swift */; };
+		88F3197C2782D916001FEACE /* TodaysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F3197B2782D916001FEACE /* TodaysView.swift */; };
+		88F3197D2782D916001FEACE /* TodaysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F3197B2782D916001FEACE /* TodaysView.swift */; };
+		88F3197F2782DDD2001FEACE /* TodaysViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F3197E2782DDD2001FEACE /* TodaysViewModel.swift */; };
+		88F319802782DDD2001FEACE /* TodaysViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F3197E2782DDD2001FEACE /* TodaysViewModel.swift */; };
+		88F319812782DDD2001FEACE /* TodaysViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F3197E2782DDD2001FEACE /* TodaysViewModel.swift */; };
+		88F319822782DDD2001FEACE /* TodaysViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F3197E2782DDD2001FEACE /* TodaysViewModel.swift */; };
 		88F517D327524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
 		88F517D427524C4F004C174B /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D227524C4F004C174B /* FlipView.swift */; };
 		88F517D627553EED004C174B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
@@ -310,6 +316,8 @@
 		88F25289277CD9F00046BA15 /* SharedExtensionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedExtensionView.swift; sourceTree = "<group>"; };
 		88F2528B277CDA0E0046BA15 /* WordFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordFilter.swift; sourceTree = "<group>"; };
 		88F319782781A0E8001FEACE /* TodayStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayStatusView.swift; sourceTree = "<group>"; };
+		88F3197B2782D916001FEACE /* TodaysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaysView.swift; sourceTree = "<group>"; };
+		88F3197E2782DDD2001FEACE /* TodaysViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaysViewModel.swift; sourceTree = "<group>"; };
 		88F517D227524C4F004C174B /* FlipView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlipView.swift; sourceTree = "<group>"; };
 		88F517D527553EED004C174B /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -412,9 +420,9 @@
 				8833ABF2274F358B00637B61 /* CardView.swift */,
 				8833ABF5274F3F6C00637B61 /* SharingView.swift */,
 				8833ABF8274F3F9200637B61 /* WordListView.swift */,
-				8803F37F276F8FAC00E46DAF /* WordCloudView.swift */,
 				884EE6F02774AAE20038E990 /* SettingsView.swift */,
 				881295592780BACF008F1B1B /* SearchView.swift */,
+				88F3197B2782D916001FEACE /* TodaysView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -441,6 +449,7 @@
 				888C3CB12750C865003CE213 /* WordListViewModel.swift */,
 				8803F37C276F2B1200E46DAF /* SharingViewModel.swift */,
 				884EE6ED27747DF20038E990 /* iCloudState.swift */,
+				88F3197E2782DDD2001FEACE /* TodaysViewModel.swift */,
 			);
 			name = "View Models";
 			sourceTree = "<group>";
@@ -503,6 +512,7 @@
 				88F517D227524C4F004C174B /* FlipView.swift */,
 				888C3CA92750B8BF003CE213 /* ViewHelper.swift */,
 				884EE6F3277575780038E990 /* TextView.swift */,
+				8803F37F276F8FAC00E46DAF /* WordCloudView.swift */,
 				88F319782781A0E8001FEACE /* TodayStatusView.swift */,
 			);
 			name = Internal;
@@ -913,6 +923,7 @@
 				88129552277F70BE008F1B1B /* Helper.swift in Sources */,
 				88129553277F70CA008F1B1B /* PausableTimer.swift in Sources */,
 				88129546277F6FA3008F1B1B /* CardViewModel.swift in Sources */,
+				88F319822782DDD2001FEACE /* TodaysViewModel.swift in Sources */,
 				88129551277F70B2008F1B1B /* APIClient.swift in Sources */,
 				8812953F277F26F0008F1B1B /* iCloudState.swift in Sources */,
 				88129528277F1EEC008F1B1B /* ComplicationController.swift in Sources */,
@@ -929,6 +940,7 @@
 			files = (
 				88F2528A277CD9F00046BA15 /* SharedExtensionView.swift in Sources */,
 				8833AC22274FE90400637B61 /* ShareViewController.swift in Sources */,
+				88F319812782DDD2001FEACE /* TodaysViewModel.swift in Sources */,
 				88F25288277CD7030046BA15 /* UserPreferences.swift in Sources */,
 				888C3CAC2750B8BF003CE213 /* ViewHelper.swift in Sources */,
 				8833AC33274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
@@ -949,6 +961,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8833AC13274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
+				88F3197C2782D916001FEACE /* TodaysView.swift in Sources */,
+				88F3197F2782DDD2001FEACE /* TodaysViewModel.swift in Sources */,
 				88F517D627553EED004C174B /* Helper.swift in Sources */,
 				884EE6F12774AAE20038E990 /* SettingsView.swift in Sources */,
 				88E02E1E27061D280015ECEA /* WordbookApp.swift in Sources */,
@@ -984,6 +998,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8833AC14274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
+				88F3197D2782D916001FEACE /* TodaysView.swift in Sources */,
+				88F319802782DDD2001FEACE /* TodaysViewModel.swift in Sources */,
 				88F517D727553EED004C174B /* Helper.swift in Sources */,
 				884EE6F22774AAE20038E990 /* SettingsView.swift in Sources */,
 				88E02E1F27061D280015ECEA /* WordbookApp.swift in Sources */,

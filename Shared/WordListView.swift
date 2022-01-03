@@ -11,7 +11,7 @@ import CoreData
 struct WordListView: View {
     @StateObject private var viewModel = WordListViewModel()
     private let formatter = RelativeDateTimeFormatter()
-    private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
+    private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange).receive(on: DispatchQueue.main)
     
     var body: some View {
         VStack {
