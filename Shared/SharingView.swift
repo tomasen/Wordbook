@@ -33,7 +33,6 @@ struct SharingView: View {
                 
                 WordCloudView(viewModel.wordsOfToday)
                     .frame(height: viewModel.minCanvasHeight)
-                    .animation(.default)
                 
                 HStack{
                     VStack{

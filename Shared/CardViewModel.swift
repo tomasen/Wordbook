@@ -14,7 +14,7 @@ class CardViewModel: ObservableObject {
     @Published var pronunciation: String? = ""
     @Published var mnemonic: String? = nil
     @Published var senses = [Sense]()
-    @Published var extras = [ExtraExplain]()
+    @Published var extras = [ExtraExplainSource: ExtraExplain]()
     
     init(_ w: String = "") {
         word = w
@@ -34,15 +34,19 @@ class CardViewModel: ObservableObject {
                           completion: self.handleAPIExplanation)
         
         // check wiki
-        ExtraExplainManager.shared.queryWiki(word, handleExtraExplain)
+        if extras[.WIKI] == nil {
+            ExtraExplainManager.shared.queryWiki(word, handleExtraExplain)
+        }
         
         // check vocab
-        ExtraExplainManager.shared.queryVocab(word, handleExtraExplain)
+        if extras[.VOCAB] == nil {
+            ExtraExplainManager.shared.queryVocab(word, handleExtraExplain)
+        }
     }
     
     private func handleExtraExplain(_ result: ExtraExplain) {
         DispatchQueue.main.async {
-            self.extras.append(result)
+            self.extras[result.source] = result
         }
     }
     
@@ -58,7 +62,7 @@ class CardViewModel: ObservableObject {
             
             self.senses = expl.senses
             for e in expl.extras {
-                self.extras.append(e)
+                self.extras[e.source] = e
             }
         }
     }

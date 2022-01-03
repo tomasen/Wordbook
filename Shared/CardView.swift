@@ -219,8 +219,8 @@ struct DefinitionView: View {
                     
                     if viewModel.extras.count > 0 {
                         VStack (spacing: 9) {
-                            ForEach(viewModel.extras) { extra in
-                                ExtraExplainSummeryView(simpleExpl: extra)
+                            ForEach(Array(viewModel.extras.keys), id: \.self) { key in
+                                ExtraExplainSummeryView(simpleExpl: viewModel.extras[key]!)
                             }
                         }
                         .padding(.top, 25)
