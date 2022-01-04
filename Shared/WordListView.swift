@@ -12,6 +12,7 @@ struct WordListView: View {
     @StateObject private var viewModel = WordListViewModel()
     private let formatter = RelativeDateTimeFormatter()
     private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange).receive(on: DispatchQueue.main)
+    private var didRemoteChange =  NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange).receive(on: DispatchQueue.main)
     
     var body: some View {
         VStack {
@@ -44,11 +45,19 @@ struct WordListView: View {
                         viewModel.updateQueueWords()
                     })
                 }
+                
+                Text("\(viewModel.footnote).\(viewModel.recentLearned.total)")
+                    .font(.footnote)
+                    .listRowBackground(Color.clear)
+                    .foregroundColor(Color("fontGray"))
             }
             .onAppear{
                 viewModel.update()
             }
             .onReceive(didDataChange) { _ in
+                viewModel.update()
+            }
+            .onReceive(didRemoteChange) { _ in
                 viewModel.update()
             }
         }

@@ -13,6 +13,7 @@ class WordListViewModel: ObservableObject {
     @Published var recentLearned = WordEntryList()
     @Published var recentAdded = WordEntryList()
     @Published var queueWords = WordEntryList()
+    @Published var footnote: Int = 0
     
     private let moc = CoreDataManager.shared.container.viewContext
     
@@ -31,11 +32,13 @@ class WordListViewModel: ObservableObject {
         if recentLearned.fetchLimit > 0 {
             req.fetchLimit = recentLearned.fetchLimit
         }
-        recentLearned.words.removeAll()
         let res = try! moc.fetch(req) as! [NSDictionary]
-        for key in res {
-            if let w = key.allValues[0] as? String {
-                recentLearned.words.append(WordEntry(text: w, dueDate: nil))
+        if res.count > 0 {
+            recentLearned.words.removeAll()
+            for key in res {
+                if let w = key.allValues[0] as? String {
+                    recentLearned.words.append(WordEntry(text: w, dueDate: nil))
+                }
             }
         }
     }
@@ -49,15 +52,16 @@ class WordListViewModel: ObservableObject {
         if queueWords.fetchLimit > 0 {
             req.fetchLimit = queueWords.fetchLimit
         }
-        queueWords.words.removeAll()
         let res = try! moc.fetch(req) as! [WordCard]
-        for c in res {
-            if let w = c.word {
-                queueWords.words.append(WordEntry(text: w, dueDate: c.duedate))
+        if res.count > 0 {
+            queueWords.words.removeAll()
+            for c in res {
+                if let w = c.word {
+                    queueWords.words.append(WordEntry(text: w, dueDate: c.duedate))
+                }
             }
         }
     }
-    
     
     func updateRecentAdded() {
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
@@ -68,11 +72,13 @@ class WordListViewModel: ObservableObject {
         if recentAdded.fetchLimit > 0 {
             req.fetchLimit = recentAdded.fetchLimit
         }
-        recentAdded.words.removeAll()
         let res = try! moc.fetch(req) as! [WordCard]
-        for c in res {
-            if let w = c.word {
-                recentAdded.words.append(WordEntry(text: w, dueDate: c.duedate))
+        if res.count > 0 {
+            recentAdded.words.removeAll()
+            for c in res {
+                if let w = c.word {
+                    recentAdded.words.append(WordEntry(text: w, dueDate: c.duedate))
+                }
             }
         }
     }
@@ -90,6 +96,7 @@ class WordListViewModel: ObservableObject {
             }
         }
         #endif
+        footnote += 1
     }
 }
 

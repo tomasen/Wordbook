@@ -82,9 +82,7 @@ struct SharingView: View {
             popSystemShareView.toggle()
         }){
             Image(systemName: "square.and.arrow.up")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 20)
+                .imageScale(.medium)
                 .padding(5)
         }
         .sheet(isPresented: $popSystemShareView, content: {

@@ -73,8 +73,7 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES"
-      launchAutomaticallySubstyle = "8"
-      notificationPayloadFile = "WatchKit Extension/PushNotificationPayload.apns">
+      launchAutomaticallySubstyle = "8">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference

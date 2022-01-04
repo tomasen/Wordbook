@@ -11,6 +11,11 @@ struct WatchMasterView: View {
     @ObservedObject var icloud = iCloudState.shared
     @StateObject private var viewModel = WordListViewModel()
     
+    @State private var changeCount = 0
+    
+    private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange).receive(on: DispatchQueue.main)
+    private var didRemoteChange =  NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange).receive(on: DispatchQueue.main)
+    
     var body: some View {
         VStack{
             List{
@@ -38,7 +43,7 @@ struct WatchMasterView: View {
                     Spacer()
                     Text("Words")
                     Spacer()
-                }.padding()) {
+                }.padding().listRowBackground(Color.clear)) {
                     ForEach(viewModel.recentLearned.words) { entry in
                         WordEntryItem(entry.text)
                     }
@@ -48,17 +53,15 @@ struct WatchMasterView: View {
                 }
                 ZStack{
                     Image(systemName: "ellipsis")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, alignment: .center)
+                        .imageScale(.medium)
                         .padding()
                         .foregroundColor(Color("fontGray"))
                     HStack{
+                        Text("\(viewModel.footnote).\(changeCount).\(viewModel.recentLearned.total)")
+                            .font(.footnote)
                         Spacer()
                         Image(systemName: icloud.enabled ? "icloud" : "icloud.slash")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, alignment: .bottomTrailing)
+                            .imageScale(.medium)
                             .padding()
                     }
                 }
@@ -68,7 +71,15 @@ struct WatchMasterView: View {
                 .listRowBackground(Color.clear)
                 .frame(maxWidth: .infinity, minHeight: 60)
             }
+            .listStyle(.carousel)
             .onAppear{
+                viewModel.update()
+            }
+            .onReceive(didDataChange) { _ in
+                viewModel.update()
+                changeCount = changeCount + 1
+            }
+            .onReceive(didRemoteChange) { _ in
                 viewModel.update()
             }
         }

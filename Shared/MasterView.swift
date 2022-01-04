@@ -28,9 +28,9 @@ struct MasterView: View {
                     Spacer()
                     VStack{
                         Image(systemName: "play.rectangle")
-                            .padding(3)
                         Text("Today")
                             .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
+                            .padding(.top, 1)
                     }
                     .foregroundColor(tabSelection == 1 ? Color("fontLink") : Color("fontBody"))
                     .onTapGesture {
@@ -40,9 +40,9 @@ struct MasterView: View {
                     Spacer()
                     VStack{
                         Image(systemName: "book")
-                            .padding(3)
                         Text("Lexicon")
                             .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
+                            .padding(.top, 1)
                     }
                     .foregroundColor(tabSelection == 2 ? Color("fontLink") : Color("fontBody"))
                     .onTapGesture {
@@ -63,9 +63,7 @@ struct MasterView: View {
     func leadingBarItem() -> some View {
         HStack{
             Image(systemName: icloud.enabled ? "icloud" : "icloud.slash")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 20)
+                .imageScale(.medium)
                 .padding(5)
             Spacer()
         }
@@ -80,17 +78,13 @@ struct MasterView: View {
                 popSearchView.toggle()
             } ) {
                 Image(systemName: "magnifyingglass")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 20)
+                    .imageScale(.medium)
                     .padding(5)
             }
             
             NavigationLink(destination: SettingsView()) {
                 Image(systemName: "ellipsis")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 20)
+                    .imageScale(.medium)
                     .rotationEffect(.degrees(-90))
                     .padding(5)
             }
