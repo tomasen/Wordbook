@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct CustomFont: ViewModifier {
     @Environment(\.sizeCategory) var sizeCategory

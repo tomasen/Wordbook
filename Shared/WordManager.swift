@@ -135,7 +135,7 @@ class WordManager {
         if let ref = getCachedReference(word: word, source: source) {
             if ref.valid {
                 if let desc = ref.desc {
-                    if desc.trimmingCharacters(in: .whitespaces).count != 0 {
+                    if desc.trimmingCharacters(in: .whitespacesAndNewlines).count != 0 {
                         return ExtraExplain(title: word, source: source, expl: desc)
                     }
                 }

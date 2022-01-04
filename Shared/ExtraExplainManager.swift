@@ -114,7 +114,7 @@ struct ExtraExplainManager {
                 } else if let short = try doc.select("p.short").first()?.text() {
                     desc = short
                 }
-                desc = desc.trimmingCharacters(in: .whitespaces)
+                desc = desc.trimmingCharacters(in: .whitespacesAndNewlines)
                 if desc.count > 0 {
                     let result = ExtraExplain(title: word,
                                               source: .VOCAB,
