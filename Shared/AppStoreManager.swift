@@ -18,10 +18,10 @@ class AppStoreManager: ObservableObject {
     static let shared = AppStoreManager()
     
     @Published var isProUser: Bool
+    @Published var localizedPrice: String?
     
     init() {
         self.isProUser = UserPreferences.shared.bool(forKey: "WBCFG_PROVALID") || UserPreferences.shared.bool(forKey: UserPreferences.DKEY_SUPER_USER)
-        print("init proUser= \(self.isProUser)")
         self.onLaunch()
     }
     
@@ -55,7 +55,13 @@ class AppStoreManager: ObservableObject {
             }
         }
         
-        self.validate()
+        validate()
+        
+        SwiftyStoreKit.retrieveProductsInfo([productId]) { result in
+            if let product = result.retrievedProducts.first {
+                self.localizedPrice = product.localizedPrice
+            }
+        }
     }
     
     func subscribe() {
@@ -75,7 +81,7 @@ class AppStoreManager: ObservableObject {
     }
     
     func validate() {
-        let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: self.sharedSecret)
+        let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: sharedSecret)
         SwiftyStoreKit.verifyReceipt(using: appleValidator) { result in
             switch result {
             case .success(let receipt):
@@ -95,6 +101,19 @@ class AppStoreManager: ObservableObject {
                 print("Receipt verification failed: \(error)")
             }
             self.enableProFeatures(false)
+        }
+    }
+    
+    func restore() {
+        SwiftyStoreKit.restorePurchases() { result in
+            for product in result.restoredPurchases {
+                if product.needsFinishTransaction {
+                    SwiftyStoreKit.finishTransaction(product.transaction)
+                }
+                if product.productId == self.productId {
+                    self.validate()
+                }
+            }
         }
     }
 }

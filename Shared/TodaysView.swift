@@ -38,7 +38,7 @@ struct TodaysView: View {
                 Button(action: {
                     popPurchaseView.toggle()
                 }) {
-                    Text("Upgrade")
+                    Text("Upgrade to Pro")
                         .font(.callout)
                 }
                 .customFont(name: "AvenirNext-Medium", style: .body, weight: .medium)

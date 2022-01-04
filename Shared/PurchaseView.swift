@@ -23,31 +23,31 @@ struct PurchaseView: View {
     
     let features: [Feature] = [Feature(imageName: "graduationcap",
                                        color: Color.orange,
-                                       headline: "Better Explanation",
-                                       content: "extremely learner friendly, without any loss in its thoroughness"),
-                               Feature(imageName: "graduationcap",
-                                       color: Color.pink,
-                                       headline: "Extra Explain",
-                                       content: "extremely learner friendly, without any loss in its thoroughness"),
-                               Feature(imageName: "graduationcap",
-                                       color: Color.pink,
-                                       headline: "Web Explain",
-                                       content: "extremely learner friendly, without any loss in its thoroughness"),
-                               Feature(imageName: "graduationcap",
-                                       color: Color.pink,
+                                       headline: "Friendly Dictionary",
+                                       content: "extremely learner friendly dictionary, without any loss in its thoroughness."),
+                               Feature(imageName: "scroll",
+                                       color: Color.red,
+                                       headline: "Realworld Shortcuts",
+                                       content: "checking out real world usage from world wide web within the App by just one click."),
+                               Feature(imageName: "photo.on.rectangle.angled",
+                                       color: Color.blue,
+                                       headline: "Graphic Reference",
+                                       content: "get the visual idea of the word by listing all the images related within App."),
+                               Feature(imageName: "books.vertical",
+                                       color: Color.green,
                                        headline: "Translation",
-                                       content: "extremely learner friendly, without any loss in its thoroughness"),
-                               Feature(imageName: "graduationcap",
-                                       color: Color.pink,
-                                       headline: "Extra Wiki",
-                                       content: "extremely learner friendly, without any loss in its thoroughness")]
+                                       content: "translate to your native language of choice for quick understanding."),
+                               Feature(imageName: "globe.badge.chevron.backward",
+                                       color: Color.yellow,
+                                       headline: "Extra Explanation",
+                                       content: "showing a breif summary of the Wikipedia article of the word for extended reading.")]
     
     var body: some View {
         VStack{
             VStack(alignment: .leading){
                 HStack{
                     Text("Upgrade to Pro")
-                        .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
+                        .customFont(name: "AvenirNext-Bold", style: .largeTitle, weight: .semibold)
                         .foregroundColor(Color("fontTitle"))
                         .padding(.top, 20)
                     Spacer()
@@ -62,7 +62,7 @@ struct PurchaseView: View {
                 
                 HStack{
                     Button(action: {
-                        appStore.validate()
+                        appStore.restore()
                     }) {
                         Text("Restore Purchase")
                             .font(.caption)
@@ -75,12 +75,14 @@ struct PurchaseView: View {
                     HStack{
                         Image(systemName: feature.imageName)
                             .font(.largeTitle)
-                            .foregroundColor(feature.color)
+                            .gradientForeground(colors: [Color("fontGray"), feature.color])
+                            .frame(width: 50)
                         
                         VStack(alignment: .leading){
                             Text(feature.headline)
                                 .font(.headline)
                             Text(feature.content)
+                                .font(.callout)
                                 .multilineTextAlignment(.leading)
                                 .lineLimit(3)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -108,9 +110,10 @@ struct PurchaseView: View {
                                 .foregroundColor(Color("fontLink"))
                         }
                         
-                        Text("for only $4.99/m.")
-                            .font(.caption)
-                        
+                        if let price = appStore.localizedPrice {
+                            Text("for only \(price)/m.")
+                                .font(.caption)
+                        }
                     }
                     Spacer()
                 }
@@ -121,6 +124,15 @@ struct PurchaseView: View {
         .foregroundColor(Color("fontBody"))
         .padding(10)
         .background(Color("Background").edgesIgnoringSafeArea(.all))
+    }
+}
+
+extension View {
+    public func gradientForeground(colors: [Color]) -> some View {
+        self.overlay(LinearGradient(gradient: .init(colors: colors),
+                                    startPoint: .topTrailing,
+                                    endPoint: .bottomTrailing))
+            .mask(self)
     }
 }
 
