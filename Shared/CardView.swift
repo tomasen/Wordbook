@@ -249,7 +249,7 @@ struct DefinitionView: View {
                     .frame(alignment: .leading)
                 
                 if ss.synonyms.count > 0 {
-                    SynonymView2(syns: ss.synonyms, popWord: $popSheetWord)
+                    SynonymView(syns: ss.synonyms, popWord: $popSheetWord)
                         .padding(.bottom, 2.5)
                 }
                 if ss.examples.count > 0 {
@@ -262,48 +262,6 @@ struct DefinitionView: View {
         .padding(3)
         .customFont(name: "AvenirNext-Regular", style: .callout, weight: .medium)
     }
-    /*
-    // TODO: try https://swiftuirecipes.com/blog/flow-layout-in-swiftui
-    func SynonymView(synonyms: [String]) -> some View {
-        var syns = [[String]]()
-        var chars = 0
-        var line = 0
-        let maxChar = 20
-        
-        synonyms.forEach{ sy in
-            if !syns.indices.contains(line) {
-                syns.append([String]())
-            }
-            syns[line].append(sy)
-            chars += sy.count
-            // make sure the line wrap if has more then 20 chars
-            if chars > maxChar {
-                line += 1
-                chars = 0
-            }
-        }
-        
-        return HStack(alignment: .firstTextBaseline){
-            Text("Similar:")
-                .fixedSize()
-            VStack(alignment: .leading){
-                ForEach(syns, id: \.self)  { sys in
-                    HStack{
-                        ForEach(sys, id: \.self)  { sy in
-                            Button(action: {
-                                self.popSheetWord = sy
-                            }) {
-                                Text("\(sy)")
-                                    .fixedSize()
-                                    .foregroundColor(Color("fontLink"))
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-     */
     
     func ExampleView(examples: [String]) -> some View {
         VStack(alignment: .leading){
@@ -324,7 +282,13 @@ struct DefinitionView: View {
     }
 }
 
-struct SynonymView2: View {
+struct SynonymView: View {
+    class WordCloudPositionCache {
+        var maxWidth: CGFloat = 0
+        var wordSizes = [CGSize]()
+        var synss: [SynonymItemGroup] = []
+    }
+    
     @Binding var popSheetWord: String
     
     @State private var wordSizes: [CGSize]
@@ -333,6 +297,7 @@ struct SynonymView2: View {
     }
     
     private var synonyms = [String]()
+    private var cache = WordCloudPositionCache()
     
     init(syns: [String], popWord: Binding<String>) {
         for w in syns {
@@ -391,7 +356,16 @@ struct SynonymView2: View {
             return syns
         }
         
-        // let maxWidth = UIScreen.main.bounds.size.width - 200
+        if cache.maxWidth == maxWidth
+            && cache.wordSizes.count == wordSizes.count {
+            return cache.synss
+        }
+        defer {
+            cache.maxWidth = maxWidth
+            cache.wordSizes = wordSizes
+            cache.synss = syns
+        }
+        
         print("MSG: \(maxWidth)")
         
         syns.append(SynonymItemGroup(syns: [SynonymItem](), id: lineNo))
@@ -406,7 +380,7 @@ struct SynonymView2: View {
             syns[lineNo].syns.append(SynonymItem(word: sy, id: idx))
         }
         
-        print(syns)
+        print("MSG: \(syns)")
         return syns
     }
 }
