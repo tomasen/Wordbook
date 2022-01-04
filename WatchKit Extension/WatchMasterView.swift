@@ -11,10 +11,14 @@ struct WatchMasterView: View {
     @ObservedObject var icloud = iCloudState.shared
     @StateObject private var viewModel = WordListViewModel()
     
-    @State private var changeCount = 0
+    @State private var remoteChangeCount = 0
     
-    private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange).receive(on: DispatchQueue.main)
-    private var didRemoteChange =  NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange).receive(on: DispatchQueue.main)
+    private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
+        .debounce(for: 1, scheduler: DispatchQueue.global(qos: .background))
+        .receive(on: DispatchQueue.main)
+    private var didRemoteChange =  NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
+        .debounce(for: 1, scheduler: DispatchQueue.global(qos: .background))
+        .receive(on: DispatchQueue.main)
     
     var body: some View {
         VStack{
@@ -57,7 +61,7 @@ struct WatchMasterView: View {
                         .padding()
                         .foregroundColor(Color("fontGray"))
                     HStack{
-                        Text("\(viewModel.footnote).\(changeCount).\(viewModel.recentLearned.total)")
+                        Text("\(viewModel.footnote).\(remoteChangeCount)")
                             .font(.footnote)
                         Spacer()
                         Image(systemName: icloud.enabled ? "icloud" : "icloud.slash")
@@ -77,10 +81,10 @@ struct WatchMasterView: View {
             }
             .onReceive(didDataChange) { _ in
                 viewModel.update()
-                changeCount = changeCount + 1
             }
             .onReceive(didRemoteChange) { _ in
                 viewModel.update()
+                remoteChangeCount += 1
             }
         }
         .navigationTitle(Text("Wordbook").font(.caption))

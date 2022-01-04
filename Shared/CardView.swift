@@ -351,6 +351,7 @@ struct ExtraExplainSummeryView: View {
                 self.popFullExpl.toggle()
             }
         }
+        .customFont(name: "AvenirNext-Regular", style: .body)
         .padding(3)
     }
 }

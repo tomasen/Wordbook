@@ -68,10 +68,14 @@ class CardViewModel: ObservableObject {
     }
     
     func fetchExplainFromLocalDatabase() {
-        let result = WordDatabaseLocal.shared.explain(word)
-        senses = result.senses
-        pronunciation = result.pronunc
-        sound = result.sound
+        DispatchQueue.global(qos: .background).async {
+            let result = WordDatabaseLocal.shared.explain(self.word)
+            DispatchQueue.main.async {
+                self.senses = result.senses
+                self.pronunciation = result.pronunc
+                self.sound = result.sound
+            }
+        }
     }
     
     // set next word if word is empty

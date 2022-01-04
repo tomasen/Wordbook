@@ -13,7 +13,12 @@ class WordListViewModel: ObservableObject {
     @Published var recentLearned = WordEntryList()
     @Published var recentAdded = WordEntryList()
     @Published var queueWords = WordEntryList()
-    @Published var footnote: Int = 0
+    @Published var updateCounter = 0
+    
+    var footnote: String {
+        "\(updateCounter)"
+    }
+    
     
     private let moc = CoreDataManager.shared.container.viewContext
     
@@ -96,7 +101,7 @@ class WordListViewModel: ObservableObject {
             }
         }
         #endif
-        footnote += 1
+        updateCounter += 1
     }
 }
 
