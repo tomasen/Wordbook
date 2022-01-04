@@ -41,63 +41,65 @@ struct CardView: View {
                 },
                 VStack {
                     Spacer()
-                    VStack{
-                        TextField("\(viewModel.word)", text: $viewModel.word)
-                            .disabled(!self.editing)
-                            .textContentType(.none)
-                            .autocapitalization(.none)
-                            .keyboardType(.alphabet)
-                            .multilineTextAlignment(.center)
-                            .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
-                            .foregroundColor(Color("fontTitle"))
-                            .introspectTextField { textField in
-                                if self.editing {
-                                    textField.becomeFirstResponder()
+                    ScrollView(.vertical) {
+                        VStack{
+                            TextField("\(viewModel.word)", text: $viewModel.word)
+                                .disabled(!self.editing)
+                                .textContentType(.none)
+                                .autocapitalization(.none)
+                                .keyboardType(.alphabet)
+                                .multilineTextAlignment(.center)
+                                .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
+                                .foregroundColor(Color("fontTitle"))
+                                .introspectTextField { textField in
+                                    if self.editing {
+                                        textField.becomeFirstResponder()
+                                    }
+                                }
+                            
+                            if let alsoKnownAs = viewModel.alsoKnownAs {
+                                Text("as. \(alsoKnownAs)")
+                                    .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
+                                    .foregroundColor(Color("fontGray"))
+                            }
+                            
+                            if let pronunciation = viewModel.pronunciation {
+                                Text("\(pronunciation)")
+                                    .customFont(name: "AvenirNext-Regular", style: .caption1, weight: .regular)
+                                    .foregroundColor(Color("fontBody"))
+                            }
+                        }
+                        .padding(.bottom, 17.6)
+                        .padding(.top, 30)
+                        Spacer()
+                        if viewModel.mnemonic != nil {
+                            HStack(alignment: .firstTextBaseline){
+                                VStack(alignment: .trailing) {
+                                    Text("m.")
+                                }
+                                VStack(alignment: .leading){
+                                    Text("\(viewModel.mnemonic!)")
+                                        .multilineTextAlignment(.leading)
+                                        .padding(.bottom, 2.5)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                             }
-                        
-                        if let alsoKnownAs = viewModel.alsoKnownAs {
-                            Text("as. \(alsoKnownAs)")
-                                .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
-                                .foregroundColor(Color("fontGray"))
+                            .padding(3)
+                            .customFont(name: "AvenirNext-Regular", style: .callout, weight: .medium)
+                            Divider()
                         }
                         
-                        if let pronunciation = viewModel.pronunciation {
-                            Text("\(pronunciation)")
-                                .customFont(name: "AvenirNext-Regular", style: .caption1, weight: .regular)
+                        if #available(iOS 15.0, *) {
+                            DefinitionView(viewModel: viewModel)
+                                .foregroundColor(Color("fontBody"))
+                        } else {
+                            // Fallback on earlier versions
+                            DefinitionView(viewModel: viewModel)
                                 .foregroundColor(Color("fontBody"))
                         }
+                        Spacer()
                     }
-                    .padding(.bottom, 17.6)
-                    .padding(.top, 30)
-                    Spacer()
-                    if viewModel.mnemonic != nil {
-                        HStack(alignment: .firstTextBaseline){
-                            VStack(alignment: .trailing) {
-                                Text("m.")
-                            }
-                            VStack(alignment: .leading){
-                                Text("\(viewModel.mnemonic!)")
-                                    .multilineTextAlignment(.leading)
-                                    .padding(.bottom, 2.5)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                        }
-                        .padding(3)
-                        .customFont(name: "AvenirNext-Regular", style: .callout, weight: .medium)
-                        Divider()
-                    }
-                    
-                    if #available(iOS 15.0, *) {
-                        DefinitionView(viewModel: viewModel)
-                            .foregroundColor(Color("fontBody"))
-                    } else {
-                        // Fallback on earlier versions
-                        DefinitionView(viewModel: viewModel)
-                            .foregroundColor(Color("fontBody"))
-                    }
-                    
                     HStack {
                         Button(action:{
                             popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us&tbm=nws"
@@ -210,56 +212,52 @@ struct DefinitionView: View {
     @State private var popSheetWord = ""
     
     var body: some View {
-        VStack {
-            ScrollView(.vertical) {
-                VStack(alignment: .leading) {
-                    ForEach(viewModel.senses) { ss in
-                        GlossView(ss: ss)
-                    }
-                    
-                    if viewModel.extras.count > 0 {
-                        VStack (spacing: 9) {
-                            ForEach(Array(viewModel.extras.keys), id: \.self) { key in
-                                ExtraExplainSummeryView(simpleExpl: viewModel.extras[key]!)
-                            }
-                        }
-                        .padding(.top, 25)
+        
+        VStack(alignment: .leading) {
+            ForEach(viewModel.senses) { sense in
+                GlossView(sense: sense)
+                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+            }
+            
+            if viewModel.extras.count > 0 {
+                VStack (spacing: 9) {
+                    ForEach(Array(viewModel.extras.keys), id: \.self) { key in
+                        ExtraExplainSummeryView(simpleExpl: viewModel.extras[key]!)
                     }
                 }
+                .padding(.top, 25)
             }
-            Spacer()
         }
+        
+        
         .foregroundColor(Color("fontBody"))
         .onAppear{
             viewModel.fetchExplain()
         }
     }
     
-    func GlossView(ss : Sense) -> some View {
+    func GlossView(sense : Sense) -> some View {
         HStack(alignment: .firstTextBaseline){
-            Spacer()
             VStack(alignment: .trailing) {
-                Text("\(ss.pos).")
+                Text("\(sense.pos).")
             }
             VStack(alignment: .leading){
-                Text("\(ss.gloss)")
+                Text("\(sense.gloss)")
                     .multilineTextAlignment(.leading)
                     .padding(.bottom, 2.5)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(alignment: .leading)
                 
-                if ss.synonyms.count > 0 {
-                    SynonymView(syns: ss.synonyms, popWord: $popSheetWord)
+                if sense.synonyms.count > 0 {
+                    SynonymView(syns: sense.synonyms, popWord: $popSheetWord)
                         .padding(.bottom, 2.5)
                 }
-                if ss.examples.count > 0 {
-                    ExampleView(examples: ss.examples)
+                if sense.examples.count > 0 {
+                    ExampleView(examples: sense.examples)
                         .padding(.bottom, 2.5)
                 }
             }
-            Spacer()
         }
-        .padding(3)
         .customFont(name: "AvenirNext-Regular", style: .callout, weight: .medium)
     }
     
@@ -366,8 +364,6 @@ struct SynonymView: View {
             cache.synss = syns
         }
         
-        print("MSG: \(maxWidth)")
-        
         syns.append(SynonymItemGroup(syns: [SynonymItem](), id: lineNo))
         var lineWidth: CGFloat = 0
         for (idx, sy) in synonyms.enumerated() {
@@ -380,7 +376,11 @@ struct SynonymView: View {
             syns[lineNo].syns.append(SynonymItem(word: sy, id: idx))
         }
         
+#if DEBUG
+        print("MSG: \(maxWidth)")
         print("MSG: \(syns)")
+#endif
+        
         return syns
     }
 }
@@ -497,7 +497,7 @@ struct CardView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             NavigationView{
-                CardView("mycelia", true)
+                CardView("jibe", true)
                     .navigationBarTitle("", displayMode: .inline)
             }
         }

@@ -11,7 +11,9 @@ struct TodaysView: View {
     @StateObject var viewModel = TodaysViewModel()
     @StateObject var app = AppStoreManager.shared
     
-    private let didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange).receive(on: DispatchQueue.main)
+    private let didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
+        .debounce(for: 1, scheduler: DispatchQueue.global(qos: .background))
+        .receive(on: DispatchQueue.main)
     
     var body: some View {
         VStack{

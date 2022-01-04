@@ -72,9 +72,11 @@ struct SearchView: View {
                         .padding(17.6)
                     
                     Spacer()
-                    
-                    DefinitionView(viewModel: CardViewModel(viewModel.keyword))
-                    
+                    ScrollView(.vertical) {
+                        DefinitionView(viewModel: CardViewModel(viewModel.keyword))
+                        Spacer()
+                    }
+                    Divider()
                     HStack{
                         Spacer()
                         Button(action: {

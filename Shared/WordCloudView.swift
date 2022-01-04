@@ -16,7 +16,7 @@ struct WordElement {
 
 struct WordCloudView: View {
     private let words: [WordElement]
-    private var positionCache = WordCloudPositionCache()
+    private let positionCache = WordCloudPositionCache()
     
     @State private var canvasRect = CGRect()
     @State private var wordSizes: [CGSize]
@@ -84,8 +84,8 @@ struct WordCloudView: View {
     func checkOutsideBoundry(canvasSize: CGSize, rect: CGRect) -> Bool {
         if rect.maxY > canvasRect.height/2
             || rect.minY < -canvasRect.height/2
-            || rect.center.x > canvasRect.width/2
-            || rect.center.x < -canvasRect.width/2 {
+            || rect.maxX > canvasRect.width/2 + 15
+            || rect.minX < -canvasRect.width/2 - 15 {
             return true
         }
         return false
@@ -106,7 +106,9 @@ struct WordCloudView: View {
             positionCache.wordSizes = wordSizes
             positionCache.positions = pos
         }
-        
+#if DEBUG
+        print("MSG: positionCache.canvasSize == canvasSize \(positionCache.canvasSize == canvasSize) \(positionCache.canvasSize) \(canvasSize) \(positionCache.wordSizes.count)")
+#endif
         if fontSizeRatio == 1 {
             var totalItemArea: CGFloat = 0
             for each in itemSizes {
@@ -128,7 +130,7 @@ struct WordCloudView: View {
         
         let startPos = CGPoint(x: CGFloat.random(in: 0...1) * canvasSize.width * 0.1,
                                y: CGFloat.random(in: 0...1) * canvasSize.height * 0.1)
-        let maxArmLength = sqrt(pow(canvasSize.height/2, 2) + pow(canvasSize.width * 0.5, 2))
+        let maxArmLength = sqrt(pow(canvasSize.height/2 + abs(startPos.y), 2) + pow(canvasSize.width/2 + abs(startPos.x), 2))
         for (index, itemSize) in itemSizes.enumerated() {
             var nextRect = CGRect(origin: CGPoint(x: startPos.x - itemSize.width/2,
                                                   y: startPos.y - itemSize.height/2),
