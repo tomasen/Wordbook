@@ -11,6 +11,8 @@ struct TodaysView: View {
     @StateObject var viewModel = TodaysViewModel()
     @StateObject var app = AppStoreManager.shared
     
+    @State var popPurchaseView = false
+    
     private let didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
         .debounce(for: 1, scheduler: DispatchQueue.global(qos: .background))
         .receive(on: DispatchQueue.main)
@@ -34,7 +36,7 @@ struct TodaysView: View {
             if !app.isProUser {
                 Divider()
                 Button(action: {
-                    app.subscribe()
+                    popPurchaseView.toggle()
                 }) {
                     Text("Upgrade")
                         .font(.callout)
@@ -48,6 +50,9 @@ struct TodaysView: View {
         }
         .onReceive(didDataChange) { _ in
             viewModel.updateStat()
+        }
+        .sheet(isPresented: $popPurchaseView) {
+            PurchaseView(closeMyself: $popPurchaseView)
         }
         .padding(EdgeInsets(top: 12+25, leading: 25, bottom: 12, trailing: 25))
         .customFont(name: "AvenirNext-Regular", style: .body)

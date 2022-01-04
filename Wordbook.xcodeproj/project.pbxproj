@@ -135,6 +135,8 @@
 		88E02E2427061D280015ECEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
 		88E02E2527061D280015ECEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
 		88E042C22783FF2600B568C8 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88E042C12783FF2600B568C8 /* CoreData.framework */; };
+		88E042C427849B5E00B568C8 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E042C327849B5E00B568C8 /* PurchaseView.swift */; };
+		88E042C527849B5E00B568C8 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E042C327849B5E00B568C8 /* PurchaseView.swift */; };
 		88F25273277B63270046BA15 /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
 		88F25274277B63270046BA15 /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
 		88F25276277B6EAD0046BA15 /* WordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFB274F621F00637B61 /* WordManager.swift */; };
@@ -317,6 +319,7 @@
 		88E02E1A27061D280015ECEA /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
 		88E042C0278370DC00B568C8 /* WatchApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchApp.entitlements; sourceTree = "<group>"; };
 		88E042C12783FF2600B568C8 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS8.0.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
+		88E042C327849B5E00B568C8 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
 		88F25272277B63260046BA15 /* ExtraExplainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtraExplainManager.swift; sourceTree = "<group>"; };
 		88F25289277CD9F00046BA15 /* SharedExtensionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedExtensionView.swift; sourceTree = "<group>"; };
 		88F2528B277CDA0E0046BA15 /* WordFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordFilter.swift; sourceTree = "<group>"; };
@@ -429,6 +432,7 @@
 				884EE6F02774AAE20038E990 /* SettingsView.swift */,
 				881295592780BACF008F1B1B /* SearchView.swift */,
 				88F3197B2782D916001FEACE /* TodaysView.swift */,
+				88E042C327849B5E00B568C8 /* PurchaseView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -991,6 +995,7 @@
 				88F2528C277CDA0E0046BA15 /* WordFilter.swift in Sources */,
 				8833ABF9274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF3274F358B00637B61 /* CardView.swift in Sources */,
+				88E042C427849B5E00B568C8 /* PurchaseView.swift in Sources */,
 				8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
 				8812955A2780BACF008F1B1B /* SearchView.swift in Sources */,
 				888C571B277B0B060029090A /* WebPageView.swift in Sources */,
@@ -1028,6 +1033,7 @@
 				88F2528D277CDA0E0046BA15 /* WordFilter.swift in Sources */,
 				8833ABFA274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF4274F358B00637B61 /* CardView.swift in Sources */,
+				88E042C527849B5E00B568C8 /* PurchaseView.swift in Sources */,
 				8803F381276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
 				8812955B2780BACF008F1B1B /* SearchView.swift in Sources */,
 				888C571C277B0B060029090A /* WebPageView.swift in Sources */,
