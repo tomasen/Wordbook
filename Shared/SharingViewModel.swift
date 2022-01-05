@@ -27,7 +27,7 @@ class SharingViewModel: ObservableObject {
                 WordElement(text: word,
                             color: Color(colorPlate.randomElement()!),
                             fontName: fontPlate.randomElement()!,
-                            fontSize: CGFloat.random(in:20...50))
+                            fontSize: CGFloat.random(in:15...100))
             )
         }
 #if targetEnvironment(simulator)

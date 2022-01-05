@@ -36,7 +36,7 @@ struct PurchaseView: View {
                                Feature(imageName: "globe.badge.chevron.backward",
                                        color: Color.green,
                                        headline: "Extra Explanation",
-                                       content: "showing a brief summary of the Wikipedia article of the word for extended reading."),
+                                       content: "showing origins, brief summary of the Wikipedia article, and more about the word for better understanding."),
                                Feature(imageName: "ipad.and.iphone",
                                        color: Color.yellow,
                                        headline: "Sync Across Devices",
