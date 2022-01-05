@@ -24,23 +24,27 @@ struct PurchaseView: View {
     let features: [Feature] = [Feature(imageName: "graduationcap",
                                        color: Color.orange,
                                        headline: "Friendly Dictionary",
-                                       content: "extremely learner friendly dictionary, without any loss in its thoroughness."),
+                                       content: "extremely learner-friendly dictionary, without any loss in its thoroughness."),
                                Feature(imageName: "scroll",
                                        color: Color.red,
                                        headline: "Realworld Shortcuts",
-                                       content: "checking out real world usage from world wide web within the App by just one click."),
+                                       content: "checking out real-world usage from the world wide web within the App with just one click."),
                                Feature(imageName: "photo.on.rectangle.angled",
-                                       color: Color.blue,
+                                       color: Color("fontLink"),
                                        headline: "Graphic Reference",
-                                       content: "get the visual idea of the word by listing all the images related within App."),
-                               Feature(imageName: "books.vertical",
-                                       color: Color.green,
-                                       headline: "Translation",
-                                       content: "translate to your native language of choice for quick understanding."),
+                                       content: "gets the visual idea of the word by listing all the images related within App."),
                                Feature(imageName: "globe.badge.chevron.backward",
-                                       color: Color.yellow,
+                                       color: Color.green,
                                        headline: "Extra Explanation",
-                                       content: "showing a breif summary of the Wikipedia article of the word for extended reading.")]
+                                       content: "showing a brief summary of the Wikipedia article of the word for extended reading."),
+                               Feature(imageName: "ipad.and.iphone",
+                                       color: Color.yellow,
+                                       headline: "Sync Across Devices",
+                                       content: "keep up with the progress across iPad, iPhone, and Apple Watch by turning on iCloud sync."),
+                               Feature(imageName: "books.vertical",
+                                       color: Color("progressGood"),
+                                       headline: "Translation",
+                                       content: "translate to your native language of choice for quick understanding.")]
     
     var body: some View {
         VStack{
@@ -73,11 +77,22 @@ struct PurchaseView: View {
                 
                 ForEach(features) { feature in
                     HStack{
-                        Image(systemName: feature.imageName)
-                            .font(.largeTitle)
+                        if "ipad.and.iphone" == feature.imageName {
+                            ZStack{
+                                Image(systemName: feature.imageName)
+                                    .font(.largeTitle)
+                                Image(systemName: "applewatch")
+                                    .font(.body)
+                                    .offset(x: -9, y: -1)
+                            }
                             .gradientForeground(colors: [Color("fontGray"), feature.color])
                             .frame(width: 50)
-                        
+                        } else {
+                            Image(systemName: feature.imageName)
+                                .font(.largeTitle)
+                                .gradientForeground(colors: [Color("fontGray"), feature.color])
+                                .frame(width: 50)
+                        }
                         VStack(alignment: .leading){
                             Text(feature.headline)
                                 .font(.headline)

@@ -21,6 +21,9 @@ class CardViewModel: ObservableObject {
     }
     
     var summaryExplain: String {
+        if senses.count >= 0 {
+            return "▩▩▩▩▩\n▩▩▩▩▩▩▩▩▩\n▩▩▩"
+        }
         var ret = [String]()
         for s in senses {
             ret.append(s.gloss)

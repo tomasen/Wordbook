@@ -20,15 +20,15 @@ class InAppPurchaseManager: ObservableObject {
     @Published var localizedPrice: String?
     
     var isProSubscriber: Bool {
-        UserPreferences.shared.bool(forKey: "WBCFG_PROVALID") || isSuperUser
-    }
-    
-    var isSuperUser: Bool {
-        UserPreferences.shared.bool(forKey: UserPreferences.DKEY_SUPER_USER)
+        UserPreferences.shared.bool(forKey: "WBCFG_PROVALID")
     }
     
     init() {
         onLaunch()
+    }
+    
+    func toggleProFeatures() {
+        enableProFeatures(!isProSubscriber)
     }
     
     // setProFeatures

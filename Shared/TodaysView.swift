@@ -34,7 +34,6 @@ struct TodaysView: View {
             }
             Spacer()
             if !iapManager.isProSubscriber {
-                Divider()
                 Button(action: {
                     popPurchaseView.toggle()
                 }) {
