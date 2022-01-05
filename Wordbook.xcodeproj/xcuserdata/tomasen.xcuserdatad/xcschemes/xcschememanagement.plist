@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>NotificationExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>9</integer>
+		</dict>
 		<key>SQLite (Playground) 1.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -69,6 +74,11 @@
 			<true/>
 		</dict>
 		<key>8833AC1E274FE90400637B61</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>883B9ACE2785DA6300287A37</key>
 		<dict>
 			<key>primary</key>
 			<true/>

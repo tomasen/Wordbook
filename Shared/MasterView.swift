@@ -26,7 +26,7 @@ struct MasterView: View {
                 
                 if let w = pushReceiver.notificatedWord {
                     HiddenNavigationLink(destination: CardView(w),
-                                         isActive: .constant(true))
+                                         isActive: $pushReceiver.notificatedWord.toBool())
                 }
                 
                 Divider()

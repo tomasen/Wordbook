@@ -25,7 +25,7 @@ struct WatchMasterView: View {
         VStack{
             if let w = pushReceiver.notificatedWord {
                 HiddenNavigationLink(destination: WatchCardView(w),
-                                     isActive: .constant(true))
+                                     isActive: $pushReceiver.notificatedWord.toBool())
             }
             
             List{

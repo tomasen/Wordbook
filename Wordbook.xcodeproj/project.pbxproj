@@ -75,6 +75,11 @@
 		883B9AC72785D49900287A37 /* PushNotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */; };
 		883B9AC82785D49900287A37 /* PushNotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */; };
 		883B9ACA2785D59400287A37 /* PushNotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */; };
+		883B9AD12785DA6300287A37 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 883B9AD02785DA6300287A37 /* UserNotifications.framework */; platformFilter = maccatalyst; };
+		883B9AD32785DA6300287A37 /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 883B9AD22785DA6300287A37 /* UserNotificationsUI.framework */; platformFilter = maccatalyst; };
+		883B9AD62785DA6300287A37 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AD52785DA6300287A37 /* NotificationViewController.swift */; };
+		883B9AD92785DA6300287A37 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 883B9AD72785DA6300287A37 /* MainInterface.storyboard */; };
+		883B9ADD2785DA6300287A37 /* NotificationExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 883B9ACF2785DA6300287A37 /* NotificationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		884EE6CB2770D8710038E990 /* SF-Pro-Text-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6C22770D8710038E990 /* SF-Pro-Text-Bold.otf */; };
 		884EE6CC2770D8710038E990 /* SF-Pro-Text-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6C22770D8710038E990 /* SF-Pro-Text-Bold.otf */; };
 		884EE6CD2770D8710038E990 /* SF-Pro-Text-Ultralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6C32770D8710038E990 /* SF-Pro-Text-Ultralight.otf */; };
@@ -198,6 +203,13 @@
 			remoteGlobalIDString = 8833AC1E274FE90400637B61;
 			remoteInfo = Wordbook;
 		};
+		883B9ADB2785DA6300287A37 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88E02DEC27061D260015ECEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 883B9ACE2785DA6300287A37;
+			remoteInfo = NotificationExtension;
+		};
 		88E02E0927061D280015ECEA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 88E02DEC27061D260015ECEA /* Project object */;
@@ -244,6 +256,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				8833AC29274FE90400637B61 /* ShareExtension.appex in Embed App Extensions */,
+				883B9ADD2785DA6300287A37 /* NotificationExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,6 +299,13 @@
 		8833AC2A274FE90400637B61 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
 		8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordDatabaseLocal.swift; sourceTree = "<group>"; };
 		883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationReceiver.swift; sourceTree = "<group>"; };
+		883B9ACF2785DA6300287A37 /* NotificationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		883B9AD02785DA6300287A37 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		883B9AD22785DA6300287A37 /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
+		883B9AD52785DA6300287A37 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		883B9AD82785DA6300287A37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		883B9ADA2785DA6300287A37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		883B9ADE2785DA6300287A37 /* NotificationExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationExtension.entitlements; sourceTree = "<group>"; };
 		884EE6C22770D8710038E990 /* SF-Pro-Text-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Bold.otf"; sourceTree = "<group>"; };
 		884EE6C32770D8710038E990 /* SF-Pro-Text-Ultralight.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Ultralight.otf"; sourceTree = "<group>"; };
 		884EE6C42770D8710038E990 /* SF-Pro-Text-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Regular.otf"; sourceTree = "<group>"; };
@@ -357,6 +377,15 @@
 				88F25285277B7E160046BA15 /* SwiftSoup in Frameworks */,
 				8819C8FC2767BACC00FFD892 /* Introspect in Frameworks */,
 				88F25280277B74410046BA15 /* WikipediaKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		883B9ACC2785DA6300287A37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				883B9AD32785DA6300287A37 /* UserNotificationsUI.framework in Frameworks */,
+				883B9AD12785DA6300287A37 /* UserNotifications.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -477,6 +506,8 @@
 				8812953D277F26DF008F1B1B /* CloudKit.framework */,
 				8833AC05274FDEDC00637B61 /* CloudKit.framework */,
 				8833AC02274FDE9500637B61 /* CloudKit.framework */,
+				883B9AD02785DA6300287A37 /* UserNotifications.framework */,
+				883B9AD22785DA6300287A37 /* UserNotificationsUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -491,6 +522,17 @@
 				8833AC26274FE90400637B61 /* Info.plist */,
 			);
 			path = ShareExtension;
+			sourceTree = "<group>";
+		};
+		883B9AD42785DA6300287A37 /* NotificationExtension */ = {
+			isa = PBXGroup;
+			children = (
+				883B9ADE2785DA6300287A37 /* NotificationExtension.entitlements */,
+				883B9AD52785DA6300287A37 /* NotificationViewController.swift */,
+				883B9AD72785DA6300287A37 /* MainInterface.storyboard */,
+				883B9ADA2785DA6300287A37 /* Info.plist */,
+			);
+			path = NotificationExtension;
 			sourceTree = "<group>";
 		};
 		884EE6C12770D85B0038E990 /* Fonts */ = {
@@ -557,6 +599,7 @@
 				88E02E0227061D270015ECEA /* macOS */,
 				88E02E0B27061D280015ECEA /* Tests iOS */,
 				88E02E1727061D280015ECEA /* Tests macOS */,
+				883B9AD42785DA6300287A37 /* NotificationExtension */,
 				88E02DFC27061D270015ECEA /* Products */,
 				8833AC01274FDE9500637B61 /* Frameworks */,
 			);
@@ -586,6 +629,7 @@
 				8833AC1F274FE90400637B61 /* ShareExtension.appex */,
 				88129512277F1EEA008F1B1B /* Wordbook.app */,
 				8812951A277F1EEC008F1B1B /* WatchKit Extension.appex */,
+				883B9ACF2785DA6300287A37 /* NotificationExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -682,6 +726,23 @@
 			productReference = 8833AC1F274FE90400637B61 /* ShareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		883B9ACE2785DA6300287A37 /* NotificationExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 883B9ADF2785DA6300287A37 /* Build configuration list for PBXNativeTarget "NotificationExtension" */;
+			buildPhases = (
+				883B9ACB2785DA6300287A37 /* Sources */,
+				883B9ACC2785DA6300287A37 /* Frameworks */,
+				883B9ACD2785DA6300287A37 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NotificationExtension;
+			productName = NotificationExtension;
+			productReference = 883B9ACF2785DA6300287A37 /* NotificationExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		88E02DFA27061D270015ECEA /* Wordbook (iOS) */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 88E02E2827061D280015ECEA /* Build configuration list for PBXNativeTarget "Wordbook (iOS)" */;
@@ -697,6 +758,7 @@
 			dependencies = (
 				8833AC28274FE90400637B61 /* PBXTargetDependency */,
 				88129531277F1EEC008F1B1B /* PBXTargetDependency */,
+				883B9ADC2785DA6300287A37 /* PBXTargetDependency */,
 			);
 			name = "Wordbook (iOS)";
 			packageProductDependencies = (
@@ -786,6 +848,9 @@
 					8833AC1E274FE90400637B61 = {
 						CreatedOnToolsVersion = 13.1;
 					};
+					883B9ACE2785DA6300287A37 = {
+						CreatedOnToolsVersion = 13.1;
+					};
 					88E02DFA27061D270015ECEA = {
 						CreatedOnToolsVersion = 13.0;
 					};
@@ -830,6 +895,7 @@
 				8833AC1E274FE90400637B61 /* ShareExtension */,
 				88129511277F1EEA008F1B1B /* WatchApp */,
 				88129519277F1EEC008F1B1B /* WatchKit Extension */,
+				883B9ACE2785DA6300287A37 /* NotificationExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -864,6 +930,14 @@
 				8833AC25274FE90400637B61 /* MainInterface.storyboard in Resources */,
 				88F2528F277E1DD70046BA15 /* Assets.xcassets in Resources */,
 				8833AC2F274FE98500637B61 /* wordnet-lite.sqlite in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		883B9ACD2785DA6300287A37 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				883B9AD92785DA6300287A37 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -975,6 +1049,14 @@
 				88F25278277B6EC00046BA15 /* CoreDataManager.swift in Sources */,
 				88F25279277B6F2C0046BA15 /* Wordbook.xcdatamodeld in Sources */,
 				88F517D827553EED004C174B /* Helper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		883B9ACB2785DA6300287A37 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				883B9AD62785DA6300287A37 /* NotificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1092,6 +1174,11 @@
 			target = 8833AC1E274FE90400637B61 /* ShareExtension */;
 			targetProxy = 8833AC27274FE90400637B61 /* PBXContainerItemProxy */;
 		};
+		883B9ADC2785DA6300287A37 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 883B9ACE2785DA6300287A37 /* NotificationExtension */;
+			targetProxy = 883B9ADB2785DA6300287A37 /* PBXContainerItemProxy */;
+		};
 		88E02E0A27061D280015ECEA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 88E02DFA27061D270015ECEA /* Wordbook (iOS) */;
@@ -1109,6 +1196,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				8833AC24274FE90400637B61 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+		883B9AD72785DA6300287A37 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				883B9AD82785DA6300287A37 /* Base */,
 			);
 			name = MainInterface.storyboard;
 			sourceTree = "<group>";
@@ -1288,6 +1383,65 @@
 				);
 				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.words;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		883B9AE02785DA6300287A37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NotificationExtension/NotificationExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 300;
+				DEVELOPMENT_TEAM = 9ZARAPZJX4;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotificationExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NotificationExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.NotificationExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		883B9AE12785DA6300287A37 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NotificationExtension/NotificationExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 300;
+				DEVELOPMENT_TEAM = 9ZARAPZJX4;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotificationExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NotificationExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable.NotificationExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1668,6 +1822,15 @@
 			buildConfigurations = (
 				8833AC2C274FE90400637B61 /* Debug */,
 				8833AC2D274FE90400637B61 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		883B9ADF2785DA6300287A37 /* Build configuration list for PBXNativeTarget "NotificationExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				883B9AE02785DA6300287A37 /* Debug */,
+				883B9AE12785DA6300287A37 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
