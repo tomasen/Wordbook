@@ -10,6 +10,7 @@ import SwiftUI
 struct WatchMasterView: View {
     @ObservedObject var icloud = iCloudState.shared
     @StateObject private var viewModel = WordListViewModel()
+    @StateObject private var pushReceiver = PushNotificationReceiver.shared
     
     @State private var remoteChangeCount = 0
     
@@ -22,6 +23,11 @@ struct WatchMasterView: View {
     
     var body: some View {
         VStack{
+            if let w = pushReceiver.notificatedWord {
+                HiddenNavigationLink(destination: WatchCardView(w),
+                                     isActive: .constant(true))
+            }
+            
             List{
                 NavigationLink(destination: WatchCardView()) {
                     HStack{

@@ -9,6 +9,8 @@ import SwiftUI
 
 @main
 struct WatchApp: App {
+    private let pushReceiver = PushNotificationReceiver.shared
+    
     @SceneBuilder var body: some Scene {
         WindowGroup {
             NavigationView {

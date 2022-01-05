@@ -77,6 +77,20 @@ struct RectGetter: View {
     }
 }
 
+
+struct HiddenNavigationLink<Destination : View>: View {
+    public var destination:  Destination
+    public var isActive: Binding<Bool>
+
+    var body: some View {
+        NavigationLink(destination: self.destination, isActive: self.isActive)
+        { EmptyView() }
+            .frame(width: 0, height: 0)
+            .disabled(true)
+            .hidden()
+    }
+}
+
 extension Binding where Value == String {
     func toBool() -> Binding<Bool> {
         return Binding<Bool>( get: { self.wrappedValue != "" },

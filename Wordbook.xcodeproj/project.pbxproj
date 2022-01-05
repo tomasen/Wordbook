@@ -71,6 +71,10 @@
 		8833AC36274FF33B00637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC35274FF33B00637B61 /* SQLite */; };
 		8833AC38274FF53300637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC37274FF53300637B61 /* SQLite */; };
 		8833AC3A274FF53900637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC39274FF53900637B61 /* SQLite */; };
+		883B9AC62785D49900287A37 /* PushNotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */; };
+		883B9AC72785D49900287A37 /* PushNotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */; };
+		883B9AC82785D49900287A37 /* PushNotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */; };
+		883B9ACA2785D59400287A37 /* PushNotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */; };
 		884EE6CB2770D8710038E990 /* SF-Pro-Text-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6C22770D8710038E990 /* SF-Pro-Text-Bold.otf */; };
 		884EE6CC2770D8710038E990 /* SF-Pro-Text-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6C22770D8710038E990 /* SF-Pro-Text-Bold.otf */; };
 		884EE6CD2770D8710038E990 /* SF-Pro-Text-Ultralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6C32770D8710038E990 /* SF-Pro-Text-Ultralight.otf */; };
@@ -281,6 +285,7 @@
 		8833AC26274FE90400637B61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8833AC2A274FE90400637B61 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
 		8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordDatabaseLocal.swift; sourceTree = "<group>"; };
+		883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationReceiver.swift; sourceTree = "<group>"; };
 		884EE6C22770D8710038E990 /* SF-Pro-Text-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Bold.otf"; sourceTree = "<group>"; };
 		884EE6C32770D8710038E990 /* SF-Pro-Text-Ultralight.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Ultralight.otf"; sourceTree = "<group>"; };
 		884EE6C42770D8710038E990 /* SF-Pro-Text-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Regular.otf"; sourceTree = "<group>"; };
@@ -440,14 +445,15 @@
 		8833ABF0274F34F300637B61 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				884EE6E6277461120038E990 /* UserPreferences.swift */,
 				884EE6E9277472990038E990 /* APIClient.swift */,
+				884EE6E6277461120038E990 /* UserPreferences.swift */,
 				884EE6E027745E840038E990 /* InAppPurchaseManager.swift */,
+				88F25272277B63260046BA15 /* ExtraExplainManager.swift */,
 				8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */,
 				88E02DF527061D260015ECEA /* CoreDataManager.swift */,
 				8833ABFB274F621F00637B61 /* WordManager.swift */,
 				8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */,
-				88F25272277B63260046BA15 /* ExtraExplainManager.swift */,
+				883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -925,6 +931,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				88129524277F1EEC008F1B1B /* NotificationController.swift in Sources */,
+				883B9ACA2785D59400287A37 /* PushNotificationReceiver.swift in Sources */,
 				88129554277F70D7008F1B1B /* InAppPurchaseManager.swift in Sources */,
 				88129545277F6B61008F1B1B /* ViewHelper.swift in Sources */,
 				8812954F277F709A008F1B1B /* WordManager.swift in Sources */,
@@ -957,6 +964,7 @@
 				88F319812782DDD2001FEACE /* TodaysViewModel.swift in Sources */,
 				88F25288277CD7030046BA15 /* UserPreferences.swift in Sources */,
 				888C3CAC2750B8BF003CE213 /* ViewHelper.swift in Sources */,
+				883B9AC82785D49900287A37 /* PushNotificationReceiver.swift in Sources */,
 				8833AC33274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
 				88F2527A277B6F3B0046BA15 /* iCloudState.swift in Sources */,
 				88F25276277B6EAD0046BA15 /* WordManager.swift in Sources */,
@@ -995,6 +1003,7 @@
 				88F2528C277CDA0E0046BA15 /* WordFilter.swift in Sources */,
 				8833ABF9274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF3274F358B00637B61 /* CardView.swift in Sources */,
+				883B9AC62785D49900287A37 /* PushNotificationReceiver.swift in Sources */,
 				88E042C427849B5E00B568C8 /* PurchaseView.swift in Sources */,
 				8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
 				8812955A2780BACF008F1B1B /* SearchView.swift in Sources */,
@@ -1033,6 +1042,7 @@
 				88F2528D277CDA0E0046BA15 /* WordFilter.swift in Sources */,
 				8833ABFA274F3F9200637B61 /* WordListView.swift in Sources */,
 				8833ABF4274F358B00637B61 /* CardView.swift in Sources */,
+				883B9AC72785D49900287A37 /* PushNotificationReceiver.swift in Sources */,
 				88E042C527849B5E00B568C8 /* PurchaseView.swift in Sources */,
 				8803F381276F8FAC00E46DAF /* WordCloudView.swift in Sources */,
 				8812955B2780BACF008F1B1B /* SearchView.swift in Sources */,

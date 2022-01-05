@@ -10,6 +10,7 @@ import CoreData
 
 struct MasterView: View {
     @ObservedObject var icloud = iCloudState.shared
+    @StateObject var pushReceiver = PushNotificationReceiver.shared
     @State private var tabSelection = 1
     @State private var popSearchView = false
     
@@ -21,6 +22,11 @@ struct MasterView: View {
                     WordListView()
                 default:
                     TodaysView()
+                }
+                
+                if let w = pushReceiver.notificatedWord {
+                    HiddenNavigationLink(destination: CardView(w),
+                                         isActive: .constant(true))
                 }
                 
                 Divider()

@@ -11,7 +11,8 @@ import SwiftUI
 struct WordbookApp: App {
     @Environment(\.scenePhase) private var scenePhase: ScenePhase
 
-    let persistenceController = CoreDataManager.shared
+    private let persistenceController = CoreDataManager.shared
+    private let pushReceiver = PushNotificationReceiver.shared
 
     var body: some Scene {
         WindowGroup {
