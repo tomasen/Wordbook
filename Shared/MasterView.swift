@@ -50,6 +50,7 @@ struct MasterView: View {
                     }
                     Spacer()
                 }
+                .padding(.top, 5)
             }
             .navigationBarTitle("Wordbook", displayMode:NavigationBarItem.TitleDisplayMode.inline)
             .navigationBarItems(leading: leadingBarItem(),
@@ -73,7 +74,6 @@ struct MasterView: View {
     func trailingBarItem() -> some View {
         HStack{
             Spacer()
-            
             Button( action:{
                 popSearchView.toggle()
             } ) {
@@ -104,4 +104,3 @@ struct DefaultView_Previews: PreviewProvider {
         }
     }
 }
-

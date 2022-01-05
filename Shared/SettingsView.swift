@@ -28,7 +28,7 @@ struct SettingsView: View {
                 Section() {
                     NavigationLink(destination: TextView(text: String.getContentOfFile("about", "txt"))
                                     .onTapGesture(count: 5) {
-                        AppStoreManager.shared.enableProFeatures(true)
+                        InAppPurchaseManager.shared.enableProFeatures(true)
                     }
                     ){
                         Text("About")

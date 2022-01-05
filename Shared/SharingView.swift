@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SharingView: View {
-    @StateObject var viewModel = SharingViewModel()
+    @StateObject var viewModel = SharingViewModel.shared
     
     @State private var popSystemShareView = false
     

@@ -312,7 +312,9 @@ class WordManager {
     // ------- Date Functions -------
     let cutoffHour = 4
     var pseudoTime: Date?
-    lazy var today: Int32 = day(from: Date())
+    var today: Int32 {
+        day(from: Date())
+    }
     
     // day of today, how many days since 2000-01-01
     // 4AM is the beginning of reset cycle

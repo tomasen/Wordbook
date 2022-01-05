@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 class SharingViewModel: ObservableObject {
+    static let shared = SharingViewModel()
+    
     var shareViewRect: CGRect = CGRect.zero
     var systemSharingImage: UIImage?
     

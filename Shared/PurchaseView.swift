@@ -10,7 +10,7 @@ import SwiftUI
 struct PurchaseView: View {
     @Binding var closeMyself: Bool
     
-    @StateObject var appStore = AppStoreManager.shared
+    @StateObject var iapManager = InAppPurchaseManager.shared
     
     struct Feature: Identifiable {
         var imageName: String
@@ -62,7 +62,7 @@ struct PurchaseView: View {
                 
                 HStack{
                     Button(action: {
-                        appStore.restore()
+                        iapManager.restore()
                     }) {
                         Text("Restore Purchase")
                             .font(.caption)
@@ -103,14 +103,14 @@ struct PurchaseView: View {
                             .font(.caption)
                         
                         Button(action: {
-                            appStore.subscribe()
+                            iapManager.subscribe()
                         }) {
                             Text("Upgrade Now")
                                 .font(.title)
                                 .foregroundColor(Color("fontLink"))
                         }
                         
-                        if let price = appStore.localizedPrice {
+                        if let price = iapManager.localizedPrice {
                             Text("for only \(price)/m.")
                                 .font(.caption)
                         }

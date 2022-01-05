@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TodaysView: View {
     @StateObject var viewModel = TodaysViewModel()
-    @StateObject var app = AppStoreManager.shared
+    @StateObject var iapManager = InAppPurchaseManager.shared
     
     @State var popPurchaseView = false
     
@@ -33,7 +33,7 @@ struct TodaysView: View {
                 StartButton(viewModel: viewModel)
             }
             Spacer()
-            if !app.isProUser {
+            if !iapManager.isProSubscriber {
                 Divider()
                 Button(action: {
                     popPurchaseView.toggle()

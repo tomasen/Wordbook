@@ -37,7 +37,7 @@
 		88129551277F70B2008F1B1B /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E9277472990038E990 /* APIClient.swift */; };
 		88129552277F70BE008F1B1B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
 		88129553277F70CA008F1B1B /* PausableTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE7032775C0630038E990 /* PausableTimer.swift */; };
-		88129554277F70D7008F1B1B /* AppStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E027745E840038E990 /* AppStoreManager.swift */; };
+		88129554277F70D7008F1B1B /* InAppPurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E027745E840038E990 /* InAppPurchaseManager.swift */; };
 		88129556277F7106008F1B1B /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88129555277F7106008F1B1B /* SwiftyStoreKit */; };
 		88129557277F7138008F1B1B /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
 		88129558277F7225008F1B1B /* wordnet-lite.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */; };
@@ -89,8 +89,8 @@
 		884EE6DA2770D8710038E990 /* SF-Pro-Text-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6C92770D8710038E990 /* SF-Pro-Text-Heavy.otf */; };
 		884EE6DB2770D8710038E990 /* SF-Pro-Text-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6CA2770D8710038E990 /* SF-Pro-Text-Semibold.otf */; };
 		884EE6DC2770D8710038E990 /* SF-Pro-Text-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 884EE6CA2770D8710038E990 /* SF-Pro-Text-Semibold.otf */; };
-		884EE6E127745E840038E990 /* AppStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E027745E840038E990 /* AppStoreManager.swift */; };
-		884EE6E227745E840038E990 /* AppStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E027745E840038E990 /* AppStoreManager.swift */; };
+		884EE6E127745E840038E990 /* InAppPurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E027745E840038E990 /* InAppPurchaseManager.swift */; };
+		884EE6E227745E840038E990 /* InAppPurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E027745E840038E990 /* InAppPurchaseManager.swift */; };
 		884EE6E52774600E0038E990 /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 884EE6E42774600E0038E990 /* SwiftyStoreKit */; };
 		884EE6E7277461120038E990 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
 		884EE6E8277461120038E990 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
@@ -290,7 +290,7 @@
 		884EE6C82770D8710038E990 /* SF-Pro-Text-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Light.otf"; sourceTree = "<group>"; };
 		884EE6C92770D8710038E990 /* SF-Pro-Text-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Heavy.otf"; sourceTree = "<group>"; };
 		884EE6CA2770D8710038E990 /* SF-Pro-Text-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Semibold.otf"; sourceTree = "<group>"; };
-		884EE6E027745E840038E990 /* AppStoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStoreManager.swift; sourceTree = "<group>"; };
+		884EE6E027745E840038E990 /* InAppPurchaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppPurchaseManager.swift; sourceTree = "<group>"; };
 		884EE6E6277461120038E990 /* UserPreferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
 		884EE6E9277472990038E990 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		884EE6ED27747DF20038E990 /* iCloudState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudState.swift; sourceTree = "<group>"; };
@@ -442,7 +442,7 @@
 			children = (
 				884EE6E6277461120038E990 /* UserPreferences.swift */,
 				884EE6E9277472990038E990 /* APIClient.swift */,
-				884EE6E027745E840038E990 /* AppStoreManager.swift */,
+				884EE6E027745E840038E990 /* InAppPurchaseManager.swift */,
 				8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */,
 				88E02DF527061D260015ECEA /* CoreDataManager.swift */,
 				8833ABFB274F621F00637B61 /* WordManager.swift */,
@@ -925,7 +925,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				88129524277F1EEC008F1B1B /* NotificationController.swift in Sources */,
-				88129554277F70D7008F1B1B /* AppStoreManager.swift in Sources */,
+				88129554277F70D7008F1B1B /* InAppPurchaseManager.swift in Sources */,
 				88129545277F6B61008F1B1B /* ViewHelper.swift in Sources */,
 				8812954F277F709A008F1B1B /* WordManager.swift in Sources */,
 				88F31985278301AC001FEACE /* WordListViewModel.swift in Sources */,
@@ -1001,7 +1001,7 @@
 				888C571B277B0B060029090A /* WebPageView.swift in Sources */,
 				88E02E2027061D280015ECEA /* MasterView.swift in Sources */,
 				884EE7042775C0630038E990 /* PausableTimer.swift in Sources */,
-				884EE6E127745E840038E990 /* AppStoreManager.swift in Sources */,
+				884EE6E127745E840038E990 /* InAppPurchaseManager.swift in Sources */,
 				88F25273277B63270046BA15 /* ExtraExplainManager.swift in Sources */,
 				888C3CB22750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833ABFF274F65D900637B61 /* CardViewModel.swift in Sources */,
@@ -1039,7 +1039,7 @@
 				888C571C277B0B060029090A /* WebPageView.swift in Sources */,
 				88E02E2127061D280015ECEA /* MasterView.swift in Sources */,
 				884EE7052775C0630038E990 /* PausableTimer.swift in Sources */,
-				884EE6E227745E840038E990 /* AppStoreManager.swift in Sources */,
+				884EE6E227745E840038E990 /* InAppPurchaseManager.swift in Sources */,
 				88F25274277B63270046BA15 /* ExtraExplainManager.swift in Sources */,
 				888C3CB32750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833AC00274F65D900637B61 /* CardViewModel.swift in Sources */,

@@ -11,26 +11,28 @@ import StoreKit
 import SwiftUI
 import SwiftyStoreKit
 
-class AppStoreManager: ObservableObject {
+class InAppPurchaseManager: ObservableObject {
     private let productId = "ai.sagittarius.memorable.iap.better.explanation.monthly"
     private let sharedSecret = "1396e8fa1d95489f873667c7d8d79a88"
     
-    static let shared = AppStoreManager()
+    static let shared = InAppPurchaseManager()
     
-    @Published var isProUser: Bool
     @Published var localizedPrice: String?
     
-    init() {
-        self.isProUser = UserPreferences.shared.bool(forKey: "WBCFG_PROVALID") || UserPreferences.shared.bool(forKey: UserPreferences.DKEY_SUPER_USER)
-        self.onLaunch()
+    var isProSubscriber: Bool {
+        UserPreferences.shared.bool(forKey: "WBCFG_PROVALID") || isSuperUser
     }
     
+    var isSuperUser: Bool {
+        UserPreferences.shared.bool(forKey: UserPreferences.DKEY_SUPER_USER)
+    }
+    
+    init() {
+        onLaunch()
+    }
+    
+    // setProFeatures
     func enableProFeatures(_ v: Bool) {
-        if UserPreferences.shared.bool(forKey: UserPreferences.DKEY_SUPER_USER) {
-            self.isProUser = true
-            return
-        }
-        self.isProUser = v
         UserPreferences.shared.set(v, forKey: "WBCFG_PROVALID")
     }
     

@@ -20,6 +20,7 @@ struct CardView: View {
     @State private var popWebPage = ""
     
     private var defaultWord = ""
+    private let iapManager = InAppPurchaseManager.shared
     
     init(_ word: String = "",
          _ showDefinition: Bool = false,
@@ -127,7 +128,11 @@ struct CardView: View {
                     }
                     .buttonStyle(LinkButtonStyle())
                     .sheet(isPresented: $popWebPage.toBool()) {
-                        WebPageView(url: URL(string: popWebPage)!)
+                        if iapManager.isProSubscriber {
+                            WebPageView(url: URL(string: popWebPage)!)
+                        } else {
+                            PurchaseView(closeMyself: .constant(true))
+                        }
                     }
                 },
                 tap: {
@@ -411,8 +416,12 @@ struct ExtraExplainSummeryView: View {
                 
             }
             .sheet(isPresented: $popFullExpl) {
-                ExtraExplainDetailView(extraExpl: simpleExpl, closeMyself: $popFullExpl)
-                    .environment(\.colorScheme, .dark)
+                if InAppPurchaseManager.shared.isProSubscriber {
+                    ExtraExplainDetailView(extraExpl: simpleExpl, closeMyself: $popFullExpl)
+                        .environment(\.colorScheme, .dark)
+                } else {
+                    PurchaseView(closeMyself: $popFullExpl)
+                }
             }
             .padding(.init(top: 9, leading: 15, bottom: 9, trailing: 15))
             .overlay(
