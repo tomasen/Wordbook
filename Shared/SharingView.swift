@@ -70,6 +70,7 @@ struct SharingView: View {
             Divider()
             
             NextButtons()
+                .padding()
         }
         .navigationBarItems(trailing: trailingBarItem())
         .foregroundColor(Color("fontBody"))
