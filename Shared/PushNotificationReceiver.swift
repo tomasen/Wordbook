@@ -34,6 +34,8 @@ class PushNotificationReceiver: NSObject, ObservableObject, UNUserNotificationCe
         
         // cancle all pending notification
         center.removePendingNotificationRequests(withIdentifiers:["wordbook.notify"])
+        
+        center.removeAllDeliveredNotifications()
          
         completionHandler()
     }

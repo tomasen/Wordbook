@@ -233,8 +233,9 @@ struct DefinitionView: View {
                 .padding(.top, 25)
             }
         }
-        
-        
+        .sheet(isPresented: $popSheetWord.toBool()) {
+            CardView(popSheetWord, true, true)
+        }
         .foregroundColor(Color("fontBody"))
         .onAppear{
             viewModel.fetchExplain()
@@ -254,8 +255,13 @@ struct DefinitionView: View {
                     .frame(alignment: .leading)
                 
                 if sense.synonyms.count > 0 {
-                    SynonymView(syns: sense.synonyms, popWord: $popSheetWord)
-                        .padding(.bottom, 2.5)
+                    if #available(iOS 15.0, *) {
+                        SynonymView15(syns: sense.synonyms)
+                            .padding(.bottom, 2.5)
+                    } else {
+                        SynonymView(syns: sense.synonyms, popWord: $popSheetWord)
+                            .padding(.bottom, 2.5)
+                    }
                 }
                 if sense.examples.count > 0 {
                     ExampleView(examples: sense.examples)
@@ -264,6 +270,28 @@ struct DefinitionView: View {
             }
         }
         .customFont(name: "AvenirNext-Regular", style: .callout, weight: .medium)
+    }
+    
+    @available(iOS 15.0, *)
+    func SynonymView15(syns: [String]) -> some View {
+        var texts = [String]()
+        for syn in syns {
+            if syn.rangeOfCharacter(from: .whitespacesAndNewlines) == nil {
+                texts.append("[\(syn)](wordbook://pop/\(syn.urlencode()))")
+            }
+        }
+        let markdownText: AttributedString = try! AttributedString(markdown: texts.joined(separator: " "), options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace))
+        
+        return HStack(alignment: .firstTextBaseline){
+            Text("Similar:")
+                .fixedSize()
+            VStack(alignment: .leading){
+                Text(markdownText)
+                    .onOpenURL{ url in
+                        popSheetWord = url.lastPathComponent
+                    }
+            }
+        }
     }
     
     func ExampleView(examples: [String]) -> some View {

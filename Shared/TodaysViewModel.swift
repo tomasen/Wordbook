@@ -22,6 +22,8 @@ class TodaysViewModel: ObservableObject {
     @Published var totalWordsInWordbook: Int = 0
     @Published var totalLearningDays: Int = 0
     
+    @Published var goal: Int16 = 15
+    
     private let moc = CoreDataManager.shared.container.viewContext
     
     func update() {
@@ -37,6 +39,7 @@ class TodaysViewModel: ObservableObject {
         working = e.working
         good = e.good
         queue = max(e.goal - e.working - e.good, 0)
+        goal = max(e.goal, 1)
     }
 }
 

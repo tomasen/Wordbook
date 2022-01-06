@@ -239,10 +239,8 @@ class WordManager {
         guard let card = ensureWordCard(word) else {
             fatalError()
         }
-        defer {
-            try! moc.save()
-        }
-        print ("Answering \(word) -> \(rate)")
+        
+        print ("MSG: Answering \(word) -> \(rate)")
         
         AnswerHistory.add(rate, card: card, duration: PausableTimer.shared.end())
         
@@ -308,12 +306,35 @@ class WordManager {
         return ret
     }
     
+    // return dictionary of Word: RatingCount
+    // RatingCount: GOOD = 0, VAGUE = 1, NOIDEA = 2
+    func wordsOfTodayWithRatingCount() -> [String: Int] {
+        var ret = [String: Int]()
+        
+        let res = AnswerHistory.fetch(BeginOfTheDay(today), EndOfTheDay(today))
+        for ans in res {
+            if let w = ans.word?.word {
+                print("MSG: \(w) \(ans.answer)")
+                switch ans.answer {
+                case CardRating.VAGUE.rawValue:
+                    ret[w] = 1 + (ret[w] ?? 0)
+                case CardRating.NOIDEA.rawValue:
+                    ret[w] = 2 + (ret[w] ?? 0)
+                default: // case CardRating.WELLKNOWN.rawValue:
+                    if ret[w] == nil {
+                        ret[w] = 0
+                    }
+                }
+            }
+        }
+        return ret
+    }
     
     // ------- Date Functions -------
     let cutoffHour = 4
     var pseudoTime: Date?
     var today: Int32 {
-        day(from: Date())
+        day(from: now())
     }
     
     // day of today, how many days since 2000-01-01
@@ -401,8 +422,6 @@ extension AnswerHistory {
         log.date = WordManager.shared.now()
         log.answer = rating.rawValue
         log.duration = duration
-        
-        try! moc.save()
     }
     
     static func fetch(_ begin: Date, _ end: Date) -> [AnswerHistory] {

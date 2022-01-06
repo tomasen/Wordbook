@@ -22,14 +22,33 @@ class SharingViewModel: ObservableObject {
     
     var wordsOfToday: [WordElement] {
         var words = [WordElement]()
-        for word in WordManager.shared.wordsOfToday() {
-            words.append(
-                WordElement(text: word,
-                            color: Color(colorPlate.randomElement()!),
-                            fontName: fontPlate.randomElement()!,
-                            fontSize: CGFloat.random(in:15...100))
-            )
+        
+        let answersToday = WordManager.shared.wordsOfTodayWithRatingCount()
+        if answersToday.count == 0 {
+            return words
         }
+        
+        let sortedOne = answersToday.sorted { (first, second) -> Bool in
+            if first.value == second.value {
+                return first.key < second.key
+            }
+            return first.value < second.value
+        }
+        
+        let maxRating = max(sortedOne.last!.value, 1)
+        let minRating = sortedOne.first!.value
+        var step = 0
+        for idx in 0...sortedOne.count-1 {
+            let word = sortedOne[idx % 2 == 0 ? sortedOne.count - 1 - idx/2 : idx / 2 ]
+            words.append(
+                WordElement(text: word.key,
+                            color: Color(colorPlate[step % colorPlate.count]),
+                            fontName: fontPlate[step % fontPlate.count],
+                            fontSize: CGFloat(40 * (word.value - minRating) / maxRating + 20))
+            )
+            step += 1
+        }
+        print("MSG: \(words) \(sortedOne)")
 #if targetEnvironment(simulator)
         if words.count == 0 {
             words = [WordElement].generate(50)
@@ -55,7 +74,8 @@ class SharingViewModel: ObservableObject {
     }
     
     var todayStudyTimeInSeconds: TimeInterval {
-        return WordManager.shared.fetchEngagement().duration
+        return WordManager.shared.fetchEngagement().duration//
+        
     }
 }
 

@@ -33,6 +33,7 @@ struct TodaysView: View {
                 StartButton(viewModel: viewModel)
             }
             Spacer()
+            
             if !iapManager.isProSubscriber {
                 Button(action: {
                     popPurchaseView.toggle()
@@ -117,7 +118,7 @@ struct StartButton: View {
         : 0
     }
     var progressGoalTotal: CGFloat {
-        CGFloat(viewModel.working + viewModel.good + viewModel.queue)
+        CGFloat(viewModel.goal)
     }
     
     var body: some View {
@@ -149,7 +150,7 @@ struct StartButton: View {
                         VStack {
                             Spacer()
                             VStack{
-                                Text("\(Int(progressWorking * 100.0))%")
+                                Text("\(Int(progressGood * 100.0))%")
                                     .foregroundColor(Color("startButtonText"))
                                     .customFont(name: "HelveticaNeue-Bold", style: .largeTitle)
                                     .padding(0)
