@@ -23,8 +23,16 @@ class InAppPurchaseManager: ObservableObject {
         UserPreferences.shared.bool(forKey: "WBCFG_PROVALID")
     }
     
+    var isSuperUser: Bool {
+        UserPreferences.shared.bool(forKey: UserPreferences.DKEY_SUPER_USER)
+    }
+    
     init() {
         onLaunch()
+    }
+    
+    func toggleSuperUser() {
+        UserPreferences.shared.set(!isSuperUser, forKey: UserPreferences.DKEY_SUPER_USER)
     }
     
     func toggleProFeatures() {

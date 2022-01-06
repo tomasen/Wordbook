@@ -122,6 +122,8 @@
 		884EE7052775C0630038E990 /* PausableTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE7032775C0630038E990 /* PausableTimer.swift */; };
 		8874799A27875CAF00C66E85 /* SimpleWordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8874799927875CAF00C66E85 /* SimpleWordView.swift */; };
 		8874799B27875CAF00C66E85 /* SimpleWordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8874799927875CAF00C66E85 /* SimpleWordView.swift */; };
+		8874799D27876F9200C66E85 /* privacy.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8874799C27876F9200C66E85 /* privacy.txt */; };
+		8874799E27876F9200C66E85 /* privacy.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8874799C27876F9200C66E85 /* privacy.txt */; };
 		888C3CAA2750B8BF003CE213 /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CA92750B8BF003CE213 /* ViewHelper.swift */; };
 		888C3CAB2750B8BF003CE213 /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CA92750B8BF003CE213 /* ViewHelper.swift */; };
 		888C3CAC2750B8BF003CE213 /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CA92750B8BF003CE213 /* ViewHelper.swift */; };
@@ -327,6 +329,7 @@
 		884EE6F8277577CF0038E990 /* about.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = about.txt; sourceTree = "<group>"; };
 		884EE7032775C0630038E990 /* PausableTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PausableTimer.swift; sourceTree = "<group>"; };
 		8874799927875CAF00C66E85 /* SimpleWordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleWordView.swift; sourceTree = "<group>"; };
+		8874799C27876F9200C66E85 /* privacy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = privacy.txt; sourceTree = "<group>"; };
 		888C3CA92750B8BF003CE213 /* ViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHelper.swift; sourceTree = "<group>"; };
 		888C3CAD2750BBF7003CE213 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		888C3CB12750C865003CE213 /* WordListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordListViewModel.swift; sourceTree = "<group>"; };
@@ -557,6 +560,7 @@
 		884EE6F6277577B50038E990 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				8874799C27876F9200C66E85 /* privacy.txt */,
 				884EE6F8277577CF0038E990 /* about.txt */,
 				884EE6F7277577CF0038E990 /* plans.txt */,
 				8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */,
@@ -953,6 +957,7 @@
 				884EE6CF2770D8710038E990 /* SF-Pro-Text-Regular.otf in Resources */,
 				888C3CAE2750BBF7003CE213 /* LaunchScreen.storyboard in Resources */,
 				8833AC19274FE8D000637B61 /* wordnet.sqlite in Resources */,
+				8874799D27876F9200C66E85 /* privacy.txt in Resources */,
 				884EE6D92770D8710038E990 /* SF-Pro-Text-Heavy.otf in Resources */,
 				884EE6CB2770D8710038E990 /* SF-Pro-Text-Bold.otf in Resources */,
 				884EE6D72770D8710038E990 /* SF-Pro-Text-Light.otf in Resources */,
@@ -974,6 +979,7 @@
 				884EE6D02770D8710038E990 /* SF-Pro-Text-Regular.otf in Resources */,
 				888C3CAF2750BBF7003CE213 /* LaunchScreen.storyboard in Resources */,
 				8833AC1A274FE8D000637B61 /* wordnet.sqlite in Resources */,
+				8874799E27876F9200C66E85 /* privacy.txt in Resources */,
 				884EE6DA2770D8710038E990 /* SF-Pro-Text-Heavy.otf in Resources */,
 				884EE6CC2770D8710038E990 /* SF-Pro-Text-Bold.otf in Resources */,
 				884EE6D82770D8710038E990 /* SF-Pro-Text-Light.otf in Resources */,
@@ -1463,7 +1469,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CF_BUNDLE_BUILD_STRING = 202;
+				CF_BUNDLE_BUILD_STRING = 203;
 				CF_BUNDLE_SHORT_VERSION_STRING = 1.1.0;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1524,7 +1530,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CF_BUNDLE_BUILD_STRING = 202;
+				CF_BUNDLE_BUILD_STRING = 203;
 				CF_BUNDLE_SHORT_VERSION_STRING = 1.1.0;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

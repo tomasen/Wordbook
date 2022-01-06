@@ -32,8 +32,10 @@ struct SettingsView: View {
                     ){
                         Text("About")
                     }
-                    NavigationLink(destination: EmptyView()){
-                        Text("Disclaim")
+                    NavigationLink(destination: TextView(text: String.getContentOfFile("privacy", "txt")).onTapGesture(count: 5) {
+                        InAppPurchaseManager.shared.toggleSuperUser()
+                    }){
+                        Text("Privacy Policy")
                     }
                 }
             }

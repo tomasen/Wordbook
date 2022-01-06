@@ -43,9 +43,11 @@ class CardViewModel: ObservableObject {
             ExtraExplainManager.shared.queryWiki(word, handleExtraExplain)
         }
         
-        // check vocab
-        if extras[.VOCAB] == nil {
-            ExtraExplainManager.shared.queryVocab(word, handleExtraExplain)
+        if InAppPurchaseManager.shared.isSuperUser {
+            // check vocab
+            if extras[.VOCAB] == nil {
+                ExtraExplainManager.shared.queryVocab(word, handleExtraExplain)
+            }
         }
     }
     
