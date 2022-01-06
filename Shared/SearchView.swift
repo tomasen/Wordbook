@@ -62,17 +62,20 @@ struct SearchView: View {
                 }
             }
             if showExplain {
-                SimpleWordView(word: viewModel.keyword, closeMyself: $closeMyself)
-                .padding(EdgeInsets(top: 11, leading: 22, bottom: 11, trailing: 22))                
+                SimpleWordView(word: viewModel.keyword, closeMyself: $closeMyself)                
             } else if let hints = viewModel.searchHints {
-                List {
-                    ForEach(hints, id: \.self) { word in
-                        Text("\(word)")
-                            .onTapGesture {
-                                // Show Card View
-                                viewModel.keyword = word
-                                showExplain = true
-                            }
+                if hints.count == 1 {
+                    SimpleWordView(word: hints.first!, closeMyself: $closeMyself)
+                } else {
+                    List {
+                        ForEach(hints, id: \.self) { word in
+                            Text("\(word)")
+                                .onTapGesture {
+                                    // Show Card View
+                                    viewModel.keyword = word
+                                    showExplain = true
+                                }
+                        }
                     }
                 }
             } else {

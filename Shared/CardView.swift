@@ -200,6 +200,11 @@ struct DefinitionView: View {
                     .padding(.top, 25)
                 }
             }
+            .onOpenURL{ url in
+                if popSheetWord.count == 0 {
+                    popSheetWord = url.lastPathComponent
+                }
+            }
             .sheet(isPresented: $popSheetWord.toBool()) {
                 SimpleWordView(word: popSheetWord, closeMyself: $popSheetWord.toBool())
                     .environment(\.colorScheme, .dark)
@@ -291,9 +296,7 @@ struct DefinitionView: View {
                 .fixedSize()
             VStack(alignment: .leading){
                 Text(markdownText)
-                    .onOpenURL{ url in
-                        popSheetWord = url.lastPathComponent
-                    }
+                    .accentColor(Color("fontLink"))
             }
         }
     }

@@ -57,6 +57,7 @@ struct SimpleWordView: View {
             }
             .modifier(FootViewStyle())
         }
+        .padding(EdgeInsets(top: 11, leading: 22, bottom: 11, trailing: 22))
         .customFont(name: "AvenirNext-Regular", style: .body)
         .foregroundColor(Color("fontBody"))
         .background(Color(UIColor.secondarySystemBackground).edgesIgnoringSafeArea(.all))

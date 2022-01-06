@@ -13,7 +13,9 @@ class CardViewModel: ObservableObject {
     @Published var sound: Data? = nil
     @Published var pronunciation: String? = ""
     @Published var mnemonic: String? = nil
-    @Published var senses = [Sense]()
+    @Published var senses: [Sense] = [Sense(id: 0, pos: "▩.", gloss: "▩▩▩▩▩▩▩▩▩▩▩\n▩▩▩▩▩▩▩", examples: [], synonyms: []),
+                                      Sense(id: 1, pos: "▩.", gloss: "▩▩▩▩▩▩▩\n▩▩▩▩▩▩▩▩▩▩▩▩▩", examples: ["▩▩▩▩▩▩, ▩▩▩▩▩▩"], synonyms: [String]()),
+                                      Sense(id: 2, pos: "▩.", gloss: "▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩\n▩▩▩▩▩▩▩▩▩▩▩▩▩", examples: [], synonyms: [])]
     @Published var extras = [ExtraExplainSource: ExtraExplain]()
     
     init(_ w: String = "") {
