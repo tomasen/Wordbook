@@ -19,9 +19,6 @@ class SearchViewModel: ObservableObject {
         keyword = ""
     }
     
-    func isWordAlreadyExistInWordbook() -> Bool {
-        WordManager.shared.IsWordCardExist(keyword)
-    }
 }
 
 struct SearchView: View {
@@ -65,43 +62,8 @@ struct SearchView: View {
                 }
             }
             if showExplain {
-                VStack{
-                    Text("\(viewModel.keyword)")
-                        .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
-                        .foregroundColor(Color("fontTitle"))
-                        .padding(17.6)
-                    
-                    Spacer()
-                    ScrollView(.vertical) {
-                        DefinitionView(viewModel: CardViewModel(viewModel.keyword))
-                        Spacer()
-                    }
-                    Divider()
-                    HStack{
-                        Spacer()
-                        Button(action: {
-                            viewModel.addToWordbook()
-                            closeMyself.toggle()
-                        }) {
-                            Text( viewModel.isWordAlreadyExistInWordbook() ? "BUMP" : "ADD")
-                        }
-                        Spacer()
-                        Divider()
-                        Spacer()
-                        Button(action: {
-                            closeMyself.toggle()
-                        }) {
-                            Text("CLOSE")
-                        }
-                        Spacer()
-                    }
-                    .modifier(FootViewStyle())
-                }
-                .padding(EdgeInsets(top: 11, leading: 22, bottom: 11, trailing: 22))
-                .onAppear{
-                    
-                }
-                
+                SimpleWordView(word: viewModel.keyword, closeMyself: $closeMyself)
+                .padding(EdgeInsets(top: 11, leading: 22, bottom: 11, trailing: 22))                
             } else if let hints = viewModel.searchHints {
                 List {
                     ForEach(hints, id: \.self) { word in
@@ -119,7 +81,7 @@ struct SearchView: View {
             }
         }
         .customFont(name: "AvenirNext-Regular", style: .body)
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: Alignment.topLeading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .foregroundColor(Color("fontBody"))
         .background(Color(UIColor.secondarySystemBackground).edgesIgnoringSafeArea(.all))
     }

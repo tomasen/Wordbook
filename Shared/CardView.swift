@@ -16,11 +16,8 @@ struct CardView: View {
     @StateObject private var viewModel = CardViewModel()
     
     @State private var editing = false
-    @State private var popSheetWord = ""
-    @State private var popWebPage = ""
     
     private var defaultWord = ""
-    private let iapManager = InAppPurchaseManager.shared
     
     init(_ word: String = "",
          _ showDefinition: Bool = false,
@@ -98,40 +95,6 @@ struct CardView: View {
                             // Fallback on earlier versions
                             DefinitionView(viewModel: viewModel)
                                 .foregroundColor(Color("fontBody"))
-                        }
-                        Spacer()
-                    }
-                    HStack {
-                        Button(action:{
-                            popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us&tbm=nws"
-                        }) {
-                            Text("news")
-                        }
-                        
-                        Button(action:{
-                            popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us&tbm=isch"
-                        }) {
-                            Text("images")
-                        }
-                        
-                        Button(action:{
-                            popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us"
-                        }) {
-                            Text("web")
-                        }
-                        
-                        Button(action:{
-                            popWebPage = "https://www.deepl.com/en/translator#en/auto/\(viewModel.word.urlencode())"
-                        }) {
-                            Text("translate")
-                        }
-                    }
-                    .buttonStyle(LinkButtonStyle())
-                    .sheet(isPresented: $popWebPage.toBool()) {
-                        if iapManager.isProSubscriber {
-                            WebPageView(url: URL(string: popWebPage)!)
-                        } else {
-                            PurchaseView(closeMyself: .constant(true))
                         }
                     }
                 },
@@ -214,31 +177,72 @@ struct CardView: View {
 
 struct DefinitionView: View {
     @ObservedObject var viewModel: CardViewModel
+    
     @State private var popSheetWord = ""
+    @State private var popWebPage = ""
+    
+    private let iapManager = InAppPurchaseManager.shared
     
     var body: some View {
-        
-        VStack(alignment: .leading) {
-            ForEach(viewModel.senses) { sense in
-                GlossView(sense: sense)
-                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+        VStack{
+            VStack(alignment: .leading) {
+                ForEach(viewModel.senses) { sense in
+                    GlossView(sense: sense)
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                }
+                
+                if viewModel.extras.count > 0 {
+                    VStack (spacing: 9) {
+                        ForEach(Array(viewModel.extras.keys), id: \.self) { key in
+                            ExtraExplainSummeryView(simpleExpl: viewModel.extras[key]!)
+                        }
+                    }
+                    .padding(.top, 25)
+                }
+            }
+            .sheet(isPresented: $popSheetWord.toBool()) {
+                SimpleWordView(word: popSheetWord, closeMyself: $popSheetWord.toBool())
+                    .environment(\.colorScheme, .dark)
+            }
+            .foregroundColor(Color("fontBody"))
+            .onAppear{
+                viewModel.fetchExplain()
             }
             
-            if viewModel.extras.count > 0 {
-                VStack (spacing: 9) {
-                    ForEach(Array(viewModel.extras.keys), id: \.self) { key in
-                        ExtraExplainSummeryView(simpleExpl: viewModel.extras[key]!)
-                    }
+            Spacer()
+            HStack {
+                Button(action:{
+                    popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us&tbm=nws"
+                }) {
+                    Text("news")
                 }
-                .padding(.top, 25)
+                
+                Button(action:{
+                    popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us&tbm=isch"
+                }) {
+                    Text("images")
+                }
+                
+                Button(action:{
+                    popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us"
+                }) {
+                    Text("web")
+                }
+                
+                Button(action:{
+                    popWebPage = "https://www.deepl.com/en/translator#en/auto/\(viewModel.word.urlencode())"
+                }) {
+                    Text("translate")
+                }
             }
-        }
-        .sheet(isPresented: $popSheetWord.toBool()) {
-            CardView(popSheetWord, true, true)
-        }
-        .foregroundColor(Color("fontBody"))
-        .onAppear{
-            viewModel.fetchExplain()
+            .buttonStyle(LinkButtonStyle())
+            .sheet(isPresented: $popWebPage.toBool()) {
+                if iapManager.isProSubscriber {
+                    WebPageView(url: URL(string: popWebPage)!)
+                } else {
+                    PurchaseView(closeMyself: .constant(true))
+                }
+            }
         }
     }
     
