@@ -9,9 +9,9 @@ import SwiftUI
 import UserNotifications
 
 class PushNotificationReceiver: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
-    @Published var notificatedWord: String?
-    
     static let shared = PushNotificationReceiver()
+    
+    @Published var notificatedWord: String?
     
     override init() {
         super.init()
@@ -29,7 +29,10 @@ class PushNotificationReceiver: NSObject, ObservableObject, UNUserNotificationCe
                 break
             }
             
-            notificatedWord = w
+            print("MSG: didReceive \(w)")
+            DispatchQueue.main.async {
+                self.notificatedWord = w
+            }
         }
         
         // cancle all pending notification

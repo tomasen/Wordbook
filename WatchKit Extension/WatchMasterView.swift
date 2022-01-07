@@ -9,8 +9,10 @@ import SwiftUI
 
 struct WatchMasterView: View {
     @ObservedObject var icloud = iCloudState.shared
+    @ObservedObject var iap = InAppPurchaseManager.shared
+    @ObservedObject private var pushReceiver = PushNotificationReceiver.shared
+    
     @StateObject private var viewModel = WordListViewModel()
-    @StateObject private var pushReceiver = PushNotificationReceiver.shared
     
     @State private var remoteChangeCount = 0
     
@@ -23,10 +25,6 @@ struct WatchMasterView: View {
     
     var body: some View {
         VStack{
-            if let w = pushReceiver.notificatedWord {
-                HiddenNavigationLink(destination: WatchCardView(w),
-                                     isActive: $pushReceiver.notificatedWord.toBool())
-            }
             TabView{
                 List{
                     NavigationLink(destination: WatchCardView()) {
@@ -68,7 +66,7 @@ struct WatchMasterView: View {
                             Text("\(viewModel.footnote).\(remoteChangeCount)")
                                 .font(.footnote)
                             Spacer()
-                            Image(systemName: icloud.enabled ? "icloud" : "icloud.slash")
+                            Image(systemName: icloud.enabled && iap.isProSubscriber ? "icloud" : "icloud.slash")
                                 .imageScale(.medium)
                                 .padding()
                         }
@@ -110,20 +108,24 @@ struct WatchMasterView: View {
             }
             .listStyle(.carousel)
             .tabViewStyle(PageTabViewStyle())
-            .onAppear{
-                viewModel.update()
-            }
-            .onReceive(didDataChange) { _ in
-                viewModel.update()
-            }
-            .onReceive(didRemoteChange) { _ in
-                viewModel.update()
-                remoteChangeCount += 1
-            }
             
+            if let w = pushReceiver.notificatedWord {
+                HiddenNavigationLink(destination: WatchCardView(w),
+                                     isActive: $pushReceiver.notificatedWord.toBool())
+            }
         }
         .navigationTitle(Text("Wordbook").font(.caption))
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear{
+            viewModel.update()
+        }
+        .onReceive(didDataChange) { _ in
+            viewModel.update()
+        }
+        .onReceive(didRemoteChange) { _ in
+            viewModel.update()
+            remoteChangeCount += 1
+        }
     }
 }
 

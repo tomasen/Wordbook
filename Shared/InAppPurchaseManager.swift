@@ -28,7 +28,9 @@ class InAppPurchaseManager: ObservableObject {
     }
     
     init() {
+#if !os(watchOS)
         onLaunch()
+#endif
     }
     
     func toggleSuperUser() {
