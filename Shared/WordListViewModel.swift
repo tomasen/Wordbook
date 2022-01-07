@@ -101,8 +101,10 @@ class WordListViewModel: ObservableObject {
         #if DEBUG
         if recentLearned.words.count == 0 {
             recentLearned.total = 10
+            recentAdded.total = 10
             for _ in 0...recentLearned.total {
                 recentLearned.words.append(WordEntry(text: WordManager.shared.nextRandomWord()))
+                recentAdded.words.append(WordEntry(text: WordManager.shared.nextRandomWord()))
             }
         }
         #endif

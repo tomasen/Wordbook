@@ -27,61 +27,89 @@ struct WatchMasterView: View {
                 HiddenNavigationLink(destination: WatchCardView(w),
                                      isActive: $pushReceiver.notificatedWord.toBool())
             }
-            
-            List{
-                NavigationLink(destination: WatchCardView()) {
-                    HStack{
-                        Spacer()
-                        VStack{
+            TabView{
+                List{
+                    NavigationLink(destination: WatchCardView()) {
+                        HStack{
                             Spacer()
-                            Text("Hit Me")
+                            VStack{
+                                Spacer()
+                                Text("Hit Me")
+                                Spacer()
+                            }
                             Spacer()
                         }
+                        .scenePadding()
+                    }
+                    .foregroundColor(Color("WatchListItemTitle"))
+                    .buttonStyle(.plain)
+                    .frame(height: 80)
+                    .background(LinearGradient(gradient: Gradient(colors: [Color("WatchTodayButton"), Color("WatchTodayButtonEnd")]), startPoint: .top, endPoint: .bottom))
+                    .mask(RoundedRectangle(cornerRadius: 24))
+                    .listRowBackground(Color.clear)
+                    .padding(.top, 10)
+                    
+                    Section(header: HStack() {
                         Spacer()
-                    }
-                    .scenePadding()
-                }
-                .foregroundColor(Color("WatchListItemTitle"))
-                .buttonStyle(.plain)
-                .frame(height: 80)
-                .background(LinearGradient(gradient: Gradient(colors: [Color("WatchTodayButton"), Color("WatchTodayButtonEnd")]), startPoint: .top, endPoint: .bottom))
-                .mask(RoundedRectangle(cornerRadius: 24))
-                .listRowBackground(Color.clear)
-                .padding(.top, 10)
-                
-                Section(header: HStack() {
-                    Spacer()
-                    Text("Words")
-                    Spacer()
-                }.padding().listRowBackground(Color.clear)) {
-                    ForEach(viewModel.recentLearned.words) { entry in
-                        WordEntryItem(entry.text)
-                    }
-                    ForEach(viewModel.queueWords.words) { entry in
-                        WordEntryItem(entry.text)
-                    }
-                }
-                ZStack{
-                    Image(systemName: "ellipsis")
-                        .imageScale(.medium)
-                        .padding()
-                        .foregroundColor(Color("fontGray"))
-                    HStack{
-                        Text("\(viewModel.footnote).\(remoteChangeCount)")
-                            .font(.footnote)
+                        Text("Recent")
                         Spacer()
-                        Image(systemName: icloud.enabled ? "icloud" : "icloud.slash")
+                    }.padding().listRowBackground(Color.clear)) {
+                        ForEach(viewModel.recentLearned.words) { entry in
+                            WordEntryItem(entry.text)
+                        }
+                    }
+                    
+                    ZStack{
+                        Image(systemName: "ellipsis")
                             .imageScale(.medium)
                             .padding()
+                            .foregroundColor(Color("fontGray"))
+                        HStack{
+                            Text("\(viewModel.footnote).\(remoteChangeCount)")
+                                .font(.footnote)
+                            Spacer()
+                            Image(systemName: icloud.enabled ? "icloud" : "icloud.slash")
+                                .imageScale(.medium)
+                                .padding()
+                        }
+                    }
+                    .foregroundColor(Color("fontGray"))
+                    .scenePadding()
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .frame(maxWidth: .infinity, minHeight: 60)
+                }
+                
+                if viewModel.recentAdded.words.count > 0 {
+                    List {
+                        Section(header: HStack() {
+                            Spacer()
+                            Text("Newly Added")
+                            Spacer()
+                        }.padding().listRowBackground(Color.clear)) {
+                            ForEach(viewModel.recentAdded.words) { entry in
+                                WordEntryItem(entry.text)
+                            }
+                        }
                     }
                 }
-                .foregroundColor(Color("fontGray"))
-                .scenePadding()
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-                .frame(maxWidth: .infinity, minHeight: 60)
+            
+                if viewModel.queueWords.words.count > 0 {
+                    List{
+                        Section(header: HStack() {
+                            Spacer()
+                            Text("Queue")
+                            Spacer()
+                        }.padding().listRowBackground(Color.clear)) {
+                            ForEach(viewModel.queueWords.words) { entry in
+                                WordEntryItem(entry.text)
+                            }
+                        }
+                    }
+                }
             }
             .listStyle(.carousel)
+            .tabViewStyle(PageTabViewStyle())
             .onAppear{
                 viewModel.update()
             }
@@ -92,6 +120,7 @@ struct WatchMasterView: View {
                 viewModel.update()
                 remoteChangeCount += 1
             }
+            
         }
         .navigationTitle(Text("Wordbook").font(.caption))
         .navigationBarTitleDisplayMode(.inline)
