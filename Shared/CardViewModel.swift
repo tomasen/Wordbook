@@ -13,9 +13,9 @@ class CardViewModel: ObservableObject {
     @Published var sound: Data? = nil
     @Published var pronunciation: String? = ""
     @Published var mnemonic: String? = nil
-    @Published var senses: [Sense] = [Sense(id: 0, pos: "▩.", gloss: "▩▩▩▩▩▩▩▩▩▩▩\n▩▩▩▩▩▩▩", examples: [], synonyms: []),
-                                      Sense(id: 1, pos: "▩.", gloss: "▩▩▩▩▩▩▩\n▩▩▩▩▩▩▩▩▩▩▩▩▩", examples: ["▩▩▩▩▩▩, ▩▩▩▩▩▩"], synonyms: [String]()),
-                                      Sense(id: 2, pos: "▩.", gloss: "▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩\n▩▩▩▩▩▩▩▩▩▩▩▩▩", examples: [], synonyms: [])]
+    @Published var senses: [Sense] = [Sense(id: 0, pos: "▩.", gloss: "▩▩▩▩ ▩▩▩ ▩▩ ▩▩▩ ▩▩▩▩", examples: [], synonyms: []),
+                                      Sense(id: 1, pos: "▩.", gloss: "▩▩▩▩▩ ▩▩▩▩▩▩\n▩▩▩▩▩ ▩▩▩▩", examples: ["▩▩▩▩▩▩, ▩▩▩▩▩▩"], synonyms: [String]()),
+                                      Sense(id: 2, pos: "▩.", gloss: "▩▩▩▩▩ ▩▩▩▩▩▩ ▩▩▩▩ ▩▩ ▩▩▩▩ ▩▩▩▩▩ ▩▩▩▩", examples: [], synonyms: [])]
     @Published var extras = [ExtraExplainSource: ExtraExplain]()
     
     init(_ w: String = "") {
@@ -23,9 +23,6 @@ class CardViewModel: ObservableObject {
     }
     
     var summaryExplain: String {
-        if senses.count == 0 {
-            return "▩▩▩▩▩\n▩▩▩▩▩▩▩▩▩\n▩▩▩"
-        }
         var ret = [String]()
         for s in senses {
             ret.append(s.gloss)
@@ -49,6 +46,14 @@ class CardViewModel: ObservableObject {
                 ExtraExplainManager.shared.queryVocab(word, handleExtraExplain)
             }
         }
+    }
+    
+    func reset() {
+        extras = [ExtraExplainSource: ExtraExplain]()
+        alsoKnownAs = nil
+        sound = nil
+        pronunciation = nil
+        mnemonic = nil
     }
     
     private func handleExtraExplain(_ result: ExtraExplain) {
@@ -97,6 +102,10 @@ class CardViewModel: ObservableObject {
     
     func answer(_ rate: CardRating) {
         WordManager.shared.answer(word, rate)
+    }
+    
+    func bury() {
+        WordManager.shared.buryWordCard(word)
     }
 }
 

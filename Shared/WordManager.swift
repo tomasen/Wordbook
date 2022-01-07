@@ -95,7 +95,7 @@ class WordManager {
         let end = EndOfTheDay(today)
         
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "AnswerHistory")
-        req.predicate = NSPredicate(format: "date > %@ AND date < %@",
+        req.predicate = NSPredicate(format: "date > %@ AND date < %@ AND word.category >= 0",
                                     begin as NSDate,
                                     end as NSDate)
         req.sortDescriptors = [NSSortDescriptor(keyPath: \AnswerHistory.date, ascending: true)]
@@ -426,7 +426,7 @@ extension AnswerHistory {
     
     static func fetch(_ begin: Date, _ end: Date) -> [AnswerHistory] {
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "AnswerHistory")
-        req.predicate = NSPredicate(format: "date > %@ AND date < %@", begin as NSDate, end as NSDate)
+        req.predicate = NSPredicate(format: "date > %@ AND date < %@ AND word.category >= 0", begin as NSDate, end as NSDate)
         
         return try! moc.fetch(req) as! [AnswerHistory]
     }

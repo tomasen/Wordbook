@@ -86,6 +86,7 @@ struct MasterView: View {
         .foregroundColor(Color("fontBody"))
         .sheet(isPresented: $popPurchaseView ) {
             PurchaseView(closeMyself: $popPurchaseView)
+                .environment(\.colorScheme, .dark)
         }
     }
     

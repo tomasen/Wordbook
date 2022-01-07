@@ -42,7 +42,12 @@ class WordListViewModel: ObservableObject {
             recentLearned.words.removeAll()
             for key in res {
                 if let w = key.allValues[0] as? String {
-                    recentLearned.words.append(WordEntry(text: w, dueDate: nil))
+                    if let wordcard = WordManager.shared.fetchWordCard(w) {
+                        print("MSG: \(w) \(wordcard.category)")
+                        if wordcard.category >= 0 {
+                            recentLearned.words.append(WordEntry(text: w, dueDate: nil))
+                        }
+                    }
                 }
             }
         }

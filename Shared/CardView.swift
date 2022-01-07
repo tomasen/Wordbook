@@ -16,6 +16,7 @@ struct CardView: View {
     @StateObject private var viewModel = CardViewModel()
     
     @State private var editing = false
+    @State private var popContextpMenu = false
     
     private var defaultWord = ""
     
@@ -41,8 +42,15 @@ struct CardView: View {
                     Spacer()
                     ScrollView(.vertical) {
                         VStack{
-                            TextField("\(viewModel.word)", text: $viewModel.word)
+                            TextField("\(viewModel.word)",
+                                      text: $viewModel.word,
+                                      onCommit:{ editing.toggle() })
                                 .disabled(!self.editing)
+                                .onChange(of: viewModel.word) { _ in
+                                    print("MSG: change \(viewModel.word)")
+                                    viewModel.reset()
+                                    viewModel.fetchExplain()
+                                }
                                 .textContentType(.none)
                                 .autocapitalization(.none)
                                 .keyboardType(.alphabet)
@@ -126,7 +134,39 @@ struct CardView: View {
                 self.enableGoodButton.toggle()
             }
         }
+        .navigationBarItems(trailing: trailingBarItem())
         .background(Color("Background").edgesIgnoringSafeArea(.all))
+    }
+    
+    func trailingBarItem() -> some View {
+        HStack{
+            Spacer()
+            Button(action: {
+                popContextpMenu.toggle()
+            }) {
+                Image(systemName: "ellipsis")
+                    .imageScale(.medium)
+                    .rotationEffect(.degrees(-90))
+                    .padding(5)
+            }
+            .actionSheet(isPresented: $popContextpMenu) {
+                ActionSheet(title: Text("Wordbook"),
+                            buttons: [
+                                .default(
+                                    Text("EDIT"),
+                                    action: {
+                                        editing.toggle()
+                                    }),
+                                .destructive(
+                                    Text("BURY"),
+                                    action: {
+                                        viewModel.bury()
+                                        NavigationUtil.popToRootView()
+                                    }),
+                                .cancel()])
+            }
+        }
+        .foregroundColor(Color("fontLink"))
     }
     
     func ReviewButtons() -> some View {
@@ -246,8 +286,10 @@ struct DefinitionView: View {
             .sheet(isPresented: $popWebPage.toBool()) {
                 if iapManager.isProSubscriber {
                     WebPageView(url: URL(string: popWebPage)!)
+                        .environment(\.colorScheme, .dark)
                 } else {
                     PurchaseView(closeMyself: .constant(true))
+                        .environment(\.colorScheme, .dark)
                 }
             }
         }
