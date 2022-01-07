@@ -17,9 +17,14 @@ class CardViewModel: ObservableObject {
                                       Sense(id: 1, pos: "▩.", gloss: "▩▩▩▩▩ ▩▩▩▩▩▩\n▩▩▩▩▩ ▩▩▩▩", examples: ["▩▩▩▩▩▩, ▩▩▩▩▩▩"], synonyms: [String]()),
                                       Sense(id: 2, pos: "▩.", gloss: "▩▩▩▩▩ ▩▩▩▩▩▩ ▩▩▩▩ ▩▩ ▩▩▩▩ ▩▩▩▩▩ ▩▩▩▩", examples: [], synonyms: [])]
     @Published var extras = [ExtraExplainSource: ExtraExplain]()
+    @Published var perf = UserPreferences.shared
     
     init(_ w: String = "") {
         word = w
+    }
+    
+    var translationLanguageCode: String {
+        perf.translationLanguageCode
     }
     
     var summaryExplain: String {

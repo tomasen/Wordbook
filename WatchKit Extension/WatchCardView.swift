@@ -33,7 +33,7 @@ struct WatchCardView: View {
                 VStack(alignment: .leading) {
                     ForEach(viewModel.senses) { ss in
                         VStack(alignment: .leading){
-                            Text("\(ss.gloss).")
+                            Text("\(ss.gloss)")
                                 .multilineTextAlignment(.leading)
                                 .padding(.bottom, 2)
                                 .fixedSize(horizontal: false, vertical: true)

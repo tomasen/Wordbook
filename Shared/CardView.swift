@@ -277,7 +277,7 @@ struct DefinitionView: View {
                 }
                 
                 Button(action:{
-                    popWebPage = "https://www.deepl.com/en/translator#en/auto/\(viewModel.word.urlencode())"
+                    popWebPage = "https://www.deepl.com/en/translator#en/\(viewModel.translationLanguageCode)/\(viewModel.word.urlencode())"
                 }) {
                     Text("translate")
                 }
@@ -288,7 +288,7 @@ struct DefinitionView: View {
                     WebPageView(url: URL(string: popWebPage)!)
                         .environment(\.colorScheme, .dark)
                 } else {
-                    PurchaseView(closeMyself: .constant(true))
+                    PurchaseView(closeMyself: $popWebPage.toBool())
                         .environment(\.colorScheme, .dark)
                 }
             }

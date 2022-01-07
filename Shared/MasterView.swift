@@ -98,14 +98,13 @@ struct MasterView: View {
             } ) {
                 Image(systemName: "magnifyingglass")
                     .imageScale(.medium)
-                    .padding(5)
+                    .padding(3)
             }
             
             NavigationLink(destination: SettingsView()) {
-                Image(systemName: "ellipsis")
+                Image(systemName: "gearshape")
                     .imageScale(.medium)
-                    .rotationEffect(.degrees(-90))
-                    .padding(5)
+                    .padding(3)
             }
         }
         .sheet(isPresented: $popSearchView ) {

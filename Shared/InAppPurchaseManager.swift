@@ -42,7 +42,6 @@ class InAppPurchaseManager: ObservableObject {
         setProFeatures(!isProSubscriber)
     }
     
-    // setProFeatures
     func setProFeatures(_ v: Bool) {
         UserPreferences.shared.set(v, forKey: UserPreferences.DKEY_PROSUBSCRIBER)
         objectWillChange.send()
@@ -68,8 +67,9 @@ class InAppPurchaseManager: ObservableObject {
                 }
             }
         }
-        
-        validate()
+        if SwiftyStoreKit.localReceiptData != nil {
+            validate()
+        }
         
         SwiftyStoreKit.retrieveProductsInfo([productId]) { result in
             if let product = result.retrievedProducts.first {
