@@ -28,7 +28,9 @@ class WordManager {
     
     static let shared = WordManager()
     
-    private let cardsPerDay = 15
+    private var dailyWordsGoal: Int {
+        UserPreferences.shared.dailyGoal
+    }
     
     func nextWord() -> String {
         // next vague or no idea Word of today
@@ -118,7 +120,7 @@ class WordManager {
             }
         }
         
-        if (ret.count-good.count) >= 3 || ret.count > 15 {
+        if (ret.count-good.count) >= 3 || ret.count > dailyWordsGoal {
             // remove good word from ret
             for w in good {
                 if let index = ret.firstIndex(of: w) {
@@ -283,7 +285,7 @@ class WordManager {
         guard let ret = res.first else {
             let eg = Engagement.init(context: moc)
             eg.day = day
-            eg.goal = Int16(cardsPerDay)
+            eg.goal = Int16(dailyWordsGoal)
             return eg
         }
         return ret

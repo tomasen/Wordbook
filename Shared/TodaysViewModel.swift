@@ -36,10 +36,10 @@ class TodaysViewModel: ObservableObject {
     
     func updateStat() {
         let e = WordManager.shared.fetchEngagement()
+        let goal = Int16(max(UserPreferences.shared.dailyGoal, 1))
         working = e.working
         good = e.good
-        queue = max(e.goal - e.working - e.good, 0)
-        goal = max(e.goal, 1)
+        queue = max(goal - e.working - e.good, 0)
     }
 }
 

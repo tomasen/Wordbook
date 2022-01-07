@@ -80,8 +80,16 @@ class UserPreferences: ObservableObject {
         if dailyGoal == 0 {
             dailyGoal = 15
         }
-        translationLanguageCode = string(forKey: UserPreferences.DKEY_TRANSLATION_LANGUAGE) ?? ""
+        translationLanguageCode = string(forKey: UserPreferences.DKEY_TRANSLATION_LANGUAGE) ?? guessLanguageCode
         testPrepBook = integer(forKey: UserPreferences.DKEY_TEST_PREP_BOOK)
+    }
+    
+    private var guessLanguageCode: String {
+        let code = Locale.current.languageCode ?? "zh"
+        if let _ = translationLanguageManifest[code] {
+            return code
+        }
+        return "zh"
     }
     
     func bool(forKey key: String) -> Bool {
