@@ -178,13 +178,13 @@ struct WordDatabaseLocal {
         FROM word, bookref, book
         WHERE word.id = bookref.wordid AND
         bookref.bookid = book.id AND
-        book.tag = ?
+        book.tag LIKE ?
         ORDER BY RANDOM()
         LIMIT ?
         """)
         
         var ret = [String]()
-        for row in try! stmt.run(tag, num) {
+        for row in try! stmt.run(tag+"%", num) {
             ret.append(row[0] as! String)
         }
         return ret

@@ -20,14 +20,15 @@ struct SettingsView: View {
         VStack{
             Spacer()
             List{
-                Section() {
+                Section(footer: Text("Add words from test prep book automaticly")
+                            .foregroundColor(Color("fontGray"))) {
                     Picker("Daily Goal", selection: $viewModel.perf.dailyGoal) {
                         ForEach(Array(stride(from: 5, through: 100, by: 5)), id: \.self) { v in
                             Text("\(v) words").tag(v)
                         }
                     }
                 
-                    Picker("Translation Language", selection: $viewModel.perf.translationLanguageCode) {
+                    Picker("Preferred Translation", selection: $viewModel.perf.translationLanguageCode) {
                         ForEach(Array(viewModel.perf.translationLanguageManifest.keys.sorted()), id: \.self) { key in
                             Text(viewModel.perf.translationLanguageManifest[key]!).tag(key)
                         }

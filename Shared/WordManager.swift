@@ -54,10 +54,10 @@ class WordManager {
             return w
         }
         
-        // TODO: next in perfered vocalbulary (SAT, GRE)
-        
-        // TODO: Engagement.checkin(day: scheduler.today)
-        
+        // next in perfered vocalbulary (SAT, GRE)
+        if UserPreferences.shared.testPrepBook != 0 {
+            return WordDatabaseLocal.shared.randomWords(book: UserPreferences.shared.testPrepBooks[UserPreferences.shared.testPrepBook], num: 1).first ?? ""
+        }
         return ""
     }
     

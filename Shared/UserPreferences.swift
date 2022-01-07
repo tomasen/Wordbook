@@ -58,7 +58,7 @@ class UserPreferences: ObservableObject {
         }
     }
     
-    let testPrepBooks: [String] = ["None", "SAT", "TOEFL", "GRE", "GMAT", "IELTS"]
+    let testPrepBooks: [String] = ["None", "SAT", "TOEFL", "GRE"] // , "GMAT", "IELTS"
     
     static let shared = UserPreferences()
     
