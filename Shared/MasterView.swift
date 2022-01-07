@@ -10,9 +10,13 @@ import CoreData
 
 struct MasterView: View {
     @ObservedObject var icloud = iCloudState.shared
+    @ObservedObject var iap = InAppPurchaseManager.shared
+    
     @StateObject var pushReceiver = PushNotificationReceiver.shared
+    
     @State private var tabSelection = 1
     @State private var popSearchView = false
+    @State private var popPurchaseView = false
     
     var body: some View {
         NavigationView {
@@ -69,12 +73,20 @@ struct MasterView: View {
     
     func leadingBarItem() -> some View {
         HStack{
-            Image(systemName: icloud.enabled ? "icloud" : "icloud.slash")
+            Image(systemName: icloud.enabled && iap.isProSubscriber ? "icloud" : "icloud.slash")
                 .imageScale(.medium)
                 .padding(5)
+                .onTapGesture {
+                    if !iap.isProSubscriber {
+                        popPurchaseView = true
+                    }
+                }
             Spacer()
         }
         .foregroundColor(Color("fontBody"))
+        .sheet(isPresented: $popPurchaseView ) {
+            PurchaseView(closeMyself: $popPurchaseView)
+        }
     }
     
     func trailingBarItem() -> some View {

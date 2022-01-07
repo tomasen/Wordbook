@@ -14,6 +14,7 @@ class UserPreferences {
 
     static let DKEY_SUPER_USER = "SUPER_USER"
     static let DKEY_CLKCOMPL_WORD = "CLKCOMPL_WORD"
+    static let DKEY_PROSUBSCRIBER = "WBCFG_PROVALID"
     
     static let SHARED_WORDKEY_PREFIX = "WORDBOOK_"
     static let SHARED_DEFAULTS_SUITENAME = "group.ai.sagittarius.memorable"

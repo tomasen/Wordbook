@@ -31,10 +31,8 @@ struct SimpleWordView: View {
                 .foregroundColor(Color("fontTitle"))
                 .padding(17.6)
             
-            Spacer()
             ScrollView(.vertical) {
                 DefinitionView(viewModel: CardViewModel(word))
-                Spacer()
             }
             Divider()
             HStack{

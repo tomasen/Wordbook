@@ -20,7 +20,7 @@ class InAppPurchaseManager: ObservableObject {
     @Published var localizedPrice: String?
     
     var isProSubscriber: Bool {
-        UserPreferences.shared.bool(forKey: "WBCFG_PROVALID")
+        UserPreferences.shared.bool(forKey: UserPreferences.DKEY_PROSUBSCRIBER)
     }
     
     var isSuperUser: Bool {
@@ -33,15 +33,17 @@ class InAppPurchaseManager: ObservableObject {
     
     func toggleSuperUser() {
         UserPreferences.shared.set(!isSuperUser, forKey: UserPreferences.DKEY_SUPER_USER)
+        objectWillChange.send()
     }
     
     func toggleProFeatures() {
-        enableProFeatures(!isProSubscriber)
+        setProFeatures(!isProSubscriber)
     }
     
     // setProFeatures
-    func enableProFeatures(_ v: Bool) {
-        UserPreferences.shared.set(v, forKey: "WBCFG_PROVALID")
+    func setProFeatures(_ v: Bool) {
+        UserPreferences.shared.set(v, forKey: UserPreferences.DKEY_PROSUBSCRIBER)
+        objectWillChange.send()
     }
     
     private func onLaunch() {
@@ -55,7 +57,7 @@ class InAppPurchaseManager: ObservableObject {
                         SwiftyStoreKit.finishTransaction(purchase.transaction)
                     }
                     // Unlock content
-                    self.enableProFeatures(true)
+                    self.setProFeatures(true)
                     return
                 case .failed, .purchasing, .deferred:
                     break // do nothing
@@ -100,7 +102,7 @@ class InAppPurchaseManager: ObservableObject {
                 switch purchaseResult {
                 case .purchased(let expiryDate, let items):
                     print("\(productIds) are valid until \(expiryDate)\n\(items)\n")
-                    self.enableProFeatures(true)
+                    self.setProFeatures(true)
                     return
                 case .expired(let expiryDate, let items):
                     print("\(productIds) are expired since \(expiryDate)\n\(items)\n")
@@ -110,7 +112,7 @@ class InAppPurchaseManager: ObservableObject {
             case .error(let error):
                 print("Receipt verification failed: \(error)")
             }
-            self.enableProFeatures(false)
+            self.setProFeatures(false)
         }
     }
     

@@ -215,6 +215,8 @@ struct DefinitionView: View {
             }
             
             Spacer()
+                .padding(5)
+            
             HStack {
                 Button(action:{
                     popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us&tbm=nws"
