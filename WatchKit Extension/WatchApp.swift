@@ -13,10 +13,8 @@ struct WatchApp: App {
     
     @SceneBuilder var body: some Scene {
         WindowGroup {
-            NavigationView {
-                WatchMasterView()
-                    .environment(\.colorScheme, .dark)
-            }
+            WatchMasterView()
+                .environment(\.colorScheme, .dark)
         }
 
         // WKNotificationScene(controller: NotificationController.self, category: "myCategory")

@@ -58,9 +58,7 @@ struct WatchCardView: View {
         .foregroundColor(Color("WatchListItemContent"))
         .onAppear{
             viewModel.validate()
-            viewModel.fetchExplain()
-            
-            PausableTimer.shared.restart()
+            viewModel.fetchExplainFromLocalDatabase()
         }
     }
 }

@@ -25,8 +25,12 @@ struct WatchMasterView: View {
         .receive(on: DispatchQueue.main)
     
     var body: some View {
-        VStack{
-            TabView{
+        TabView{
+            NavigationView{
+                if let w = pushReceiver.notificatedWord {
+                    HiddenNavigationLink(destination: WatchCardView(w),
+                                         isActive: $pushReceiver.notificatedWord.toBool())
+                }
                 List{
                     HStack{
                         Spacer()
@@ -84,8 +88,13 @@ struct WatchMasterView: View {
                     .listRowBackground(Color.clear)
                     .frame(maxWidth: .infinity, minHeight: 60)
                 }
-                
-                if viewModel.recentAdded.words.count > 0 {
+                .navigationTitle(Text("Wordbook").font(.caption))
+                .navigationBarTitleDisplayMode(.inline)
+            }
+            .tag(1)
+            
+            if viewModel.recentAdded.words.count > 0 {
+                NavigationView{
                     List {
                         Section(header: HStack() {
                             Spacer()
@@ -97,9 +106,14 @@ struct WatchMasterView: View {
                             }
                         }
                     }
+                    .navigationTitle(Text("Wordbook").font(.caption))
+                    .navigationBarTitleDisplayMode(.inline)
                 }
+                .tag(2)
+            }
             
-                if viewModel.queueWords.words.count > 0 {
+            if viewModel.queueWords.words.count > 0 {
+                NavigationView{
                     List{
                         Section(header: HStack() {
                             Spacer()
@@ -111,18 +125,14 @@ struct WatchMasterView: View {
                             }
                         }
                     }
+                    .navigationTitle(Text("Wordbook").font(.caption))
+                    .navigationBarTitleDisplayMode(.inline)
                 }
-            }
-            .listStyle(.carousel)
-            .tabViewStyle(PageTabViewStyle())
-            
-            if let w = pushReceiver.notificatedWord {
-                HiddenNavigationLink(destination: WatchCardView(w),
-                                     isActive: $pushReceiver.notificatedWord.toBool())
+                .tag(3)
             }
         }
-        .navigationTitle(Text("Wordbook").font(.caption))
-        .navigationBarTitleDisplayMode(.inline)
+        .listStyle(.carousel)
+        .tabViewStyle(PageTabViewStyle())
         .onAppear{
             viewModel.update()
         }
