@@ -145,7 +145,7 @@ struct WatchMasterView: View {
                     return
                 }
                 
-                print(firstElement)
+                print("MSG: \(firstElement)")
                 searchKeyword = firstElement
             }
     }

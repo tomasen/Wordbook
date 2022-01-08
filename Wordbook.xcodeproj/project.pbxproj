@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		88039BE02789692A008EE125 /* WatchSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88039BDF2789692A008EE125 /* WatchSearchView.swift */; };
 		8803F37D276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
 		8803F37E276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
 		8803F380276F8FAC00E46DAF /* WordCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37F276F8FAC00E46DAF /* WordCloudView.swift */; };
@@ -269,7 +268,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		88039BDF2789692A008EE125 /* WatchSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSearchView.swift; sourceTree = "<group>"; };
 		8803F37C276F2B1200E46DAF /* SharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingViewModel.swift; sourceTree = "<group>"; };
 		8803F37F276F8FAC00E46DAF /* WordCloudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCloudView.swift; sourceTree = "<group>"; };
 		88129512277F1EEA008F1B1B /* Wordbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wordbook.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -451,7 +449,6 @@
 				8812952E277F1EEC008F1B1B /* Info.plist */,
 				8812952F277F1EEC008F1B1B /* PushNotificationPayload.apns */,
 				8812952B277F1EEC008F1B1B /* Preview Content */,
-				88039BDF2789692A008EE125 /* WatchSearchView.swift */,
 			);
 			path = "WatchKit Extension";
 			sourceTree = "<group>";
@@ -1027,7 +1024,6 @@
 				88129543277F31C8008F1B1B /* WatchCardView.swift in Sources */,
 				8812954A277F7000008F1B1B /* ExtraExplainManager.swift in Sources */,
 				88129547277F6FB1008F1B1B /* WordDatabaseLocal.swift in Sources */,
-				88039BE02789692A008EE125 /* WatchSearchView.swift in Sources */,
 				88129557277F7138008F1B1B /* UserPreferences.swift in Sources */,
 				88129552277F70BE008F1B1B /* Helper.swift in Sources */,
 				88129553277F70CA008F1B1B /* PausableTimer.swift in Sources */,
