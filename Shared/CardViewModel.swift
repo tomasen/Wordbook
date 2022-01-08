@@ -40,6 +40,7 @@ class CardViewModel: ObservableObject {
         APIClient().query(term: word,
                           completion: self.handleAPIExplanation)
         
+        #if !os(watchOS)
         // check wiki
         if extras[.WIKI] == nil {
             ExtraExplainManager.shared.queryWiki(word, handleExtraExplain)
@@ -51,6 +52,7 @@ class CardViewModel: ObservableObject {
                 ExtraExplainManager.shared.queryVocab(word, handleExtraExplain)
             }
         }
+        #endif
     }
     
     func reset() {

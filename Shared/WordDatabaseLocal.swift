@@ -57,7 +57,7 @@ struct WordDatabaseLocal {
         
         var stmt = try! db.prepare("""
         SELECT word, pronunc, id
-        FROM word WHERE word = ?
+        FROM word WHERE word LIKE ?
         LIMIT 1
         """)
         var word: String = ""

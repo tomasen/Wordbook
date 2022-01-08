@@ -9,9 +9,17 @@ import SwiftUI
 
 struct WatchCardView: View {
     @StateObject private var viewModel: CardViewModel
+    @Binding private var closeMyself: Bool
     
     init(_ word: String = "") {
         _viewModel = StateObject(wrappedValue: CardViewModel(word))
+        _closeMyself = .constant(false)
+    }
+    
+    init(_ word: String = "", closeMyself: Binding<Bool>) {
+        _viewModel = StateObject(wrappedValue: CardViewModel(word))
+        _closeMyself = closeMyself
+        // self.adding = true
     }
     
     var body: some View {
@@ -34,7 +42,7 @@ struct WatchCardView: View {
                     VStack(alignment: .leading) {
                         ForEach(viewModel.senses) { ss in
                             VStack(alignment: .leading){
-                                Text("\(ss.gloss)")
+                                Text("\(ss.gloss).")
                                     .multilineTextAlignment(.leading)
                                     .padding(.bottom, 2)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -46,6 +54,17 @@ struct WatchCardView: View {
                     }
                     .font(.caption2)
                     .lineSpacing(2)
+                    
+                    if closeMyself {
+                        Spacer()
+                        Button(action: {
+                            _ = WordManager.shared.addWordCard(viewModel.word)
+                            closeMyself.toggle()
+                        }) {
+                            Text("Add")
+                                .foregroundColor(Color("fontBody"))
+                        }
+                    }
                 } else {
                     VStack{
                         Spacer()
@@ -58,7 +77,7 @@ struct WatchCardView: View {
         .foregroundColor(Color("WatchListItemContent"))
         .onAppear{
             viewModel.validate()
-            viewModel.fetchExplainFromLocalDatabase()
+            viewModel.fetchExplain()
         }
     }
 }

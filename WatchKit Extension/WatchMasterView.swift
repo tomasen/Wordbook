@@ -47,7 +47,7 @@ struct WatchMasterView: View {
                         presentInputController()
                     }
                     .sheet(isPresented: $searchKeyword.toBool()){
-                        WatchCardView(searchKeyword)
+                        WatchCardView(searchKeyword, closeMyself: $searchKeyword.toBool())
                     }
                     
                     .foregroundColor(Color("WatchListItemTitle"))
