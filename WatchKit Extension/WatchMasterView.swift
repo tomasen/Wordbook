@@ -15,6 +15,7 @@ struct WatchMasterView: View {
     @StateObject private var viewModel = WordListViewModel()
     
     @State private var remoteChangeCount = 0
+    @State private var searchKeyword: String = ""
     
     private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
         .debounce(for: 1, scheduler: DispatchQueue.global(qos: .background))
@@ -27,18 +28,24 @@ struct WatchMasterView: View {
         VStack{
             TabView{
                 List{
-                    NavigationLink(destination: WatchCardView()) {
-                        HStack{
+                    HStack{
+                        Spacer()
+                        VStack{
                             Spacer()
-                            VStack{
-                                Spacer()
-                                Text("Hit Me")
-                                Spacer()
-                            }
+                            Image(systemName: "mic.circle.fill")
+                                .font(.system(size: 40))
                             Spacer()
                         }
-                        .scenePadding()
+                        Spacer()
                     }
+                    .scenePadding()
+                    .onTapGesture {
+                        presentInputController()
+                    }
+                    .sheet(isPresented: $searchKeyword.toBool()){
+                        WatchCardView(searchKeyword)
+                    }
+                    
                     .foregroundColor(Color("WatchListItemTitle"))
                     .buttonStyle(.plain)
                     .frame(height: 80)
@@ -126,6 +133,21 @@ struct WatchMasterView: View {
             viewModel.update()
             remoteChangeCount += 1
         }
+    }
+    
+    private func presentInputController() {
+        WKExtension.shared()
+            .visibleInterfaceController?
+            .presentTextInputController(withSuggestions: [],
+                                        allowedInputMode: .plain) { result in
+                
+                guard let result = result as? [String], let firstElement = result.first else {
+                    return
+                }
+                
+                print(firstElement)
+                searchKeyword = firstElement
+            }
     }
 }
 

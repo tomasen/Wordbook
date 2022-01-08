@@ -29,22 +29,30 @@ struct WatchCardView: View {
                     }
                     .padding(3)
                 }
-
-                VStack(alignment: .leading) {
-                    ForEach(viewModel.senses) { ss in
-                        VStack(alignment: .leading){
-                            Text("\(ss.gloss)")
-                                .multilineTextAlignment(.leading)
-                                .padding(.bottom, 2)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                if viewModel.senses.count > 0 {
+                    VStack(alignment: .leading) {
+                        ForEach(viewModel.senses) { ss in
+                            VStack(alignment: .leading){
+                                Text("\(ss.gloss)")
+                                    .multilineTextAlignment(.leading)
+                                    .padding(.bottom, 2)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                         }
+                        
+                        Spacer()
                     }
-                    
-                    Spacer()
+                    .font(.caption2)
+                    .lineSpacing(2)
+                } else {
+                    VStack{
+                        Spacer()
+                        Text("word not found")
+                        Spacer()
+                    }
                 }
-                .font(.caption2)
-                .lineSpacing(2)
             }
         }
         .foregroundColor(Color("WatchListItemContent"))
