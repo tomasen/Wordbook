@@ -16,6 +16,7 @@ struct WatchMasterView: View {
     
     @State private var remoteChangeCount = 0
     @State private var searchKeyword: String = ""
+    @State private var currentPage = 0
     
     private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
         .debounce(for: 1, scheduler: DispatchQueue.global(qos: .background))
@@ -25,114 +26,123 @@ struct WatchMasterView: View {
         .receive(on: DispatchQueue.main)
     
     var body: some View {
-        TabView{
-            NavigationView{
-                if let w = pushReceiver.notificatedWord {
-                    HiddenNavigationLink(destination: WatchCardView(w),
-                                         isActive: $pushReceiver.notificatedWord.toBool())
-                }
-                List{
-                    HStack{
-                        Spacer()
-                        VStack{
-                            Spacer()
-                            Image(systemName: "mic.circle.fill")
-                                .font(.system(size: 40))
-                            Spacer()
-                        }
-                        Spacer()
-                    }
-                    .scenePadding()
-                    .onTapGesture {
-                        presentInputController()
-                    }
-                    .sheet(isPresented: $searchKeyword.toBool()){
-                        WatchCardView(searchKeyword, closeMyself: $searchKeyword.toBool())
-                    }
-                    
-                    .foregroundColor(Color("WatchListItemTitle"))
-                    .buttonStyle(.plain)
-                    .frame(height: 80)
-                    .background(LinearGradient(gradient: Gradient(colors: [Color("WatchTodayButton"), Color("WatchTodayButtonEnd")]), startPoint: .top, endPoint: .bottom))
-                    .mask(RoundedRectangle(cornerRadius: 24))
-                    .listRowBackground(Color.clear)
-                    .padding(.top, 10)
-                    
-                    Section(header: HStack() {
-                        Spacer()
-                        Text("Recent")
-                        Spacer()
-                    }.padding().listRowBackground(Color.clear)) {
-                        ForEach(viewModel.recentLearned.words) { entry in
-                            WordEntryItem(entry.text)
-                        }
-                    }
-                    
-                    ZStack{
-                        Image(systemName: "ellipsis")
-                            .imageScale(.medium)
-                            .padding()
-                            .foregroundColor(Color("fontGray"))
+        NavigationView{
+            ZStack{
+                PagerManager(pageCount: 3, currentIndex: $currentPage) {
+                    List{
                         HStack{
-                            Text("\(viewModel.footnote).\(remoteChangeCount)")
-                                .font(.footnote)
                             Spacer()
-                            Image(systemName: icloud.enabled && iap.isProSubscriber ? "icloud" : "icloud.slash")
+                            VStack{
+                                Spacer()
+                                Image(systemName: "mic.circle.fill")
+                                    .font(.system(size: 40))
+                                Spacer()
+                            }
+                            if let w = pushReceiver.notificatedWord {
+                                HiddenNavigationLink(destination: WatchCardView(w),
+                                                     isActive: $pushReceiver.notificatedWord.toBool())
+                            }
+                            Spacer()
+                        }
+                        .scenePadding()
+                        .onTapGesture {
+                            presentInputController()
+                        }
+                        .sheet(isPresented: $searchKeyword.toBool()){
+                            WatchCardView(searchKeyword, closeMyself: $searchKeyword.toBool())
+                        }
+                        
+                        .foregroundColor(Color("WatchListItemTitle"))
+                        .buttonStyle(.plain)
+                        .frame(height: 80)
+                        .background(LinearGradient(gradient: Gradient(colors: [Color("WatchTodayButton"), Color("WatchTodayButtonEnd")]), startPoint: .top, endPoint: .bottom))
+                        .mask(RoundedRectangle(cornerRadius: 24))
+                        .listRowBackground(Color.clear)
+                        .padding(.top, 10)
+                        
+                        Section(header: HStack() {
+                            Spacer()
+                            Text("Recent")
+                            Spacer()
+                        }.padding().listRowBackground(Color.clear)) {
+                            ForEach(viewModel.recentLearned.words) { entry in
+                                WordEntryItem(entry.text)
+                            }
+                        }
+                        
+                        ZStack{
+                            Image(systemName: "ellipsis")
                                 .imageScale(.medium)
                                 .padding()
-                        }
-                    }
-                    .foregroundColor(Color("fontGray"))
-                    .scenePadding()
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .frame(maxWidth: .infinity, minHeight: 60)
-                }
-                .navigationTitle(Text("Wordbook").font(.caption))
-                .navigationBarTitleDisplayMode(.inline)
-            }
-            .tag(1)
-            
-            if viewModel.recentAdded.words.count > 0 {
-                NavigationView{
-                    List {
-                        Section(header: HStack() {
-                            Spacer()
-                            Text("Newly Added")
-                            Spacer()
-                        }.padding().listRowBackground(Color.clear)) {
-                            ForEach(viewModel.recentAdded.words) { entry in
-                                WordEntryItem(entry.text)
+                                .foregroundColor(Color("fontGray"))
+                            HStack{
+                                Text("\(viewModel.footnote).\(remoteChangeCount)")
+                                    .font(.footnote)
+                                Spacer()
+                                Image(systemName: icloud.enabled && iap.isProSubscriber ? "icloud" : "icloud.slash")
+                                    .imageScale(.medium)
+                                    .padding()
                             }
                         }
+                        .foregroundColor(Color("fontGray"))
+                        .scenePadding()
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                        .frame(maxWidth: .infinity, minHeight: 60)
                     }
                     .navigationTitle(Text("Wordbook").font(.caption))
                     .navigationBarTitleDisplayMode(.inline)
-                }
-                .tag(2)
-            }
-            
-            if viewModel.queueWords.words.count > 0 {
-                NavigationView{
-                    List{
-                        Section(header: HStack() {
-                            Spacer()
-                            Text("Queue")
-                            Spacer()
-                        }.padding().listRowBackground(Color.clear)) {
-                            ForEach(viewModel.queueWords.words) { entry in
-                                WordEntryItem(entry.text)
+                    
+                    if viewModel.recentAdded.words.count > 0 {
+                        List {
+                            Section(header: HStack() {
+                                Spacer()
+                                Text("Newly Added")
+                                Spacer()
+                            }.padding().listRowBackground(Color.clear)) {
+                                ForEach(viewModel.recentAdded.words) { entry in
+                                    WordEntryItem(entry.text)
+                                }
                             }
                         }
                     }
-                    .navigationTitle(Text("Wordbook").font(.caption))
-                    .navigationBarTitleDisplayMode(.inline)
+                    
+                    if viewModel.queueWords.words.count > 0 {
+                        List{
+                            Section(header: HStack() {
+                                Spacer()
+                                Text("Queue")
+                                Spacer()
+                            }.padding().listRowBackground(Color.clear)) {
+                                ForEach(viewModel.queueWords.words) { entry in
+                                    WordEntryItem(entry.text)
+                                }
+                            }
+                        }
+                    }
                 }
-                .tag(3)
+                
+                VStack{
+                    Spacer()
+                
+                    HStack{
+                        Circle()
+                            .foregroundColor(currentPage==0 ? Color.white:Color.gray)
+                            .frame(width: 5, height: 5)
+                            
+                        Circle()
+                            .foregroundColor(currentPage==1 ? Color.white:Color.gray)
+                            .frame(width: 5, height: 5)
+                            
+                        Circle()
+                            .foregroundColor(currentPage==2 ? Color.white:Color.gray)
+                            .frame(width: 5, height: 5)
+                    }
+                    .frame(height: 5, alignment: .bottom)
+                }
             }
         }
         .listStyle(.carousel)
-        .tabViewStyle(PageTabViewStyle())
         .onAppear{
             viewModel.update()
         }
@@ -190,6 +200,42 @@ struct WordEntryItem: View {
         .listRowBackground(Color.clear)
         .onAppear{
             viewModel.fetchExplainFromLocalDatabase()
+        }
+    }
+}
+
+struct PagerManager<Content: View>: View {
+    let pageCount: Int
+    @Binding var currentIndex: Int
+    let content: Content
+    
+    //Set the initial values for the variables
+    init(pageCount: Int, currentIndex: Binding<Int>, @ViewBuilder content: () -> Content) {
+        self.pageCount = pageCount
+        self._currentIndex = currentIndex
+        self.content = content()
+    }
+    
+    @GestureState private var translation: CGFloat = 0
+    
+    //Set the animation
+    var body: some View {
+        GeometryReader { geometry in
+            HStack(spacing: 0) {
+                self.content.frame(width: geometry.size.width)
+            }
+            .frame(width: geometry.size.width, alignment: .leading)
+            .offset(x: -CGFloat(self.currentIndex) * geometry.size.width)
+            .offset(x: self.translation)
+            .gesture(
+                DragGesture().updating(self.$translation) { value, state, _ in
+                    state = value.translation.width
+                }.onEnded { value in
+                    let offset = value.translation.width / geometry.size.width
+                    let newIndex = (CGFloat(self.currentIndex) - offset).rounded()
+                    self.currentIndex = min(max(Int(newIndex), 0), self.pageCount - 1)
+                }
+            )
         }
     }
 }
