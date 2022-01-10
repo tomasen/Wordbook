@@ -12,11 +12,13 @@ struct WatchMasterView: View {
     @ObservedObject var iap = InAppPurchaseManager.shared
     @ObservedObject private var pushReceiver = PushNotificationReceiver.shared
     
-    @StateObject private var viewModel = WordListViewModel()
+    @StateObject private var viewModel = WatchWordListViewModel()
     
     @State private var remoteChangeCount = 0
     @State private var searchKeyword: String = ""
     @State private var currentPage = 0
+    
+    @FocusState private var focusPage: Int?
     
     private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
         .debounce(for: 1, scheduler: DispatchQueue.global(qos: .background))
@@ -28,7 +30,12 @@ struct WatchMasterView: View {
     var body: some View {
         NavigationView{
             ZStack{
-                PagerManager(pageCount: 3, currentIndex: $currentPage) {
+                PagerManager(pageCount: viewModel.pageCount,
+                             currentIndex: $currentPage, onEnd: {
+                    page in
+                    focusPage = page
+                    print("MSG: focus \(page)")
+                }) {
                     List{
                         HStack{
                             Spacer()
@@ -51,7 +58,6 @@ struct WatchMasterView: View {
                         .sheet(isPresented: $searchKeyword.toBool()){
                             WatchCardView(searchKeyword, closeMyself: $searchKeyword.toBool())
                         }
-                        
                         .foregroundColor(Color("WatchListItemTitle"))
                         .buttonStyle(.plain)
                         .frame(height: 80)
@@ -60,65 +66,85 @@ struct WatchMasterView: View {
                         .listRowBackground(Color.clear)
                         .padding(.top, 10)
                         
-                        Section(header: HStack() {
-                            Spacer()
-                            Text("Recent")
-                            Spacer()
-                        }.padding().listRowBackground(Color.clear)) {
-                            ForEach(viewModel.recentLearned.words) { entry in
-                                WordEntryItem(entry.text)
-                            }
-                        }
-                        
-                        ZStack{
-                            Image(systemName: "ellipsis")
-                                .imageScale(.medium)
-                                .padding()
-                                .foregroundColor(Color("fontGray"))
-                            HStack{
-                                Text("\(viewModel.footnote).\(remoteChangeCount)")
-                                    .font(.footnote)
-                                Spacer()
-                                Image(systemName: icloud.enabled && iap.isProSubscriber ? "icloud" : "icloud.slash")
-                                    .imageScale(.medium)
+                        Section(header:
+                                    HStack() {
+                                        Spacer()
+                                        Text("Learning")
+                                        Spacer()
+                                    }
                                     .padding()
+                                    .listRowBackground(Color.clear),
+                                footer:
+                                    HStack{
+                                        Spacer()
+                                        Image(systemName: icloud.enabled && iap.isProSubscriber ? "icloud" : "icloud.slash")
+                                            .imageScale(.medium)
+                                            .padding()
+                                    }
+                                    .foregroundColor(Color("fontGray"))
+                                    .scenePadding()
+                                    .listRowInsets(EdgeInsets())
+                                    .listRowBackground(Color.clear)
+                                    .frame(maxWidth: .infinity, minHeight: 60)) {
+                            if viewModel.learnedRecently.count > 0 {
+                                ForEach(viewModel.learnedRecently, id: \.self) { entry in
+                                    WordEntryItem(entry)
+                                }
+                            } else {
+                                Text("no word in wordbook")
+                                    .foregroundColor(Color("fontBody"))
+                                    .listRowInsets(EdgeInsets())
+                                    .listRowBackground(Color.clear)
+                                    .frame(maxWidth: .infinity, minHeight: 60)
                             }
                         }
-                        .foregroundColor(Color("fontGray"))
-                        .scenePadding()
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
-                        .frame(maxWidth: .infinity, minHeight: 60)
                     }
-                    .navigationTitle(Text("Wordbook").font(.caption))
-                    .navigationBarTitleDisplayMode(.inline)
+                    .focused($focusPage, equals: 0)
                     
-                    if viewModel.recentAdded.words.count > 0 {
+                    if viewModel.recentAdded.count > 0 {
                         List {
                             Section(header: HStack() {
                                 Spacer()
                                 Text("Newly Added")
                                 Spacer()
                             }.padding().listRowBackground(Color.clear)) {
-                                ForEach(viewModel.recentAdded.words) { entry in
-                                    WordEntryItem(entry.text)
+                                ForEach(viewModel.recentAdded, id: \.self) { entry in
+                                    WordEntryItem(entry)
                                 }
                             }
                         }
+                        .focused($focusPage, equals: 1)
+                    } else {
+                        VStack{
+                            Spacer()
+                            Text("no word added yet")
+                            Spacer()
+                        }
+                        .focusable(true)
+                        .focused($focusPage, equals: 1)
                     }
                     
-                    if viewModel.queueWords.words.count > 0 {
+                    if viewModel.queueWords.count > 0 {
                         List{
                             Section(header: HStack() {
                                 Spacer()
                                 Text("Queue")
                                 Spacer()
                             }.padding().listRowBackground(Color.clear)) {
-                                ForEach(viewModel.queueWords.words) { entry in
-                                    WordEntryItem(entry.text)
+                                ForEach(viewModel.queueWords, id: \.self) { entry in
+                                    WordEntryItem(entry)
                                 }
                             }
                         }
+                        .focused($focusPage, equals: 2)
+                    } else {
+                        VStack{
+                            Spacer()
+                            Text("no word scheduled for review")
+                            Spacer()
+                        }
+                        .focusable(true)
+                        .focused($focusPage, equals: 2)
                     }
                 }
                 
@@ -126,34 +152,32 @@ struct WatchMasterView: View {
                     Spacer()
                 
                     HStack{
-                        Circle()
-                            .foregroundColor(currentPage==0 ? Color.white:Color.gray)
-                            .frame(width: 5, height: 5)
-                            
-                        Circle()
-                            .foregroundColor(currentPage==1 ? Color.white:Color.gray)
-                            .frame(width: 5, height: 5)
-                            
-                        Circle()
-                            .foregroundColor(currentPage==2 ? Color.white:Color.gray)
-                            .frame(width: 5, height: 5)
+                        ForEach(0...viewModel.pageCount-1, id: \.self) { pageId in
+                            Circle()
+                                .foregroundColor(currentPage==pageId ? Color.white:Color.gray)
+                                .frame(width: 5, height: 5)
+                        }
                     }
                     .frame(height: 5, alignment: .bottom)
                 }
             }
-        }
-        .listStyle(.carousel)
-        .onAppear{
-            viewModel.update()
-        }
-        .onReceive(didDataChange) { _ in
-            viewModel.update()
-        }
-        .onReceive(didRemoteChange) { _ in
-            viewModel.update()
-            remoteChangeCount += 1
+            .navigationTitle(Text("Wordbook").font(.caption))
+            .navigationBarTitleDisplayMode(.inline)
+            .listStyle(.carousel)
+            .onAppear{
+                viewModel.update()
+                focusPage = currentPage
+            }
+            .onReceive(didDataChange) { _ in
+                viewModel.update()
+            }
+            .onReceive(didRemoteChange) { _ in
+                viewModel.update()
+                remoteChangeCount += 1
+            }
         }
     }
+
     
     private func presentInputController() {
         WKExtension.shared()
@@ -208,12 +232,14 @@ struct PagerManager<Content: View>: View {
     let pageCount: Int
     @Binding var currentIndex: Int
     let content: Content
+    let onEnd: (Int) -> Void
     
     //Set the initial values for the variables
-    init(pageCount: Int, currentIndex: Binding<Int>, @ViewBuilder content: () -> Content) {
+    init(pageCount: Int, currentIndex: Binding<Int>, onEnd: @escaping (Int) -> Void, @ViewBuilder content: () -> Content) {
         self.pageCount = pageCount
         self._currentIndex = currentIndex
         self.content = content()
+        self.onEnd = onEnd
     }
     
     @GestureState private var translation: CGFloat = 0
@@ -234,6 +260,7 @@ struct PagerManager<Content: View>: View {
                     let offset = value.translation.width / geometry.size.width
                     let newIndex = (CGFloat(self.currentIndex) - offset).rounded()
                     self.currentIndex = min(max(Int(newIndex), 0), self.pageCount - 1)
+                    onEnd(self.currentIndex)
                 }
             )
         }

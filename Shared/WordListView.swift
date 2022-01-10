@@ -9,7 +9,8 @@ import SwiftUI
 import CoreData
 
 struct WordListView: View {
-    @StateObject private var viewModel = WordListViewModel()
+    @ObservedObject private var viewModel = WordListViewModel.shared
+    
     private let formatter = RelativeDateTimeFormatter()
     private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
         .debounce(for: 1, scheduler: DispatchQueue.global(qos: .background))
@@ -21,12 +22,12 @@ struct WordListView: View {
     var body: some View {
         VStack {
             List{
-                if viewModel.recentLearned.count > 0 {
-                    SectionListView(name: "Recently Learned",
-                                    list: viewModel.recentLearned,
-                                    withCopy: true,
-                                    actionMore: {
-                        viewModel.recentLearned.increaseLimit()
+                if viewModel.learnedRecently.count > 0 {
+                    SectionListView(name: "Learning",
+                                    list: viewModel.learnedRecently,
+                                    withCopyToClipboradIcon: true,
+                                    onMore: {
+                        viewModel.learnedRecentlyFetchLimit += 10
                         viewModel.updateRecentLearned()
                     })
                 }
@@ -34,18 +35,18 @@ struct WordListView: View {
                 if viewModel.recentAdded.count > 0 {
                     SectionListView(name: "Recently Added",
                                     list: viewModel.recentAdded,
-                                    withCopy: true,
-                                    actionMore: {
-                        viewModel.recentAdded.increaseLimit()
+                                    withCopyToClipboradIcon: true,
+                                    onMore: {
+                        viewModel.recentAddedFetchLimit += 10
                         viewModel.updateRecentAdded()
                     })
                 }
                 
                 if viewModel.queueWords.count > 0 {
-                    SectionListView(name: "Queue",
+                    SectionListView(name: "Scheduled",
                                     list: viewModel.queueWords,
-                                    actionMore: {
-                        viewModel.recentAdded.increaseLimit()
+                                    onMore: {
+                        viewModel.recentAddedFetchLimit += 10
                         viewModel.updateQueueWords()
                     })
                 }
@@ -67,15 +68,15 @@ struct WordListView: View {
     }
     
     func SectionListView(name: String,
-                         list: WordEntryList,
-                         withCopy: Bool = false,
-                         actionMore: @escaping ()->()) -> some View {
+                         list: WordList,
+                         withCopyToClipboradIcon: Bool = false,
+                         onMore: @escaping ()->()) -> some View {
         Section(
             header:
                 HStack{
                     Text(name)
                     Spacer()
-                    if withCopy {
+                    if withCopyToClipboradIcon {
                         Button(action: {
                             UIPasteboard.general.string = list.words.array().joined(separator: " ")
                         }) {
@@ -104,9 +105,14 @@ struct WordListView: View {
             
             if list.total < 0 || list.count < list.total {
                 Button(action: {
-                    actionMore()
+                    onMore()
                 }) {
-                    Text("more")
+                    HStack{
+                        Spacer()
+                        Image(systemName: "ellipsis")
+                            .imageScale(.small)
+                        Spacer()
+                    }
                 }
             }
         }

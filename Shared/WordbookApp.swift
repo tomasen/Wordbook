@@ -25,13 +25,12 @@ struct WordbookApp: App {
                     case .active:
                         PausableTimer.shared.resume()
                         print("scene is now active!")
-                    case .inactive:
-                        PausableTimer.shared.pause()
-                        print("scene is now inactive!")
-                    case .background:
+                        
+                    case .inactive, .background:
                         PausableTimer.shared.pause()
                         scheduleWordReminderNotification()
-                        print("scene is now in the background!")
+                        print("scene is now inactive or in the background!")
+                        
                     @unknown default:
                         print("Apple must have added something new!")
                     }

@@ -132,6 +132,81 @@ class WordManager {
         return nil
     }
     
+    // ------- WordList -------
+    func learnedRecentlyWordList(fetchLimit: Int) -> WordList {
+        var recentLearned = WordList()
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "AnswerHistory")
+        req.predicate = NSPredicate(format: "word.category >= 0")
+        req.sortDescriptors = [NSSortDescriptor(keyPath: \AnswerHistory.date, ascending: false)]
+        req.resultType = NSFetchRequestResultType.dictionaryResultType
+        req.propertiesToFetch   = [#keyPath(AnswerHistory.word.word)]
+        req.returnsDistinctResults = true;
+        recentLearned.total = try! moc.count(for: req)
+        if fetchLimit > 0 {
+            req.fetchLimit = fetchLimit
+        }
+        let res = try! moc.fetch(req) as! [NSDictionary]
+        if res.count > 0 {
+            print("MSG: \(fetchLimit) \(recentLearned.total) \(res.count)")
+            for key in res {
+                if let w = key.allValues[0] as? String {
+                    if let wordcard = WordManager.shared.fetchWordCard(w) {
+                        if wordcard.category >= 0 {
+                            recentLearned.words.append(WordListEntry(text: w, dueDate: nil))
+                        }
+                    }
+                }
+            }
+        }
+        if res.count < fetchLimit {
+            recentLearned.total = recentLearned.words.count
+        }
+        
+        return recentLearned
+    }
+    
+    func addedRecentlyWordList(fetchLimit: Int) -> WordList {
+        var recentAdded = WordList()
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
+        req.predicate = NSPredicate(format: "(duedate < %@ OR duedate = NULL) AND category >= 0",
+                                    WordManager.shared.now() as NSDate)
+        req.sortDescriptors = [NSSortDescriptor(keyPath: \WordCard.createdAt, ascending: false)]
+        recentAdded.total = try! moc.count(for: req)
+        if fetchLimit > 0 {
+            req.fetchLimit = fetchLimit
+        }
+        let res = try! moc.fetch(req) as! [WordCard]
+        if res.count > 0 {
+            for c in res {
+                if let w = c.word {
+                    recentAdded.words.append(WordListEntry(text: w, dueDate: c.duedate))
+                }
+            }
+        }
+        return recentAdded
+    }
+    
+    func queueWordList(fetchLimit: Int) -> WordList {
+        var queueWords = WordList()
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
+        req.predicate = NSPredicate(format: "(duedate < %@ OR duedate = NULL) AND category >= 0",
+                                    WordManager.shared.now() as NSDate)
+        req.sortDescriptors = [NSSortDescriptor(keyPath: \WordCard.duedate, ascending: true)]
+        queueWords.total = try! moc.count(for: req)
+        if fetchLimit > 0 {
+            req.fetchLimit = fetchLimit
+        }
+        let res = try! moc.fetch(req) as! [WordCard]
+        if res.count > 0 {
+            for c in res {
+                if let w = c.word {
+                    queueWords.words.append(WordListEntry(text: w, dueDate: c.duedate))
+                }
+            }
+        }
+        return queueWords
+    }
+    
     // ------- Cache -------
     func getCache(word: String, source: ExtraExplainSource) -> ExtraExplain? {
         if let ref = getCachedReference(word: word, source: source) {
@@ -495,5 +570,30 @@ extension Engagement {
         if (self.goal <= self.finished ) {
             self.checked = true
         }
+    }
+}
+
+struct WordList {
+    var words: [WordListEntry] = []
+    var total: Int = -1
+    var count: Int {
+        words.count
+    }
+}
+
+struct WordListEntry: Identifiable {
+    var id: String { text }
+    
+    var text: String
+    var dueDate : Date?
+}
+
+extension Array where Element == WordListEntry {
+    func array() -> [String] {
+        var out = [String]()
+        for e in self {
+            out.append(e.text)
+        }
+        return out
     }
 }

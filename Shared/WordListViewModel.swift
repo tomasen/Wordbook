@@ -10,15 +10,22 @@ import SwiftUI
 import CoreData
 
 class WordListViewModel: ObservableObject {
-    @Published var recentLearned = WordEntryList()
-    @Published var recentAdded = WordEntryList()
-    @Published var queueWords = WordEntryList()
+    @Published var learnedRecently = WordList()
+    var learnedRecentlyFetchLimit = 10
+    
+    @Published var recentAdded = WordList()
+    var recentAddedFetchLimit = 10
+    
+    @Published var queueWords = WordList()
+    var queueWordsFetchLimit = 10
+    
     @Published var updateCounter = 0
+    
+    static var shared = WordListViewModel()
     
     var footnote: String {
         "\(updateCounter)"
     }
-    
     
     private let moc = CoreDataManager.shared.container.viewContext
     
@@ -27,70 +34,15 @@ class WordListViewModel: ObservableObject {
     }
     
     func updateRecentLearned() {
-        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "AnswerHistory")
-        req.predicate = NSPredicate(format: "word.category >= 0")
-        req.sortDescriptors = [NSSortDescriptor(keyPath: \AnswerHistory.date, ascending: false)]
-        req.resultType = NSFetchRequestResultType.dictionaryResultType
-        req.propertiesToFetch   = [#keyPath(AnswerHistory.word.word)]
-        req.returnsDistinctResults = true;
-        recentLearned.total = try! moc.count(for: req)
-        if recentLearned.fetchLimit > 0 {
-            req.fetchLimit = recentLearned.fetchLimit
-        }
-        let res = try! moc.fetch(req) as! [NSDictionary]
-        if res.count > 0 {
-            recentLearned.words.removeAll()
-            for key in res {
-                if let w = key.allValues[0] as? String {
-                    if let wordcard = WordManager.shared.fetchWordCard(w) {
-                        print("MSG: \(w) \(wordcard.category)")
-                        if wordcard.category >= 0 {
-                            recentLearned.words.append(WordEntry(text: w, dueDate: nil))
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    func updateQueueWords() {
-        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
-        req.predicate = NSPredicate(format: "(duedate < %@ OR duedate = NULL) AND category >= 0",
-                                    WordManager.shared.now() as NSDate)
-        req.sortDescriptors = [NSSortDescriptor(keyPath: \WordCard.duedate, ascending: true)]
-        queueWords.total = try! moc.count(for: req)
-        if queueWords.fetchLimit > 0 {
-            req.fetchLimit = queueWords.fetchLimit
-        }
-        let res = try! moc.fetch(req) as! [WordCard]
-        if res.count > 0 {
-            queueWords.words.removeAll()
-            for c in res {
-                if let w = c.word {
-                    queueWords.words.append(WordEntry(text: w, dueDate: c.duedate))
-                }
-            }
-        }
+        learnedRecently = WordManager.shared.learnedRecentlyWordList(fetchLimit: learnedRecentlyFetchLimit)
     }
     
     func updateRecentAdded() {
-        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
-        req.predicate = NSPredicate(format: "(duedate < %@ OR duedate = NULL) AND category >= 0",
-                                    WordManager.shared.now() as NSDate)
-        req.sortDescriptors = [NSSortDescriptor(keyPath: \WordCard.createdAt, ascending: false)]
-        recentAdded.total = try! moc.count(for: req)
-        if recentAdded.fetchLimit > 0 {
-            req.fetchLimit = recentAdded.fetchLimit
-        }
-        let res = try! moc.fetch(req) as! [WordCard]
-        if res.count > 0 {
-            recentAdded.words.removeAll()
-            for c in res {
-                if let w = c.word {
-                    recentAdded.words.append(WordEntry(text: w, dueDate: c.duedate))
-                }
-            }
-        }
+        recentAdded = WordManager.shared.addedRecentlyWordList(fetchLimit: recentAddedFetchLimit)
+    }
+    
+    func updateQueueWords() {
+        queueWords = WordManager.shared.queueWordList(fetchLimit: queueWordsFetchLimit)
     }
     
     func update() {
@@ -99,12 +51,12 @@ class WordListViewModel: ObservableObject {
         updateRecentLearned()
         
         #if DEBUG
-        if recentLearned.words.count == 0 {
-            recentLearned.total = 10
+        if learnedRecently.words.count == 0 {
+            learnedRecently.total = 10
             recentAdded.total = 10
-            for _ in 0...recentLearned.total {
-                recentLearned.words.append(WordEntry(text: WordManager.shared.nextRandomWord()))
-                recentAdded.words.append(WordEntry(text: WordManager.shared.nextRandomWord()))
+            for _ in 0...learnedRecently.total {
+                learnedRecently.words.append(WordListEntry(text: WordManager.shared.nextRandomWord()))
+                recentAdded.words.append(WordListEntry(text: WordManager.shared.nextRandomWord()))
             }
         }
         #endif
@@ -112,35 +64,3 @@ class WordListViewModel: ObservableObject {
     }
 }
 
-struct WordEntryList {
-    var words: [WordEntry] = []
-    var fetchLimit: Int = 10
-    var total: Int = -1
-    var count: Int {
-        words.count
-    }
-    
-    mutating func increaseLimit() {
-        fetchLimit = fetchLimit + 10
-        if total > 0 && fetchLimit > total + 10{
-            fetchLimit = total
-        }
-    }
-}
-
-struct WordEntry: Identifiable {
-    var id: String { text }
-    
-    var text: String
-    var dueDate : Date?
-}
-
-extension Array where Element == WordEntry {
-    func array() -> [String] {
-        var out = [String]()
-        for e in self {
-            out.append(e.text)
-        }
-        return out
-    }
-}

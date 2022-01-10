@@ -14,6 +14,26 @@ struct LanguageManifestItem {
 }
 
 class UserPreferences: ObservableObject {
+    
+    static let shared = UserPreferences()
+    
+    private let mySharedDefaults = UserDefaults(suiteName: SHARED_DEFAULTS_SUITENAME)!
+    
+    static let DKEY_SUPER_USER = "SUPER_USER"
+    static let DKEY_CLKCOMPL_WORD = "CLKCOMPL_WORD"
+    static let DKEY_PROSUBSCRIBER = "WBCFG_PROVALID"
+    
+    static let SHARED_WORDKEY_PREFIX = "WORDBOOK_"
+    static let SHARED_DEFAULTS_SUITENAME = "group.ai.sagittarius.memorable"
+    
+    static let DKEY_DAILY_GOAL = "DAILY_GOAL"
+    static let DKEY_TRANSLATION_LANGUAGE = "TRANSLATION_LANGUAGE"
+    static let DKEY_TEST_PREP_BOOK = "TEST_PREP_BOOK"
+    
+    static let DKEY_WORDLIST_LEARNING = "WORDLIST_LEARNING"
+    static let DKEY_WORDLIST_ADDEDRECENTLY = "WORDLIST_ADDEDRECENTLY"
+    static let DKEY_WORDLIST_INQUEUE = "WORDLIST_INQUEUE"
+    
     @Published var dailyGoal = 15 {
         didSet {
             set(dailyGoal, forKey: UserPreferences.DKEY_DAILY_GOAL)
@@ -23,6 +43,12 @@ class UserPreferences: ObservableObject {
     @Published var translationLanguageCode = "" {
         didSet {
             set(translationLanguageCode, forKey: UserPreferences.DKEY_TRANSLATION_LANGUAGE)
+        }
+    }
+    
+    @Published var testPrepBook = 0 {
+        didSet {
+            set(testPrepBook, forKey: UserPreferences.DKEY_TEST_PREP_BOOK)
         }
     }
     
@@ -52,28 +78,7 @@ class UserPreferences: ObservableObject {
                                                          "sl": "Slovenian",
                                                          "sv": "Swedish"]
     
-    @Published var testPrepBook = 0 {
-        didSet {
-            set(testPrepBook, forKey: UserPreferences.DKEY_TEST_PREP_BOOK)
-        }
-    }
-    
     let testPrepBooks: [String] = ["None", "SAT", "TOEFL", "GRE"] // , "GMAT", "IELTS"
-    
-    static let shared = UserPreferences()
-    
-    private let mySharedDefaults = UserDefaults(suiteName: SHARED_DEFAULTS_SUITENAME)!
-    
-    static let DKEY_SUPER_USER = "SUPER_USER"
-    static let DKEY_CLKCOMPL_WORD = "CLKCOMPL_WORD"
-    static let DKEY_PROSUBSCRIBER = "WBCFG_PROVALID"
-    
-    static let SHARED_WORDKEY_PREFIX = "WORDBOOK_"
-    static let SHARED_DEFAULTS_SUITENAME = "group.ai.sagittarius.memorable"
-    
-    static let DKEY_DAILY_GOAL = "DAILY_GOAL"
-    static let DKEY_TRANSLATION_LANGUAGE = "TRANSLATION_LANGUAGE"
-    static let DKEY_TEST_PREP_BOOK = "TEST_PREP_BOOK"
     
     init() {
         dailyGoal = integer(forKey: UserPreferences.DKEY_DAILY_GOAL)
@@ -135,7 +140,5 @@ class UserPreferences: ObservableObject {
     func removeObject(forKey key: String) {
         mySharedDefaults.removeObject(forKey: key)
     }
-    
-    // -----------
 }
 
