@@ -137,7 +137,7 @@ struct PurchaseView: View {
             .customFont(name: "AvenirNext-Regular", style: .body)
         }
         .foregroundColor(Color("fontBody"))
-        .padding(10)
+        .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
         .background(Color("Background").edgesIgnoringSafeArea(.all))
     }
 }

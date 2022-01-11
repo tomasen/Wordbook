@@ -168,7 +168,7 @@ class WordManager {
     func addedRecentlyWordList(fetchLimit: Int) -> WordList {
         var recentAdded = WordList()
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "WordCard")
-        req.predicate = NSPredicate(format: "(duedate < %@ OR duedate = NULL) AND category >= 0",
+        req.predicate = NSPredicate(format: "(createdAt < %@ OR createdAt = NULL) AND category >= 0",
                                     WordManager.shared.now() as NSDate)
         req.sortDescriptors = [NSSortDescriptor(keyPath: \WordCard.createdAt, ascending: false)]
         recentAdded.total = try! moc.count(for: req)
@@ -566,10 +566,6 @@ extension Engagement {
         
         // update time spend
         self.duration = timespend
-        
-        if (self.goal <= self.finished ) {
-            self.checked = true
-        }
     }
 }
 

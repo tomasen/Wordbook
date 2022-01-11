@@ -24,10 +24,13 @@ struct WordbookApp: App {
                     switch newScenePhase {
                     case .active:
                         PausableTimer.shared.resume()
+                        addingNewWordsFromShareExtension()
+                        CoreDataManager.shared.refreshAndSync()
                         print("scene is now active!")
                         
                     case .inactive, .background:
                         PausableTimer.shared.pause()
+                        CoreDataManager.shared.save()
                         scheduleWordReminderNotification()
                         print("scene is now inactive or in the background!")
                         
@@ -37,29 +40,26 @@ struct WordbookApp: App {
                 }
     }
     
-    func onActive() {
+    func addingNewWordsFromShareExtension() {
         // sort the word list first
-        var dict = Dictionary<String, Date>()
         for (k, v) in UserPreferences.shared.dictionaryRepresentation(){
             if let d = v as? Date {
                 if k.hasPrefix(UserPreferences.SHARED_WORDKEY_PREFIX){
                     // need prefix to filter keys
-                    dict[k] = d
+                    
+                    let word = String(k.dropFirst(UserPreferences.SHARED_WORDKEY_PREFIX.count))
+                    if let wc = WordManager.shared.addWordCard(word) {
+                        wc.createdAt = d
+                        wc.updateDueByMinute(30)
+                        print("MSG: adding word \(word) \(v)")
+                    }
+                    
+                    // remove key
+                    UserPreferences.shared.removeObject(forKey:k)
                 }
             }
         }
         
-        for (k, v) in dict.sorted(by: { $0.1 < $1.1 }) {
-            if var word = k as String? {
-                // add word to wordbook
-                word = String(word.dropFirst(UserPreferences.SHARED_WORDKEY_PREFIX.count))
-                if let wc = WordManager.shared.addWordCard(word) {
-                    wc.duedate = v
-                }
-                // remove key
-                UserPreferences.shared.removeObject(forKey:k)
-            }
-        }
     }
     
     private func scheduleWordReminderNotification() {

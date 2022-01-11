@@ -31,7 +31,7 @@ class TodaysViewModel: ObservableObject {
         req.predicate = NSPredicate(format: "category >= 0")
         totalWordsInWordbook = try! moc.count(for: req)
         
-        totalLearningDays = CoreDataManager.shared.countBy("Engagement", pred: NSPredicate(format: "checked = true"))
+        totalLearningDays = CoreDataManager.shared.countBy("Engagement", pred: NSPredicate(format: "goal <= finished"))
     }
     
     func updateStat() {

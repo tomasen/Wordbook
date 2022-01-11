@@ -85,4 +85,8 @@ struct CoreDataManager {
         }
         return 0
     }
+    
+    func refreshAndSync() {
+        container.viewContext.automaticallyMergesChangesFromParent = true
+    }
 }
