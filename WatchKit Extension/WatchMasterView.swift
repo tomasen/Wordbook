@@ -233,6 +233,7 @@ struct PagerManager<Content: View>: View {
     @Binding var currentIndex: Int
     let content: Content
     let onEnd: (Int) -> Void
+    @State var finalOffset: CGFloat = 0
     
     //Set the initial values for the variables
     init(pageCount: Int, currentIndex: Binding<Int>, onEnd: @escaping (Int) -> Void, @ViewBuilder content: () -> Content) {
@@ -242,8 +243,6 @@ struct PagerManager<Content: View>: View {
         self.onEnd = onEnd
     }
     
-    @GestureState private var translation: CGFloat = 0
-    
     //Set the animation
     var body: some View {
         GeometryReader { geometry in
@@ -251,18 +250,25 @@ struct PagerManager<Content: View>: View {
                 self.content.frame(width: geometry.size.width)
             }
             .frame(width: geometry.size.width, alignment: .leading)
-            .offset(x: -CGFloat(self.currentIndex) * geometry.size.width)
-            .offset(x: self.translation)
+            .offset(x: finalOffset)
             .gesture(
-                DragGesture().updating(self.$translation) { value, state, _ in
-                    state = value.translation.width
+                DragGesture().onChanged{  value in
+                    finalOffset = -CGFloat(self.currentIndex) * geometry.size.width + value.translation.width
                 }.onEnded { value in
                     let offset = value.translation.width / geometry.size.width
                     let newIndex = (CGFloat(self.currentIndex) - offset).rounded()
                     self.currentIndex = min(max(Int(newIndex), 0), self.pageCount - 1)
-                    onEnd(self.currentIndex)
+                    let newOffset = -CGFloat(self.currentIndex) * geometry.size.width
+                    let duration = abs(finalOffset - newOffset)/geometry.size.width * 0.35
+                    withAnimation(.easeOut(duration: duration)){
+                        finalOffset = newOffset
+                        onEnd(self.currentIndex)
+                    }
                 }
             )
+            .onAppear{
+                finalOffset = -CGFloat(self.currentIndex) * geometry.size.width
+            }
         }
     }
 }

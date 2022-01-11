@@ -67,7 +67,7 @@ class InAppPurchaseManager: ObservableObject {
                 }
             }
         }
-        if SwiftyStoreKit.localReceiptData != nil {
+        if SwiftyStoreKit.localReceiptData != nil && !isSuperUser {
             validate()
         }
         
