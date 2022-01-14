@@ -36,14 +36,18 @@ struct WordDatabaseLocal {
         FROM word WHERE word LIKE ? OR id = (SELECT wordid FROM alias WHERE alias LIKE ?)
         ORDER BY (CASE WHEN word = ? THEN -4
         WHEN id = (SELECT wordid FROM alias WHERE alias = ?) THEN -3
-        WHEN word LIKE ? THEN -2
+        WHEN word LIKE ? AND phrase = 0 THEN -2
         WHEN id = (SELECT wordid FROM alias WHERE alias LIKE ?) THEN -1
         ELSE phrase END) ASC, RANDOM()
         LIMIT 30
         """)
+        var wildcharInput = input+"%"
+        if input.contains("?") || input.contains("*") {
+            wildcharInput = input.replacingOccurrences(of: "?", with: "_").replacingOccurrences(of: "*", with: "%")
+        }
         
         var ret = [String]()
-        for row in try! stmt.run(input+"%", input+"%", input, input, input+"%", input+"%") {
+        for row in try! stmt.run(wildcharInput, wildcharInput, input, input, wildcharInput, wildcharInput) {
             let word = row[0] as! String
             ret.append(word)
         }
