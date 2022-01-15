@@ -284,13 +284,8 @@ struct DefinitionView: View {
             }
             .buttonStyle(LinkButtonStyle())
             .sheet(isPresented: $popWebPage.toBool()) {
-                if iapManager.isProSubscriber {
-                    WebPageView(url: URL(string: popWebPage)!)
-                        .environment(\.colorScheme, .dark)
-                } else {
-                    PurchaseView(closeMyself: $popWebPage.toBool())
-                        .environment(\.colorScheme, .dark)
-                }
+                WebPageView(url: URL(string: popWebPage)!)
+                    .environment(\.colorScheme, .dark)
             }
         }
     }
