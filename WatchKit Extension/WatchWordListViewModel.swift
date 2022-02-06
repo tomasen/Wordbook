@@ -9,13 +9,13 @@ import SwiftUI
 
 class WatchWordListViewModel: ObservableObject {
     @Published var learnedRecently = [String]()
-    @Published var learnedRecentlyFetchLimit = 10
+    @Published var learnedRecentlyFetchLimit = 20
     
     @Published var recentAdded = [String]()
-    @Published var recentAddedFetchLimit = 10
+    @Published var recentAddedFetchLimit = 20
     
     @Published var queueWords = [String]()
-    @Published var queueWordsFetchLimit = 10
+    @Published var queueWordsFetchLimit = 20
     
     var pageCount: Int {
         return 3

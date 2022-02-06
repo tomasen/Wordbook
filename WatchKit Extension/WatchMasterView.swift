@@ -31,20 +31,28 @@ struct WatchMasterView: View {
         NavigationView{
             WatchTabView(tabCount: 3,
                          currentTab: $currentTab,
-                         onTabChanged: { tabIdx in focusTab = tabIdx; print("MSG: focus \(tabIdx)") }){
+                         onTabChanged: { tabIdx in focusTab = tabIdx; print("MSG: focus \(tabIdx) \(String(describing: focusTab))") }){
                 pageOne()
                     .focused($focusTab, equals: 0)
                 pageTwo()
                     .focused($focusTab, equals: 1)
                 pageThree()
                     .focused($focusTab, equals: 2)
+                
+                if let w = pushReceiver.notificatedWord {
+                    HiddenNavigationLink(destination: WatchCardView(w),
+                                         isActive: $pushReceiver.notificatedWord.toBool())
+                }
             }
                 .navigationTitle(Text("Wordbook").font(.caption))
                 .navigationBarTitleDisplayMode(.inline)
                 .listStyle(.carousel)
                 .onAppear{
                     viewModel.update()
-                    focusTab = 0
+                    DispatchQueue.main.asyncAfter(deadline: .now()+0.5) {
+                        focusTab = currentTab
+                        print("MSG: focusTab \(String(describing: focusTab)) \(currentTab)")
+                    }
                 }
                 .onReceive(didDataChange) { _ in
                     viewModel.update()
@@ -65,10 +73,6 @@ struct WatchMasterView: View {
                     Image(systemName: "mic.circle.fill")
                         .font(.system(size: 40))
                     Spacer()
-                }
-                if let w = pushReceiver.notificatedWord {
-                    HiddenNavigationLink(destination: WatchCardView(w),
-                                         isActive: $pushReceiver.notificatedWord.toBool())
                 }
                 Spacer()
             }
@@ -120,6 +124,7 @@ struct WatchMasterView: View {
                 }
             }
         }
+        
     }
     
     @ViewBuilder func pageTwo() -> some View {
@@ -133,6 +138,9 @@ struct WatchMasterView: View {
                     ForEach(viewModel.recentAdded, id: \.self) { entry in
                         WordEntryItem(entry)
                     }
+                }
+                .refreshable {
+                    await Task.sleep(3_000_000_000)
                 }
             }
         } else {
