@@ -33,11 +33,20 @@ class WordManager {
     }
     
     func nextWord() -> String {
-        // next vague or no idea Word of today
-        if let w = nextNoGoodWord() {
-            return w
-        }
         
+        switch Int.random(in: 0...5) {
+        case 0:
+            if let w = addedRecentlyWordList(fetchLimit: 20).words.randomElement() {
+                return w.text
+            }
+        case 1,2:
+            // next vague or no idea Word of today
+            if let w = nextNoGoodWord() {
+                return w
+            }
+        default:
+            break
+        }
         // next due word, LEARNING > NEW > LEARN
         if let w = nextDueWord(before: now(), catagory: .LEARNING) {
             return w
@@ -105,29 +114,35 @@ class WordManager {
         let res = try! moc.fetch(req) as! [AnswerHistory]
         
         var ret  = [String]()
-        var good = [String]()
+        var nogood = [String]()
+        var recent = [String]()
         
         for ans in res {
             if let w = ans.word?.word {
                 if !ret.contains(w) {
                     ret.append(w)
                 }
-                if ans.answer == CardRating.WELLKNOWN.rawValue {
-                    if !good.contains(w) {
-                        good.append(w)
+                if recent.count <= 3 {
+                    if !recent.contains(w) {
+                        recent.append(w)
+                    }
+                }
+                if ans.answer != CardRating.WELLKNOWN.rawValue {
+                    if !nogood.contains(w) {
+                        nogood.append(w)
                     }
                 }
             }
         }
         
-        if (ret.count-good.count) >= 3 || ret.count > dailyWordsGoal {
-            // remove good word from ret
-            for w in good {
-                if let index = ret.firstIndex(of: w) {
-                    ret.remove(at: index)
+        if nogood.count > 0 {
+            // random nogood word
+            if let w = nogood.randomElement() {
+                if recent.contains(w) {
+                    return nil
                 }
+                return w
             }
-            return ret.randomElement()
         }
         return nil
     }
