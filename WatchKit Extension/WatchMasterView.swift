@@ -14,11 +14,11 @@ struct WatchMasterView: View {
     
     @StateObject private var viewModel = WatchWordListViewModel()
     
+    @FocusState private var focusTab: Int?
+
     @State private var remoteChangeCount = 0
     @State private var searchKeyword: String = ""
-    @State private var currentPage = 0
-    
-    @FocusState private var focusPage: Int?
+    @State private var currentTab = 0
     
     private var didDataChange =  NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
         .debounce(for: 1, scheduler: DispatchQueue.global(qos: .background))
@@ -29,16 +29,22 @@ struct WatchMasterView: View {
     
     var body: some View {
         NavigationView{
-            WatchTabView(currentPage: $currentPage,
-                         AnyView(pageOne()),
-                         AnyView(pageTwo()),
-                         AnyView(pageThree())
-            )
+            WatchTabView(tabCount: 3,
+                         currentTab: $currentTab,
+                         onTabChanged: { tabIdx in focusTab = tabIdx; print("MSG: focus \(tabIdx)") }){
+                pageOne()
+                    .focused($focusTab, equals: 0)
+                pageTwo()
+                    .focused($focusTab, equals: 1)
+                pageThree()
+                    .focused($focusTab, equals: 2)
+            }
                 .navigationTitle(Text("Wordbook").font(.caption))
                 .navigationBarTitleDisplayMode(.inline)
                 .listStyle(.carousel)
                 .onAppear{
                     viewModel.update()
+                    focusTab = 0
                 }
                 .onReceive(didDataChange) { _ in
                     viewModel.update()
@@ -135,6 +141,7 @@ struct WatchMasterView: View {
                 Text("no word added yet")
                 Spacer()
             }
+            .focusable(true)
         }
     }
     
@@ -157,6 +164,7 @@ struct WatchMasterView: View {
                 Text("no word scheduled for review")
                 Spacer()
             }
+            .focusable(true)
         }
     }
     
@@ -210,53 +218,57 @@ struct WordEntryItem: View {
 }
 
 struct WatchTabView<Content: View>: View {
-    @Binding var currentPageIndex: Int
-    private let childViews: [Content]
+    @Binding var currentTabIndex: Int
     
-    @FocusState private var focusPage: Int?
     @State private var finalOffset: CGFloat = 0
-    private let pageCount: Int
+    private let tabTotalCount: Int
+    private let onTabChanged: (Int) -> Void
+    private let content: Content
     
-    init(currentPage: Binding<Int>, _ views: Content...) {
-        self.childViews = views
-        self.pageCount = views.count
-        self._currentPageIndex = currentPage
+    init(tabCount: Int,
+         currentTab: Binding<Int>,
+         onTabChanged: @escaping (Int) -> Void,
+         @ViewBuilder content: () -> Content) {
+        self._currentTabIndex = currentTab
+        self.content = content()
+        self.onTabChanged = onTabChanged
+        self.tabTotalCount = tabCount
     }
     
     var body: some View {
         ZStack {
             GeometryReader { geometry in
                 HStack(spacing: 0) {
-                    self.content().frame(width: geometry.size.width)
+                    self.content.frame(width: geometry.size.width)
                 }
                 .frame(width: geometry.size.width, alignment: .leading)
                 .offset(x: finalOffset)
                 .gesture(
                     DragGesture().onChanged{  value in
-                        finalOffset = -CGFloat(self.currentPageIndex) * geometry.size.width + value.translation.width
+                        finalOffset = -CGFloat(self.currentTabIndex) * geometry.size.width + value.translation.width
                     }.onEnded { value in
                         let offset = value.translation.width / geometry.size.width
-                        let newIndex = (CGFloat(self.currentPageIndex) - offset).rounded()
-                        self.currentPageIndex = min(max(Int(newIndex), 0), self.pageCount - 1)
-                        let newOffset = -CGFloat(self.currentPageIndex) * geometry.size.width
+                        let newIndex = (CGFloat(self.currentTabIndex) - offset).rounded()
+                        self.currentTabIndex = min(max(Int(newIndex), 0), self.tabTotalCount - 1)
+                        let newOffset = -CGFloat(self.currentTabIndex) * geometry.size.width
                         let duration = abs(finalOffset - newOffset)/geometry.size.width * 0.35
                         withAnimation(.easeOut(duration: duration)){
                             finalOffset = newOffset
-                            focusPage = currentPageIndex
+                            onTabChanged(currentTabIndex)
                         }
                     }
                 )
                 .onAppear{
-                    finalOffset = -CGFloat(self.currentPageIndex) * geometry.size.width
+                    finalOffset = -CGFloat(self.currentTabIndex) * geometry.size.width
                 }
             }
             VStack{
                 Spacer()
                 
                 HStack{
-                    ForEach(0..<pageCount, id: \.self) { pageId in
+                    ForEach(0..<tabTotalCount, id: \.self) { pageId in
                         Circle()
-                            .foregroundColor(currentPageIndex==pageId ? Color.white:Color.gray)
+                            .foregroundColor(currentTabIndex==pageId ? Color.white:Color.gray)
                             .frame(width: 5, height: 5)
                     }
                 }
@@ -264,14 +276,6 @@ struct WatchTabView<Content: View>: View {
                 .padding(.bottom, 0.5)
             }
             .edgesIgnoringSafeArea(.bottom)
-        }
-    }
-    
-    @ViewBuilder func content() -> some View {
-        ForEach(0..<childViews.count, id: \.self) { index in
-            childViews[index]
-                .focusable(true)
-                .focused($focusPage, equals: index)
         }
     }
 }

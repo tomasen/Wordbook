@@ -8,10 +8,15 @@
 import SwiftUI
 
 class SearchViewModel: ObservableObject {
-    @Published var keyword = ""
+    @Published var keyword = "" {
+        didSet{
+            checkHints()
+        }
+    }
+    @Published var hints: [String]?
     
-    var searchHints: [String]? {
-        WordManager.shared.searchHints(keyword)
+    func checkHints() {
+        hints = WordManager.shared.searchHints(keyword)
     }
     
     func addToWordbook() {
@@ -63,7 +68,7 @@ struct SearchView: View {
             }
             if showExplain {
                 SimpleWordView(word: viewModel.keyword, closeMyself: $closeMyself)                
-            } else if let hints = viewModel.searchHints {
+            } else if let hints = viewModel.hints {
                 if hints.count == 1 {
                     SimpleWordView(word: hints.first!, closeMyself: $closeMyself)
                 } else {
