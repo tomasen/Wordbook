@@ -151,6 +151,8 @@
 		88E042C22783FF2600B568C8 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88E042C12783FF2600B568C8 /* CoreData.framework */; };
 		88E042C427849B5E00B568C8 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E042C327849B5E00B568C8 /* PurchaseView.swift */; };
 		88E042C527849B5E00B568C8 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E042C327849B5E00B568C8 /* PurchaseView.swift */; };
+		88E9571427B028770032742E /* eula.txt in Resources */ = {isa = PBXBuildFile; fileRef = 88E9571327B028770032742E /* eula.txt */; };
+		88E9571527B028770032742E /* eula.txt in Resources */ = {isa = PBXBuildFile; fileRef = 88E9571327B028770032742E /* eula.txt */; };
 		88F25273277B63270046BA15 /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
 		88F25274277B63270046BA15 /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
 		88F25276277B6EAD0046BA15 /* WordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFB274F621F00637B61 /* WordManager.swift */; };
@@ -354,6 +356,7 @@
 		88E042C0278370DC00B568C8 /* WatchApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchApp.entitlements; sourceTree = "<group>"; };
 		88E042C12783FF2600B568C8 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS8.0.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		88E042C327849B5E00B568C8 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
+		88E9571327B028770032742E /* eula.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = eula.txt; sourceTree = "<group>"; };
 		88F25272277B63260046BA15 /* ExtraExplainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtraExplainManager.swift; sourceTree = "<group>"; };
 		88F25289277CD9F00046BA15 /* SharedExtensionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedExtensionView.swift; sourceTree = "<group>"; };
 		88F2528B277CDA0E0046BA15 /* WordFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordFilter.swift; sourceTree = "<group>"; };
@@ -573,6 +576,7 @@
 		884EE6F6277577B50038E990 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				88E9571327B028770032742E /* eula.txt */,
 				8874799C27876F9200C66E85 /* privacy.txt */,
 				884EE6F8277577CF0038E990 /* about.txt */,
 				884EE6F7277577CF0038E990 /* plans.txt */,
@@ -979,6 +983,7 @@
 				884EE6D12770D8710038E990 /* SF-Pro-Text-Thin.otf in Resources */,
 				884EE6FC277577CF0038E990 /* about.txt in Resources */,
 				884EE6CD2770D8710038E990 /* SF-Pro-Text-Ultralight.otf in Resources */,
+				88E9571427B028770032742E /* eula.txt in Resources */,
 				884EE6D32770D8710038E990 /* SF-Pro-Text-Black.otf in Resources */,
 				884EE6D52770D8710038E990 /* SF-Pro-Text-Medium.otf in Resources */,
 			);
@@ -1001,6 +1006,7 @@
 				884EE6D22770D8710038E990 /* SF-Pro-Text-Thin.otf in Resources */,
 				884EE6FD277577CF0038E990 /* about.txt in Resources */,
 				884EE6CE2770D8710038E990 /* SF-Pro-Text-Ultralight.otf in Resources */,
+				88E9571527B028770032742E /* eula.txt in Resources */,
 				884EE6D42770D8710038E990 /* SF-Pro-Text-Black.otf in Resources */,
 				884EE6D62770D8710038E990 /* SF-Pro-Text-Medium.otf in Resources */,
 			);
@@ -1483,7 +1489,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CF_BUNDLE_BUILD_STRING = 208;
+				CF_BUNDLE_BUILD_STRING = 209;
 				CF_BUNDLE_SHORT_VERSION_STRING = 1.1.5;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1544,7 +1550,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CF_BUNDLE_BUILD_STRING = 208;
+				CF_BUNDLE_BUILD_STRING = 209;
 				CF_BUNDLE_SHORT_VERSION_STRING = 1.1.5;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

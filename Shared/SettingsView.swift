@@ -48,6 +48,10 @@ struct SettingsView: View {
                     }){
                         Text("Privacy Policy")
                     }
+                    NavigationLink(destination: TextView(text: String.getContentOfFile("eula", "txt"))
+                    ){
+                        Text("Terms of Use")
+                    }
                     NavigationLink(destination: TextView(text: String.getContentOfFile("about", "txt")).onTapGesture(count: 5) {
                         #if DEBUG
                         InAppPurchaseManager.shared.toggleProFeatures()
