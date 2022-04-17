@@ -64,7 +64,7 @@ struct WatchMasterView: View {
         }
     }
     
-    @ViewBuilder func pageOne() -> some View {
+    @ ViewBuilder func pageOne() -> some View {
         List{
             HStack{
                 Spacer()
@@ -115,6 +115,10 @@ struct WatchMasterView: View {
                     ForEach(viewModel.learnedRecently, id: \.self) { entry in
                         WordEntryItem(entry)
                     }
+                    buttonMore{
+                        viewModel.learnedRecentlyFetchLimit += 10
+                        viewModel.update()
+                    }
                 } else {
                     Text("no word in wordbook")
                         .foregroundColor(Color("fontBody"))
@@ -138,9 +142,10 @@ struct WatchMasterView: View {
                     ForEach(viewModel.recentAdded, id: \.self) { entry in
                         WordEntryItem(entry)
                     }
-                }
-                .refreshable {
-                    await Task.sleep(3_000_000_000)
+                    buttonMore{
+                        viewModel.recentAddedFetchLimit += 10
+                        viewModel.update()
+                    }
                 }
             }
         } else {
@@ -164,6 +169,10 @@ struct WatchMasterView: View {
                     ForEach(viewModel.queueWords, id: \.self) { entry in
                         WordEntryItem(entry)
                     }
+                    buttonMore {
+                        viewModel.queueWordsFetchLimit += 10
+                        viewModel.update()
+                    }
                 }
             }
         } else {
@@ -174,6 +183,23 @@ struct WatchMasterView: View {
             }
             .focusable(true)
         }
+    }
+    
+    @ViewBuilder func buttonMore(action: @escaping () -> Void) -> some View {
+        Button(action: {
+            action()
+        }) {
+            HStack{
+                Spacer()
+                Text("more...")
+                    .font(.caption)
+                Spacer()
+            }
+        }
+        .foregroundColor(Color("fontBody"))
+        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity)
+        .listRowBackground(Color.clear)
     }
     
     private func presentInputController() {

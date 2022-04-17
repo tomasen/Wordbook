@@ -27,7 +27,7 @@ class WatchWordListViewModel: ObservableObject {
         queueWords = WordManager.shared.queueWordList(fetchLimit: queueWordsFetchLimit).words.array()
         
         #if DEBUG
-        if learnedRecently.count == 0 && false {
+        if learnedRecently.count == 0 {
             for _ in 0...15 {
                 learnedRecently.append(WordManager.shared.nextRandomWord())
             }

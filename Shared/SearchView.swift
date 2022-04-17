@@ -6,17 +6,20 @@
 //
 
 import SwiftUI
+import Combine
 
 class SearchViewModel: ObservableObject {
+    private var cancellable: AnyCancellable? = nil
     @Published var keyword = "" {
-        didSet{
+        didSet {
             checkHints()
         }
     }
-    @Published var hints: [String]?
+    
+    @Published var hints: [String] = []
     
     func checkHints() {
-        hints = WordManager.shared.searchHints(keyword)
+        hints = WordManager.shared.searchHints(keyword) ?? []
     }
     
     func addToWordbook() {
@@ -67,25 +70,23 @@ struct SearchView: View {
                 }
             }
             if showExplain {
-                SimpleWordView(word: viewModel.keyword, closeMyself: $closeMyself)                
-            } else if let hints = viewModel.hints {
-                if hints.count == 1 {
-                    SimpleWordView(word: hints.first!, closeMyself: $closeMyself)
-                } else {
-                    List {
-                        ForEach(hints, id: \.self) { word in
-                            Text("\(word)")
-                                .onTapGesture {
-                                    // Show Card View
-                                    viewModel.keyword = word
-                                    showExplain = true
-                                }
-                        }
-                    }
-                }
-            } else {
+                SimpleWordView(word: viewModel.keyword, closeMyself: $closeMyself)
+            } else if viewModel.hints.count == 0 {
                 Text("type in the word that you want to add")
                     .foregroundColor(Color("fontGray"))
+            } else if viewModel.hints.count == 1 {
+                SimpleWordView(word: viewModel.hints.first!, closeMyself: $closeMyself)
+            } else {
+                List {
+                    ForEach(viewModel.hints, id: \.self) { word in
+                        Text("\(word)")
+                            .onTapGesture {
+                                // Show Card View
+                                viewModel.keyword = word
+                                showExplain = true
+                            }
+                    }
+                }
             }
         }
         .customFont(name: "AvenirNext-Regular", style: .body)
@@ -100,3 +101,4 @@ struct SearchView_Previews: PreviewProvider {
         SearchView(closeMyself: .constant(false))
     }
 }
+

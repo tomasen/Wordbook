@@ -268,6 +268,7 @@ class WordManager {
         if let wc = fetchWordCard(word) {
             // skip this already existed word
             wc.category = CardCategory.NEW.rawValue
+            wc.createdAt = WordManager.shared.now()
             wc.duedate = WordManager.shared.now()
             return nil
         }

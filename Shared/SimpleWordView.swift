@@ -18,7 +18,7 @@ class SimpleWordViewModel: ObservableObject {
 }
 
 struct SimpleWordView: View {
-    let word: String
+    @State var word: String
     
     @Binding var closeMyself: Bool
     
