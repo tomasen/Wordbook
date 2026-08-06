@@ -35,20 +35,26 @@ class SharingViewModel: ObservableObject {
             return first.value < second.value
         }
         
-        let maxRating = max(sortedOne.last!.value, 1)
+        let maxRating = sortedOne.last!.value
         let minRating = sortedOne.first!.value
-        var step = 0
-        for idx in 0...sortedOne.count-1 {
-            let word = sortedOne[idx % 2 == 0 ? sortedOne.count - 1 - idx/2 : idx / 2 ]
+        let ratingRange = maxRating - minRating
+        for (step, word) in sortedOne.reversed().enumerated() {
+            let normalizedRating: CGFloat
+            if ratingRange == 0 {
+                normalizedRating = 0.5
+            } else {
+                normalizedRating = CGFloat(word.value - minRating) / CGFloat(ratingRange)
+            }
+            // A square-root curve preserves the emphasis on difficult words
+            // without making the middle of the cloud look under-filled.
+            let fontSize = 20 + 40 * sqrt(normalizedRating)
             words.append(
                 WordElement(text: word.key,
                             color: Color(colorPlate[step % colorPlate.count]),
                             fontName: fontPlate[step % fontPlate.count],
-                            fontSize: CGFloat(40 * (word.value - minRating) / maxRating + 20))
+                            fontSize: fontSize)
             )
-            step += 1
         }
-        print("MSG: \(words) \(sortedOne)")
 #if targetEnvironment(simulator)
         if words.count == 0 {
             words = [WordElement].generate(50)
@@ -78,5 +84,4 @@ class SharingViewModel: ObservableObject {
         
     }
 }
-
 

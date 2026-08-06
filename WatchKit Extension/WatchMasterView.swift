@@ -64,7 +64,7 @@ struct WatchMasterView: View {
         }
     }
     
-    @ ViewBuilder func pageOne() -> some View {
+    @ViewBuilder func pageOne() -> some View {
         List{
             HStack{
                 Spacer()
@@ -246,7 +246,7 @@ struct WordEntryItem: View {
         .mask(RoundedRectangle(cornerRadius: 18))
         .listRowBackground(Color.clear)
         .onAppear{
-            viewModel.fetchExplainFromLocalDatabase()
+            viewModel.fetchExplain()
         }
     }
 }

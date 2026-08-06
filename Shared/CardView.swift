@@ -14,14 +14,18 @@ struct CardView: View {
     @State var showDefinition: Bool = false
     @State var disableFlip: Bool = false
     @State var enableGoodButton: Bool = false
-    
+
     @StateObject private var viewModel = CardViewModel()
-    
+
     @State private var editing = false
     @State private var popContextpMenu = false
-    
+
     private var defaultWord = ""
-    
+
+    private var canAnswerAfterReveal: Bool {
+        showDefinition && viewModel.isExplanationSettled
+    }
+
     init(_ word: String = "",
          _ showDefinition: Bool = false,
          _ disableFlip: Bool = false) {
@@ -29,108 +33,113 @@ struct CardView: View {
         _disableFlip = State(initialValue: disableFlip)
         defaultWord = word
     }
-    
+
     var body: some View {
-        VStack{
+        VStack {
             FlipView(
                 VStack {
-                    VStack {
-                        Text("\(viewModel.word)")
-                            .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
-                            .foregroundColor(Color("fontTitle"))
-                    }
+                    Text(viewModel.word)
+                        .customFont(
+                            name: "AvenirNext-Medium",
+                            style: .largeTitle,
+                            weight: .medium
+                        )
+                        .foregroundColor(Color("fontTitle"))
                 },
                 VStack {
                     Spacer()
                     ScrollView(.vertical) {
-                        VStack{
-                            TextField("\(viewModel.word)",
-                                      text: $viewModel.word,
-                                      onCommit:{ editing.toggle() })
-                                .disabled(!self.editing)
-                                .onChange(of: viewModel.word) { _ in
-                                    print("MSG: change \(viewModel.word)")
+                        VStack {
+                            if editing {
+                                TextField(
+                                    viewModel.word,
+                                    text: $viewModel.word,
+                                    onCommit: {
+                                        editing.toggle()
+                                        viewModel.fetchExplain()
+                                    }
+                                )
+                                .onChange(of: viewModel.word) {
+                                    // `onAppear` assigns the card word, which also
+                                    // triggers this callback. Only user edits should
+                                    // cancel and invalidate an explanation request.
                                     viewModel.reset()
-                                    viewModel.fetchExplain()
                                 }
                                 .textContentType(.none)
                                 .autocapitalization(.none)
                                 .keyboardType(.alphabet)
                                 .multilineTextAlignment(.center)
-                                .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
+                                .customFont(
+                                    name: "AvenirNext-Medium",
+                                    style: .largeTitle,
+                                    weight: .medium
+                                )
                                 .foregroundColor(Color("fontTitle"))
                                 .introspectTextField { textField in
-                                    if self.editing {
-                                        textField.becomeFirstResponder()
-                                    }
+                                    textField.becomeFirstResponder()
                                 }
-                            
+                            } else {
+                                Button {
+                                    soundManager.playTTS(viewModel.word)
+                                } label: {
+                                    Text(viewModel.word)
+                                        .frame(maxWidth: .infinity)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .customFont(
+                                    name: "AvenirNext-Medium",
+                                    style: .largeTitle,
+                                    weight: .medium
+                                )
+                                .foregroundColor(Color("fontTitle"))
+                                .accessibilityLabel("Pronounce \(viewModel.word)")
+                                .accessibilityHint("Plays the natural voice pronunciation")
+                            }
+
                             if let alsoKnownAs = viewModel.alsoKnownAs {
                                 Text("as. \(alsoKnownAs)")
-                                    .customFont(name: "AvenirNext-Regular", style: .caption2, weight: .regular)
+                                    .customFont(
+                                        name: "AvenirNext-Regular",
+                                        style: .caption2,
+                                        weight: .regular
+                                    )
                                     .foregroundColor(Color("fontGray"))
-                            }
-                            
-                            if let pronunciation = viewModel.pronunciation {
-                                Text("\(pronunciation)")
-                                    .customFont(name: "AvenirNext-Regular", style: .caption1, weight: .regular)
-                                    .foregroundColor(Color("fontBody"))
                             }
                         }
                         .padding(.bottom, 17.6)
                         .padding(.top, 30)
-                        Spacer()
-                        if viewModel.mnemonic != nil {
-                            HStack(alignment: .firstTextBaseline){
-                                VStack(alignment: .trailing) {
-                                    Text("m.")
-                                }
-                                VStack(alignment: .leading){
-                                    Text("\(viewModel.mnemonic!)")
-                                        .multilineTextAlignment(.leading)
-                                        .padding(.bottom, 2.5)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                            }
-                            .padding(3)
-                            .customFont(name: "AvenirNext-Regular", style: .callout, weight: .medium)
-                            Divider()
-                        }
-                        
-                        if #available(iOS 15.0, *) {
-                            DefinitionView(viewModel: viewModel)
-                                .foregroundColor(Color("fontBody"))
-                        } else {
-                            // Fallback on earlier versions
-                            DefinitionView(viewModel: viewModel)
-                                .foregroundColor(Color("fontBody"))
-                        }
+
+                        DefinitionView(viewModel: viewModel)
                     }
                 },
                 tap: {
-                    SoundManager.shared.playTTS(self.viewModel.word)
+                    SoundManager.shared.playTTS(viewModel.word)
                 },
                 flipped: $showDefinition,
-                disabled: self.$editing || $disableFlip
+                disabled: $editing || $disableFlip
             )
 
             Divider()
-            
+
             ReviewButtons()
                 .padding()
         }
-        .onAppear{
-            if defaultWord != "" {
+        .onAppear {
+            if !defaultWord.isEmpty {
                 viewModel.word = defaultWord
             }
             viewModel.validate()
-            
+            viewModel.fetchExplain()
+
             PausableTimer.shared.restart()
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.enableGoodButton.toggle()
+                enableGoodButton = true
             }
+        }
+        .onDisappear {
+            viewModel.cancelExplanation()
         }
         .navigationBarItems(trailing: trailingBarItem())
         .background(Color("Background").edgesIgnoringSafeArea(.all))
@@ -151,9 +160,9 @@ struct CardView: View {
             )
         }
     }
-    
+
     func trailingBarItem() -> some View {
-        HStack{
+        HStack {
             Spacer()
             Button(action: {
                 popContextpMenu.toggle()
@@ -164,436 +173,410 @@ struct CardView: View {
                     .padding(5)
             }
             .actionSheet(isPresented: $popContextpMenu) {
-                ActionSheet(title: Text("Wordbook"),
-                            buttons: [
-                                .default(
-                                    Text("EDIT"),
-                                    action: {
-                                        editing.toggle()
-                                    }),
-                                .destructive(
-                                    Text("BURY"),
-                                    action: {
-                                        viewModel.bury()
-                                        NavigationUtil.popToRootView()
-                                    }),
-                                .cancel()])
+                ActionSheet(
+                    title: Text("Wordbook"),
+                    buttons: [
+                        .default(Text("EDIT"), action: {
+                            editing.toggle()
+                        }),
+                        .destructive(Text("BURY"), action: {
+                            viewModel.bury()
+                            NavigationUtil.popToRootView()
+                        }),
+                        .cancel(),
+                    ]
+                )
             }
         }
         .foregroundColor(Color("fontLink"))
     }
-    
+
     func ReviewButtons() -> some View {
-        HStack{
+        HStack {
             Spacer()
-            NavigationLink(
-                destination: SharingView(),
-                label: {
-                    Text("GOOD")
-                        .fixedSize()
-                })
-                .simultaneousGesture(TapGesture().onEnded{
-                    viewModel.answer(.WELLKNOWN)
-                })
-                .disabled(!self.enableGoodButton && !self.showDefinition)
-                .buttonStyle(ChoiceButtonStyle(self.enableGoodButton || self.showDefinition))
+            NavigationLink(destination: SharingView()) {
+                Text("GOOD")
+                    .fixedSize()
+            }
+            .simultaneousGesture(TapGesture().onEnded {
+                viewModel.answer(.WELLKNOWN)
+            })
+            .disabled(!enableGoodButton && !showDefinition)
+            .buttonStyle(ChoiceButtonStyle(enableGoodButton || showDefinition))
+
             Divider()
-            NavigationLink(
-                destination: SharingView(),
-                label: {
-                    Text("VAGUE")
-                        .fixedSize()
-                })
-                .isDetailLink(false)
-                .simultaneousGesture(TapGesture().onEnded{
-                    viewModel.answer(.VAGUE)
-                })
-                .disabled(!self.showDefinition)
-                .buttonStyle(ChoiceButtonStyle(self.showDefinition))
+
+            NavigationLink(destination: SharingView()) {
+                Text("VAGUE")
+                    .fixedSize()
+            }
+            .isDetailLink(false)
+            .simultaneousGesture(TapGesture().onEnded {
+                viewModel.answer(.VAGUE)
+            })
+            .disabled(!canAnswerAfterReveal)
+            .buttonStyle(ChoiceButtonStyle(canAnswerAfterReveal))
+
             Divider()
-            NavigationLink(
-                destination: SharingView(),
-                label: {
-                    Text("NOIDEA")
-                        .fixedSize()
-                })
-                .isDetailLink(false)
-                .simultaneousGesture(TapGesture().onEnded{
-                    viewModel.answer(.NOIDEA)
-                })
-                .disabled(!self.showDefinition)
-                .buttonStyle(ChoiceButtonStyle(self.showDefinition))
+
+            NavigationLink(destination: SharingView()) {
+                Text("NOIDEA")
+                    .fixedSize()
+            }
+            .isDetailLink(false)
+            .simultaneousGesture(TapGesture().onEnded {
+                viewModel.answer(.NOIDEA)
+            })
+            .disabled(!canAnswerAfterReveal)
+            .buttonStyle(ChoiceButtonStyle(canAnswerAfterReveal))
             Spacer()
         }
         .modifier(FootViewStyle())
     }
 }
 
+struct MemoryAidView: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .multilineTextAlignment(.leading)
+            .padding(.bottom, 2.5)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(3)
+        .customFont(
+            name: "AvenirNext-Regular",
+            style: .callout,
+            weight: .medium
+        )
+    }
+}
+
 struct DefinitionView: View {
     @ObservedObject var viewModel: CardViewModel
-    
     @State private var popSheetWord = ""
     @State private var popWebPage = ""
-    
-    private let iapManager = InAppPurchaseManager.shared
-    
+
     var body: some View {
-        VStack{
-            VStack(alignment: .leading) {
-                ForEach(viewModel.senses) { sense in
-                    GlossView(sense: sense)
-                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
-                }
-                
-                if viewModel.extras.count > 0 {
-                    VStack (spacing: 9) {
-                        ForEach(Array(viewModel.extras.keys), id: \.self) { key in
-                            ExtraExplainSummeryView(simpleExpl: viewModel.extras[key]!)
+        VStack(alignment: .leading) {
+            switch viewModel.explanationState {
+            case .idle, .loading:
+                ExplanationPlaceholderView()
+
+            case .ready(let explanation):
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(alignment: .firstTextBaseline) {
+                        VStack(alignment: .trailing) {
+                            Text("\(explanation.partOfSpeech).")
+                        }
+
+                        VStack(alignment: .leading) {
+                            Text(explanation.meaning)
+                                .multilineTextAlignment(.leading)
+                                .padding(.bottom, 2.5)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            if !explanation.synonyms.isEmpty {
+                                synonymView(explanation.synonyms)
+                                    .padding(.bottom, 2.5)
+                            }
+
+                            HStack(alignment: .top) {
+                                Text("·")
+                                Text("\"\(explanation.example)\"")
+                                    .multilineTextAlignment(.leading)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .customFont(
+                                name: "AvenirNext-Italic",
+                                style: .footnote,
+                                weight: .regular
+                            )
+                            .padding(.bottom, 2.5)
                         }
                     }
+                    .customFont(
+                        name: "AvenirNext-Regular",
+                        style: .callout,
+                        weight: .medium
+                    )
+                    .padding(.horizontal, 10)
+
+                    if !explanation.memoryAid.isEmpty {
+                        Divider()
+                        MemoryAidView(text: explanation.memoryAidText)
+                    }
+                }
+
+            case .unavailable(let message):
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(message)
+                        .multilineTextAlignment(.leading)
+                    Button("Try again") {
+                        viewModel.retryExplanation()
+                    }
+                    .foregroundColor(Color("fontLink"))
+                }
+                .customFont(
+                    name: "AvenirNext-Regular",
+                    style: .callout,
+                    weight: .medium
+                )
+                .padding(.horizontal, 10)
+            }
+
+            if let summary = viewModel.wikipediaSummary {
+                WikipediaSummaryCard(summary: summary)
                     .padding(.top, 25)
-                }
             }
-            .onOpenURL{ url in
-                if popSheetWord.count == 0 {
-                    popSheetWord = url.lastPathComponent
-                }
-            }
-            .sheet(isPresented: $popSheetWord.toBool()) {
-                SimpleWordView(word: popSheetWord, closeMyself: $popSheetWord.toBool())
-                    .environment(\.colorScheme, .dark)
-            }
-            .foregroundColor(Color("fontBody"))
-            .onAppear{
-                viewModel.fetchExplain()
-            }
-            
+
             Spacer()
                 .padding(5)
-            
+
             HStack {
-                Button(action:{
+                Button("news") {
                     popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us&tbm=nws"
-                }) {
-                    Text("news")
                 }
-                
-                Button(action:{
+                Button("images") {
                     popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us&tbm=isch"
-                }) {
-                    Text("images")
                 }
-                
-                Button(action:{
+                Button("web") {
                     popWebPage = "https://www.google.com/search?q=\(viewModel.word.urlencode())&hl=en-us"
-                }) {
-                    Text("web")
                 }
-                
-                Button(action:{
+                Button("translate") {
                     popWebPage = "https://www.deepl.com/en/translator#en/\(viewModel.translationLanguageCode)/\(viewModel.word.urlencode())"
-                }) {
-                    Text("translate")
                 }
             }
-            .buttonStyle(LinkButtonStyle())
-            .sheet(isPresented: $popWebPage.toBool()) {
-                WebPageView(url: URL(string: popWebPage)!)
+            .buttonStyle(DefinitionLinkButtonStyle())
+            .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .foregroundColor(Color("fontBody"))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .onOpenURL { url in
+            if popSheetWord.isEmpty {
+                popSheetWord = url.lastPathComponent
+            }
+        }
+        .sheet(isPresented: $popSheetWord.toBool()) {
+            SimpleWordView(word: popSheetWord, closeMyself: $popSheetWord.toBool())
+                .environment(\.colorScheme, .dark)
+        }
+        .sheet(isPresented: $popWebPage.toBool()) {
+            if let url = URL(string: popWebPage) {
+                WebPageView(url: url)
                     .environment(\.colorScheme, .dark)
             }
         }
     }
-    
-    func GlossView(sense : Sense) -> some View {
-        HStack(alignment: .firstTextBaseline){
-            VStack(alignment: .trailing) {
-                Text("\(sense.pos).")
+
+    @ViewBuilder
+    private func synonymView(_ synonyms: [String]) -> some View {
+        if #available(iOS 15.0, macOS 12.0, *) {
+            let links = synonyms.map {
+                "[\($0)](wordbook://pop/\($0.urlencode()))"
             }
-            VStack(alignment: .leading){
-                Text("\(sense.gloss)")
-                    .multilineTextAlignment(.leading)
-                    .padding(.bottom, 2.5)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(alignment: .leading)
-                
-                if sense.synonyms.count > 0 {
-                    if #available(iOS 15.0, *) {
-                        SynonymView15(syns: sense.synonyms)
-                            .padding(.bottom, 2.5)
-                    } else {
-                        SynonymView(syns: sense.synonyms, popWord: $popSheetWord)
-                            .padding(.bottom, 2.5)
-                    }
-                }
-                if sense.examples.count > 0 {
-                    ExampleView(examples: sense.examples)
-                        .padding(.bottom, 2.5)
-                }
-            }
-        }
-        .customFont(name: "AvenirNext-Regular", style: .callout, weight: .medium)
-    }
-    
-    @available(iOS 15.0, *)
-    func SynonymView15(syns: [String]) -> some View {
-        var texts = [String]()
-        for syn in syns {
-            if syn.rangeOfCharacter(from: .whitespacesAndNewlines) == nil {
-                texts.append("[\(syn)](wordbook://pop/\(syn.urlencode()))")
-            }
-        }
-        let markdownText: AttributedString = try! AttributedString(markdown: texts.joined(separator: " "), options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace))
-        
-        return HStack(alignment: .firstTextBaseline){
-            Text("Similar:")
-                .fixedSize()
-            VStack(alignment: .leading){
-                Text(markdownText)
+            let options = AttributedString.MarkdownParsingOptions(
+                interpretedSyntax: .inlineOnlyPreservingWhitespace
+            )
+            let attributed = (try? AttributedString(
+                markdown: links.joined(separator: " "),
+                options: options
+            )) ?? AttributedString(synonyms.joined(separator: " "))
+
+            HStack(alignment: .firstTextBaseline) {
+                Text("Similar:")
+                    .fixedSize()
+                Text(attributed)
                     .accentColor(Color("fontLink"))
             }
-        }
-    }
-    
-    func ExampleView(examples: [String]) -> some View {
-        VStack(alignment: .leading){
-            ForEach(examples, id: \.self) { ex in
-                HStack(alignment: .top){
-                    Text("·")
-                    
-                    Text("\"\(ex.trimmingCharacters(in: .whitespacesAndNewlines))\"")
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
+        } else {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Similar:")
+                    .fixedSize()
+                ForEach(synonyms, id: \.self) { synonym in
+                    Button(synonym) {
+                        popSheetWord = synonym
+                    }
+                    .foregroundColor(Color("fontLink"))
                 }
-                .customFont(name: "AvenirNext-Italic", style: .footnote, weight: .regular)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
-struct SynonymView: View {
-    class WordCloudPositionCache {
-        var maxWidth: CGFloat = 0
-        var wordSizes = [CGSize]()
-        var synss: [SynonymItemGroup] = []
+private struct ExplanationPlaceholderView: View {
+    private struct Row: Identifiable {
+        let id: Int
+        let partOfSpeech: String
+        let meaning: String
+        let example: String?
     }
-    
-    @Binding var popSheetWord: String
-    
-    @State private var wordSizes: [CGSize]
-    private var maxWidth: CGFloat {
-        UIScreen.main.bounds.size.width - 200
-    }
-    
-    private var synonyms = [String]()
-    private var cache = WordCloudPositionCache()
-    
-    init(syns: [String], popWord: Binding<String>) {
-        for w in syns {
-            if w.rangeOfCharacter(from: .whitespacesAndNewlines) == nil {
-                synonyms.append(w)
-            }
-        }
-        _wordSizes = State(initialValue:[CGSize](repeating: CGSize.zero, count: synonyms.count))
-        _popSheetWord = popWord
-    }
-    
+
+    private let rows = [
+        Row(
+            id: 0,
+            partOfSpeech: "▩.",
+            meaning: "▩▩▩▩ ▩▩▩ ▩▩ ▩▩▩ ▩▩▩▩",
+            example: nil
+        ),
+        Row(
+            id: 1,
+            partOfSpeech: "▩.",
+            meaning: "▩▩▩▩▩ ▩▩▩▩▩▩\n▩▩▩▩▩ ▩▩▩▩",
+            example: "▩▩▩▩▩▩, ▩▩▩▩▩▩"
+        ),
+        Row(
+            id: 2,
+            partOfSpeech: "▩.",
+            meaning: "▩▩▩▩▩ ▩▩▩▩▩▩ ▩▩▩▩ ▩▩ ▩▩▩▩ ▩▩▩▩▩ ▩▩▩▩",
+            example: nil
+        ),
+    ]
+
     var body: some View {
-        HStack(alignment: .firstTextBaseline){
-            Text("Similar:")
-                .fixedSize()
-            VStack(alignment: .leading){
-                ForEach(calcPosition(maxWidth))  { syns in
-                    HStack{
-                        ForEach(syns.syns)  { syn in
-                            Button(action: {
-                                popSheetWord = syn.word
-                            }) {
-                                Text("\(syn.word)")
-                                    .fixedSize()
-                                    .foregroundColor(Color("fontLink"))
+        VStack(alignment: .leading) {
+            ForEach(rows) { row in
+                HStack(alignment: .firstTextBaseline) {
+                    Text("\(row.partOfSpeech).")
+
+                    VStack(alignment: .leading) {
+                        Text(row.meaning)
+                            .multilineTextAlignment(.leading)
+                            .padding(.bottom, 2.5)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        if let example = row.example {
+                            HStack(alignment: .top) {
+                                Text("·")
+                                Text("\"\(example)\"")
+                                    .multilineTextAlignment(.leading)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .background(WordSizeGetter($wordSizes, syn.id))
+                            .customFont(
+                                name: "AvenirNext-Italic",
+                                style: .footnote,
+                                weight: .regular
+                            )
+                            .padding(.bottom, 2.5)
                         }
                     }
                 }
+                .customFont(
+                    name: "AvenirNext-Regular",
+                    style: .callout,
+                    weight: .medium
+                )
+                .padding(.horizontal, 10)
             }
         }
-    }
-    
-    func calcPosition(_ maxWidth: CGFloat) -> [SynonymItemGroup] {
-        var syns: [SynonymItemGroup] = []
-        var lineNo = 0
-        if wordSizes.count == 0 {
-            return syns
-        }
-        
-        if wordSizes[0] == CGSize.zero {
-            var charCount = 0
-            for (idx, sy) in synonyms.enumerated() {
-                if syns.count == lineNo {
-                    syns.append(SynonymItemGroup(syns: [SynonymItem](), id: lineNo))
-                }
-                syns[lineNo].syns.append(SynonymItem(word: sy, id: idx))
-                charCount += sy.count
-                // make sure the line wrap if has more then 20 chars
-                if charCount > 10 {
-                    lineNo += 1
-                    charCount = 0
-                }
-            }
-            return syns
-        }
-        
-        if cache.maxWidth == maxWidth
-            && cache.wordSizes.count == wordSizes.count {
-            return cache.synss
-        }
-        defer {
-            cache.maxWidth = maxWidth
-            cache.wordSizes = wordSizes
-            cache.synss = syns
-        }
-        
-        syns.append(SynonymItemGroup(syns: [SynonymItem](), id: lineNo))
-        var lineWidth: CGFloat = 0
-        for (idx, sy) in synonyms.enumerated() {
-            lineWidth += wordSizes[idx].width + 6
-            if lineWidth > maxWidth {
-                lineNo += 1
-                lineWidth = 0
-                syns.append(SynonymItemGroup(syns: [SynonymItem](), id: lineNo))
-            }
-            syns[lineNo].syns.append(SynonymItem(word: sy, id: idx))
-        }
-        
-#if DEBUG
-        print("MSG: \(maxWidth)")
-        print("MSG: \(syns)")
-#endif
-        
-        return syns
+        .accessibilityHidden(true)
     }
 }
 
-struct SynonymItemGroup: Identifiable {
-    var syns: [SynonymItem]
-    var id: Int
-}
+struct WikipediaSummaryCard: View {
+    let summary: WikipediaSummary
+    @State private var showDetail = false
 
-struct SynonymItem: Identifiable {
-    var word: String
-    var id: Int
-}
-
-struct ExtraExplainSummeryView: View {
-    let simpleExpl: ExtraExplain
-    @State private var popFullExpl = false
-    
     var body: some View {
-        VStack{
-            VStack(alignment: .leading) {
-                Text(simpleExpl.source.desc)
-                    .customFont(name: "AvenirNext-Bold", style: .title3, weight: .bold)
-                Text("\(simpleExpl.expl)")
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(3)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-            }
-            .sheet(isPresented: $popFullExpl) {
-                if InAppPurchaseManager.shared.isProSubscriber {
-                    ExtraExplainDetailView(extraExpl: simpleExpl, closeMyself: $popFullExpl)
-                        .environment(\.colorScheme, .dark)
-                } else {
-                    PurchaseView(closeMyself: $popFullExpl)
-                }
-            }
-            .padding(.init(top: 9, leading: 15, bottom: 9, trailing: 15))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color("fontGray"), lineWidth: 1)
-            )
-            .onTapGesture{
-                self.popFullExpl.toggle()
-            }
+        VStack(alignment: .leading) {
+            Text("Wikipedia")
+                .customFont(
+                    name: "AvenirNext-Bold",
+                    style: .title3,
+                    weight: .bold
+                )
+            Text(summary.extract)
+                .multilineTextAlignment(.leading)
+                .lineLimit(3)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .sheet(isPresented: $showDetail) {
+            WikipediaDetailView(summary: summary, closeMyself: $showDetail)
+                .environment(\.colorScheme, .dark)
+        }
+        .padding(.init(top: 9, leading: 15, bottom: 9, trailing: 15))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color("fontGray"), lineWidth: 1)
+        )
+        .contentShape(Rectangle())
+        .onTapGesture {
+            showDetail = true
         }
         .customFont(name: "AvenirNext-Regular", style: .body)
         .padding(3)
     }
 }
 
-struct ExtraExplainDetailView: View {
-    let extraExpl: ExtraExplain
+struct WikipediaDetailView: View {
+    let summary: WikipediaSummary
     @Binding var closeMyself: Bool
-    @State private var popWebLink: Bool = false
-    
+    @State private var showWebPage = false
+
     var body: some View {
         NavigationView {
             VStack {
-                Text("\(extraExpl.title)")
-                    .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
+                Text(summary.title)
+                    .customFont(
+                        name: "AvenirNext-Medium",
+                        style: .largeTitle,
+                        weight: .medium
+                    )
                     .foregroundColor(Color("fontTitle"))
                     .padding(.bottom, 17.6)
                     .padding(.top, 30)
-                
-                Text("\(extraExpl.expl)")
-                
-                Spacer()
-                
-                if extraExpl.url != nil {
-                    Divider()
-                    
-                    Button(action: {
-                        self.popWebLink.toggle()
-                    }) {
-                        Text("MORE")
-                    }.modifier(FootViewStyle())
+
+                ScrollView {
+                    Text(summary.extract)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
+
+                Divider()
+
+                Button("MORE") {
+                    showWebPage = true
+                }
+                .modifier(FootViewStyle())
             }
             .customFont(name: "AvenirNext-Regular", style: .body)
-            .padding(EdgeInsets(top: 11, leading: 25, bottom: 11, trailing: 25))
-            .navigationBarTitle(Text("\(extraExpl.title) - \(extraExpl.source.desc)"), displayMode: .inline)
-            .navigationBarItems(trailing: Button(action: {
-                closeMyself.toggle()
-            }) {
-                Text("Close")
+            .padding(.init(top: 11, leading: 25, bottom: 11, trailing: 25))
+            .navigationBarTitle("Wikipedia", displayMode: .inline)
+            .navigationBarItems(trailing: Button("Close") {
+                closeMyself = false
             })
         }
-        .sheet(isPresented: $popWebLink) {
-            if let url = extraExpl.url {
-                WebPageView(url: url)
-                    .environment(\.colorScheme, .dark)
-            } else {
-                // TODO: toast error
-            }
+        .sheet(isPresented: $showWebPage) {
+            WebPageView(url: summary.url)
+                .environment(\.colorScheme, .dark)
         }
         .background(Color("Background").edgesIgnoringSafeArea(.all))
     }
 }
 
-struct LinkButtonStyle: ButtonStyle {
-    private let isEnabled: Bool
-    init(_ isEnabled: Bool = true) {
-        self.isEnabled = isEnabled
-    }
-    
-    public func makeBody(configuration: ChoiceButtonStyle.Configuration) -> some View {
+struct DefinitionLinkButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .foregroundColor(isEnabled ? Color("fontGray") : Color("textFieldBackground"))
-            .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
-            .background(RoundedRectangle(cornerRadius: 4)
-                            .fill(Color("todayBackground")))
-            .opacity(configuration.isPressed ? 0.5 : 1.0)
+            .foregroundColor(Color("fontGray"))
+            .padding(.init(top: 3, leading: 10, bottom: 3, trailing: 10))
+            .background(
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color("todayBackground"))
+            )
+            .opacity(configuration.isPressed ? 0.5 : 1)
     }
 }
 
 struct CardView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            NavigationView{
+            NavigationView {
                 CardView("jibe", true)
                     .navigationBarTitle("", displayMode: .inline)
             }

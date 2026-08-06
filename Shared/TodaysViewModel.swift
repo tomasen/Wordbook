@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import CoreData
 
+@MainActor
 class TodaysViewModel: ObservableObject {
     var todayDateString = WordManager.shared.todayDateString()
     
@@ -40,6 +41,8 @@ class TodaysViewModel: ObservableObject {
         working = e.working
         good = e.good
         queue = max(goal - e.working - e.good, 0)
+
+        let nextWord = WordManager.shared.prepareNextStudyWord()
+        LocalTutorManager.shared.prefetchExplanation(for: nextWord)
     }
 }
-

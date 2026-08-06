@@ -1,0 +1,43 @@
+{
+  "name": "Qwen3.5-2B-4bit-text",
+  "purpose": "Bundled, offline vocabulary explanations",
+  "license": "Apache-2.0",
+  "upstream": {
+    "base_model": "Qwen/Qwen3.5-2B",
+    "mlx_model": "mlx-community/Qwen3.5-2B-4bit",
+    "mlx_model_revision": "674aaa7240b91e8012fcad5d791b7dfe5ba90207"
+  },
+  "transformation": {
+    "description": "Removed the vision tower because Wordbook accepts text only.",
+    "removed_tensor_prefix": "vision_tower.",
+    "removed_tensor_count": 297,
+    "retained_tensor_prefix": "language_model.",
+    "retained_tensor_count": 694
+  },
+  "files": {
+    "LICENSE": {
+      "bytes": 11544,
+      "sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a"
+    },
+    "chat_template.jinja": {
+      "bytes": 7755,
+      "sha256": "273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80"
+    },
+    "config.json": {
+      "bytes": 3113,
+      "sha256": "beb7fc5a6e0405fe332821cf1a8ef7b69bb390a8c8933171647de5579debf949"
+    },
+    "model.safetensors": {
+      "bytes": 1059405152,
+      "sha256": "b93b36a825ff36ef68eb4249295ac24942e15d67794e9747961e1640fe8a9b39"
+    },
+    "tokenizer.json": {
+      "bytes": 19989343,
+      "sha256": "87a7830d63fcf43bf241c3c5242e96e62dd3fdc29224ca26fed8ea333db72de4"
+    },
+    "tokenizer_config.json": {
+      "bytes": 1139,
+      "sha256": "e98f1901ac6f0adff67b1d540bfa0c36ac1a0cf59eb72ed78146ef89aafa1182"
+    }
+  }
+}

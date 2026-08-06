@@ -28,7 +28,7 @@ struct SharedExtensionView : View {
             
             ScrollView([.vertical]) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("DICTIONARY")
+                    Text("WORDS")
                         .padding(.leading, 18)
                         .foregroundColor(Color("fontGray"))
                     
@@ -41,14 +41,6 @@ struct SharedExtensionView : View {
                                             .padding(.bottom, 0)
                                             .customFont(name: "AvenirNext-DemiBold", style: .headline, weight: .semibold)
                                         Spacer()
-                                    }
-                                    ForEach(explain(word), id: \.self) { expl in
-                                        HStack(alignment: .firstTextBaseline, spacing: 3){
-                                            Text("·")
-                                            Text("\(expl)").lineSpacing(0)
-                                        }
-                                        .padding(.bottom, 3)
-                                        .foregroundColor(Color("fontGray"))
                                     }
                                 }
                                 .padding(.init(top: 9, leading: 19, bottom: 12, trailing: 19))
@@ -64,6 +56,11 @@ struct SharedExtensionView : View {
                     .multilineTextAlignment(.leading)
                     .background(Color(UIColor.secondarySystemGroupedBackground))
                     .cornerRadius(15)
+
+                    Text("Wordbook prepares private, natural explanations on your iPhone after these words are added.")
+                        .padding(.horizontal, 18)
+                        .padding(.top, 6)
+                        .foregroundColor(Color("fontGray"))
                 }
                 .font(.footnote)
             }
@@ -85,16 +82,6 @@ struct SharedExtensionView : View {
         }
     }
     
-    func explain(_ word: String) -> [String] {
-        var ret = WordDatabaseLocal.shared.explainExact(word)
-        if ret.count == 0 {
-            ret = WordDatabaseLocal.shared.explainAlias(word)
-        }
-        if ret.count == 0 {
-            ret = ["word not found (determiners, prepositions, pronouns, conjunctions, and particles are exclude from our dictionary)"]
-        }
-        return ret
-    }
 }
 
 struct SLComposerView_Previews: PreviewProvider {

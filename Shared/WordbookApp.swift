@@ -64,31 +64,37 @@ struct WordbookApp: App {
     
     private func scheduleWordReminderNotification() {
         func notify() {
-            let word = WordManager.shared.nextWord()
-            if word.count == 0 {
-                return
-            }
-            
-            let content = UNMutableNotificationContent()
-            content.title = "Wordbook"
-            content.body = "Do you still remember \(word)?"
-            content.userInfo = ["word": word]
-            content.categoryIdentifier = "wordReminder"
-            content.threadIdentifier = "wordbook-word"
-            content.sound = UNNotificationSound.default
+            // UserNotifications invokes its settings/authorization callbacks
+            // on a private queue. WordManager owns Core Data's main-queue
+            // view context, so select the reminder word on the main queue.
+            DispatchQueue.main.async {
+                let word = WordManager.shared.nextWord()
+                if word.count == 0 {
+                    return
+                }
 
-            // Create the trigger as a repeating event.
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 15*60, repeats: false)
-            
-            let request = UNNotificationRequest(identifier: "wordbook.notify",
-                        content: content, trigger: trigger)
-            
-            // Schedule the request with the system.
-            let notificationCenter = UNUserNotificationCenter.current()
-            notificationCenter.add(request) { (error) in
-                if error != nil {
-                    // Handle any errors.
-                    print(error ?? "unknown error")
+                let content = UNMutableNotificationContent()
+                content.title = "Wordbook"
+                content.body = "Do you still remember \(word)?"
+                content.userInfo = ["word": word]
+                content.categoryIdentifier = "wordReminder"
+                content.threadIdentifier = "wordbook-word"
+                content.sound = UNNotificationSound.default
+
+                let trigger = UNTimeIntervalNotificationTrigger(
+                    timeInterval: 15 * 60,
+                    repeats: false
+                )
+                let request = UNNotificationRequest(
+                    identifier: "wordbook.notify",
+                    content: content,
+                    trigger: trigger
+                )
+
+                UNUserNotificationCenter.current().add(request) { error in
+                    if let error {
+                        print(error)
+                    }
                 }
             }
         }
@@ -112,28 +118,59 @@ struct WordbookApp: App {
 
 private struct WordbookRootView: View {
     @ObservedObject private var soundManager = SoundManager.shared
+    @ObservedObject private var tutorManager = LocalTutorManager.shared
 
     var body: some View {
-        #if WORDBOOK_NATURAL_VOICE
+        #if WORDBOOK_LOCAL_LLM
         Group {
-            if soundManager.isNaturalVoiceReady {
+            if tutorManager.isReady && isNaturalVoicePrepared {
                 MasterView()
             } else {
-                PreparationView(soundManager: soundManager)
+                PreparationView(
+                    soundManager: soundManager,
+                    tutorManager: tutorManager
+                )
             }
         }
         .task {
+            tutorManager.prepare()
+            #if WORDBOOK_NATURAL_VOICE
             soundManager.prepareNaturalVoice()
+            #endif
         }
         #else
         MasterView()
         #endif
     }
+
+    private var isNaturalVoicePrepared: Bool {
+        #if WORDBOOK_NATURAL_VOICE
+        soundManager.isNaturalVoiceReady
+        #else
+        true
+        #endif
+    }
 }
 
-#if WORDBOOK_NATURAL_VOICE
+#if WORDBOOK_LOCAL_LLM
 private struct PreparationView: View {
     @ObservedObject var soundManager: SoundManager
+    @ObservedObject var tutorManager: LocalTutorManager
+    @State private var preparationStartedAt = Date()
+
+    private var error: String? {
+        tutorManager.preparationError ?? soundManager.naturalVoiceError
+    }
+
+    private var preparationStatus: String {
+        if !tutorManager.isReady {
+            return tutorManager.preparationStatus
+        }
+        if !soundManager.isNaturalVoiceReady {
+            return soundManager.naturalVoicePreparationStatus
+        }
+        return "Finishing preparation…"
+    }
 
     var body: some View {
         ZStack {
@@ -141,24 +178,43 @@ private struct PreparationView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 16) {
-                if let error = soundManager.naturalVoiceError {
+                if let error {
                     Text("Preparation failed")
                         .font(.headline)
                     Text(error)
                         .font(.footnote)
                         .multilineTextAlignment(.center)
                     Button("Retry") {
-                        soundManager.retryNaturalVoicePreparation()
+                        preparationStartedAt = Date()
+                        if tutorManager.preparationError != nil {
+                            tutorManager.retryPreparation()
+                        }
+                        if soundManager.naturalVoiceError != nil {
+                            soundManager.retryNaturalVoicePreparation()
+                        }
                     }
                     .buttonStyle(.borderedProminent)
                 } else {
                     ProgressView()
-                    Text("Preparing…")
+                    Text(preparationStatus)
+                        .font(.headline)
+                    Text("The first preparation may take a few minutes.")
+                        .font(.footnote)
+                        .multilineTextAlignment(.center)
+                    TimelineView(.periodic(from: .now, by: 1)) { context in
+                        Text(elapsedText(at: context.date))
+                            .font(.caption.monospacedDigit())
+                    }
                 }
             }
             .foregroundColor(Color("fontBody"))
             .padding(32)
         }
+    }
+
+    private func elapsedText(at date: Date) -> String {
+        let elapsed = max(Int(date.timeIntervalSince(preparationStartedAt)), 0)
+        return String(format: "Elapsed %d:%02d", elapsed / 60, elapsed % 60)
     }
 }
 #endif

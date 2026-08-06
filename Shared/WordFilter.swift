@@ -52,7 +52,7 @@ class WordFilter {
             if self.skipWords.contains(q) {
                 break
             }
-            if let w = WordDatabaseLocal.shared.exist(q) {
+            if let w = CompactLexicalIndex.shared.exist(q) {
                 words.removeSubrange(0...n)
                 return w
             }

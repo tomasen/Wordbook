@@ -18,21 +18,33 @@ class SimpleWordViewModel: ObservableObject {
 }
 
 struct SimpleWordView: View {
+    @ObservedObject private var soundManager = SoundManager.shared
+
     @State var word: String
     
     @Binding var closeMyself: Bool
     
     private let viewModel = SimpleWordViewModel()
+    @StateObject private var explanationViewModel = CardViewModel()
     
     var body: some View {
         VStack{
-            Text("\(word)")
-                .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
-                .foregroundColor(Color("fontTitle"))
-                .padding(17.6)
+            Button {
+                soundManager.playTTS(word)
+            } label: {
+                Text(word)
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(PlainButtonStyle())
+            .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
+            .foregroundColor(Color("fontTitle"))
+            .padding(17.6)
+            .accessibilityLabel("Pronounce \(word)")
+            .accessibilityHint("Plays the natural voice pronunciation")
             
             ScrollView(.vertical) {
-                DefinitionView(viewModel: CardViewModel(word))
+                DefinitionView(viewModel: explanationViewModel)
             }
             Divider()
             HStack{
@@ -59,6 +71,29 @@ struct SimpleWordView: View {
         .customFont(name: "AvenirNext-Regular", style: .body)
         .foregroundColor(Color("fontBody"))
         .background(Color(UIColor.secondarySystemBackground).edgesIgnoringSafeArea(.all))
+        .onAppear {
+            explanationViewModel.word = word
+            explanationViewModel.fetchExplain()
+        }
+        .onDisappear {
+            explanationViewModel.cancelExplanation()
+        }
+        .alert(isPresented: Binding(
+            get: { soundManager.naturalVoiceError != nil },
+            set: { isPresented in
+                if !isPresented {
+                    soundManager.dismissNaturalVoiceError()
+                }
+            }
+        )) {
+            Alert(
+                title: Text("Natural Voice"),
+                message: Text(soundManager.naturalVoiceError ?? "Unable to generate speech."),
+                dismissButton: .default(Text("OK")) {
+                    soundManager.dismissNaturalVoiceError()
+                }
+            )
+        }
     }
 }
 

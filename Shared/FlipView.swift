@@ -94,19 +94,26 @@ private struct FlipContent<Front: View, Back: View> : View {
         ZStack(alignment: .center) {
             front
                 .opacity(self.showingFront ? 1.0 : 0.0)
+                .allowsHitTesting(self.showingFront)
             back
                 .scaleEffect(CGSize(width: -1.0, height: 1.0))
                 .opacity(self.showingFront ? 0.0 : 1.0)
+                .allowsHitTesting(!self.showingFront)
         }
         .frame(minWidth: 0.0, maxWidth: .infinity, minHeight: 0.0, maxHeight: .infinity, alignment: .center)
         .rotation3DEffect(.degrees(self.totalAngle), axis: (0.0, 1.0, 0.0), perspective: 0.5)
         .contentShape(Rectangle())
-        .onTapGesture {
-            if !self.disabled {
+        // Only the visible front owns the whole-card reveal gesture. Keeping
+        // a disabled gesture over the back competes with its title Button and
+        // can consume a pronunciation tap without doing anything. Once the
+        // definition is visible, its controls own their taps independently.
+        .gesture(
+            TapGesture().onEnded {
                 self.flip()
                 self.tap()
-            }
-        }
+            },
+            including: (!self.disabled && self.showingFront) ? .all : .subviews
+        )
         /*
         .simultaneousGesture(
             self.disabled ? nil :

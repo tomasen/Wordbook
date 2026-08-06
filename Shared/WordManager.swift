@@ -25,6 +25,7 @@ enum CardRating : Int16 {
 class WordManager {
     // ManagedObjectContext of CoreData / CloudKit / iCloud
     private let moc = CoreDataManager.shared.container.viewContext
+    private var preparedStudyWord: String?
     
     static let shared = WordManager()
     
@@ -67,13 +68,44 @@ class WordManager {
         
         // next in perfered vocalbulary (SAT, GRE)
         if UserPreferences.shared.testPrepBook != 0 {
-            return WordDatabaseLocal.shared.randomWords(book: UserPreferences.shared.testPrepBooks[UserPreferences.shared.testPrepBook], num: 1).first ?? ""
+            return CompactLexicalIndex.shared.randomWords(
+                book: UserPreferences.shared.testPrepBooks[UserPreferences.shared.testPrepBook],
+                num: 1
+            ).first ?? ""
         }
         return ""
     }
     
     func nextRandomWord() -> String {
-        WordDatabaseLocal.shared.randomWord()
+        CompactLexicalIndex.shared.randomWord()
+    }
+
+    /// Reserves the exact next study word so its local explanation can be
+    /// generated while the start/share screen is still visible. Repeated calls
+    /// return the same reservation until a CardViewModel consumes it.
+    @MainActor
+    func prepareNextStudyWord() -> String {
+        if let preparedStudyWord {
+            return preparedStudyWord
+        }
+
+        let scheduledWord = nextWord()
+        let word = scheduledWord.isEmpty ? nextRandomWord() : scheduledWord
+        guard !word.isEmpty else { return "" }
+        preparedStudyWord = word
+        return word
+    }
+
+    @MainActor
+    func takePreparedStudyWord() -> String? {
+        defer { preparedStudyWord = nil }
+        return preparedStudyWord
+    }
+
+    @MainActor
+    func replacePreparedStudyWord() -> String {
+        preparedStudyWord = nil
+        return prepareNextStudyWord()
     }
     
     func nextDueWord(before due: Date, catagory: CardCategory) -> String? {
@@ -223,43 +255,68 @@ class WordManager {
     }
     
     // ------- Cache -------
-    func getCache(word: String, source: ExtraExplainSource) -> ExtraExplain? {
-        if let ref = getCachedReference(word: word, source: source) {
-            if ref.valid {
-                if let desc = ref.desc {
-                    if desc.trimmingCharacters(in: .whitespacesAndNewlines).count != 0 {
-                        return ExtraExplain(title: word, source: source, expl: desc)
-                    }
-                }
-            }
+    @MainActor
+    func getCachedExplanation(word: String) -> VocabularyExplanation? {
+        guard let reference = getCachedExplanationReference(word: word),
+              reference.valid,
+              let data = reference.desc?.data(using: .utf8),
+              let cached = try? JSONDecoder().decode(
+                  CachedVocabularyExplanation.self,
+                  from: data
+              ),
+              cached.isCurrent else {
+            return nil
         }
-        return nil
+        return cached.explanation
     }
-    
-    func getCachedReference(word: String, source: ExtraExplainSource) -> Reference? {
+
+    @MainActor
+    private func getCachedExplanationReference(word: String) -> Reference? {
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "Reference")
-        req.predicate = NSPredicate(format: "word = %@ AND source = %d", word, source.rawValue)
+        req.predicate = NSPredicate(
+            format: "word = %@ AND source = %d",
+            LocalTutorConfiguration.normalizedCacheWord(word),
+            LocalTutorConfiguration.cacheSource
+        )
         req.fetchLimit = 1
-        
-        if let ref = (try! moc.fetch(req) as! [Reference]).first {
-            return ref
-        }
-        return nil
+        return (try? moc.fetch(req) as? [Reference])?.first
     }
-    
-    func setCache(word: String, extraExplain: ExtraExplain) {
-        let ref = getCachedReference(word: word, source: extraExplain.source) ?? Reference.init(context: moc)
-        
-        ref.valid = true
-        ref.word = word
-        ref.desc = extraExplain.expl
-        ref.source = extraExplain.source.rawValue
-        ref.word = word
+
+    @MainActor
+    func setCachedExplanation(word: String, explanation: VocabularyExplanation) {
+        let reference = getCachedExplanationReference(word: word) ?? Reference(context: moc)
+        let cached = CachedVocabularyExplanation(explanation: explanation)
+
+        reference.valid = true
+        reference.word = LocalTutorConfiguration.normalizedCacheWord(word)
+        reference.source = LocalTutorConfiguration.cacheSource
+        reference.desc = try? String(
+            data: JSONEncoder().encode(cached),
+            encoding: .utf8
+        )
+        saveExplanationCache()
+    }
+
+    @MainActor
+    func removeCachedExplanation(word: String) {
+        guard let reference = getCachedExplanationReference(word: word) else { return }
+        moc.delete(reference)
+        saveExplanationCache()
+    }
+
+    @MainActor
+    private func saveExplanationCache() {
+        guard moc.hasChanges else { return }
+        do {
+            try moc.save()
+        } catch {
+            print("Unable to save local explanation cache: \(error.localizedDescription)")
+        }
     }
     
     // ------- Search ------
     func searchHints(_ input: String) -> [String]? {
-        WordDatabaseLocal.shared.searchHints(input)
+        CompactLexicalIndex.shared.searchHints(input)
     }
     
     // ------- WordCard ------

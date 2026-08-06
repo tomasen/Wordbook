@@ -10,6 +10,22 @@
 		A10000122F12345600000001 /* NaturalVoiceAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000112F12345600000001 /* NaturalVoiceAssets.swift */; };
 		A10000142F12345600000001 /* NaturalVoiceModels in Resources */ = {isa = PBXBuildFile; fileRef = A10000132F12345600000001 /* NaturalVoiceModels */; };
 		A10000032F12345600000001 /* FluidAudio in Frameworks */ = {isa = PBXBuildFile; productRef = A10000022F12345600000001 /* FluidAudio */; };
+		A20000102F20000100000001 /* LocalTutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000012F20000100000001 /* LocalTutor.swift */; };
+		A20000112F20000100000001 /* LocalTutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000012F20000100000001 /* LocalTutor.swift */; };
+		A20000122F20000100000001 /* LocalTutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000012F20000100000001 /* LocalTutor.swift */; };
+		A20000132F20000100000001 /* LocalTutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000012F20000100000001 /* LocalTutor.swift */; };
+		A20000202F20000100000001 /* CompactLexicalIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000022F20000100000001 /* CompactLexicalIndex.swift */; };
+		A20000212F20000100000001 /* CompactLexicalIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000022F20000100000001 /* CompactLexicalIndex.swift */; };
+		A20000222F20000100000001 /* CompactLexicalIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000022F20000100000001 /* CompactLexicalIndex.swift */; };
+		A20000232F20000100000001 /* CompactLexicalIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000022F20000100000001 /* CompactLexicalIndex.swift */; };
+		A20000302F20000100000001 /* lexical-index.wbli in Resources */ = {isa = PBXBuildFile; fileRef = A20000032F20000100000001 /* lexical-index.wbli */; };
+		A20000312F20000100000001 /* lexical-index.wbli in Resources */ = {isa = PBXBuildFile; fileRef = A20000032F20000100000001 /* lexical-index.wbli */; };
+		A20000322F20000100000001 /* lexical-index.wbli in Resources */ = {isa = PBXBuildFile; fileRef = A20000032F20000100000001 /* lexical-index.wbli */; };
+		A20000332F20000100000001 /* lexical-index.wbli in Resources */ = {isa = PBXBuildFile; fileRef = A20000032F20000100000001 /* lexical-index.wbli */; };
+		A20000342F20000100000001 /* LocalModels in Resources */ = {isa = PBXBuildFile; fileRef = A20000042F20000100000001 /* LocalModels */; };
+		A20000402F20000100000001 /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = A20001102F20000100000001 /* MLXLLM */; };
+		A20000412F20000100000001 /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = A20001112F20000100000001 /* MLXLMCommon */; };
+		A20000432F20000100000001 /* Tokenizers in Frameworks */ = {isa = PBXBuildFile; productRef = A20001132F20000100000001 /* Tokenizers */; };
 		88039BE8278AD5C7008EE125 /* WatchWordListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88039BE7278AD5C7008EE125 /* WatchWordListViewModel.swift */; };
 		8803F37D276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
 		8803F37E276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
@@ -31,20 +47,13 @@
 		88129543277F31C8008F1B1B /* WatchCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88129541277F31C8008F1B1B /* WatchCardView.swift */; };
 		88129545277F6B61008F1B1B /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CA92750B8BF003CE213 /* ViewHelper.swift */; };
 		88129546277F6FA3008F1B1B /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFE274F65D900637B61 /* CardViewModel.swift */; };
-		88129547277F6FB1008F1B1B /* WordDatabaseLocal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */; };
-		88129549277F6FC8008F1B1B /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 88129548277F6FC8008F1B1B /* SQLite */; };
-		8812954A277F7000008F1B1B /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
-		8812954C277F7019008F1B1B /* WikipediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8812954B277F7019008F1B1B /* WikipediaKit */; };
-		8812954E277F7023008F1B1B /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 8812954D277F7023008F1B1B /* SwiftSoup */; };
 		8812954F277F709A008F1B1B /* WordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFB274F621F00637B61 /* WordManager.swift */; };
 		88129550277F70A4008F1B1B /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* CoreDataManager.swift */; };
-		88129551277F70B2008F1B1B /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E9277472990038E990 /* APIClient.swift */; };
 		88129552277F70BE008F1B1B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F517D527553EED004C174B /* Helper.swift */; };
 		88129553277F70CA008F1B1B /* PausableTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE7032775C0630038E990 /* PausableTimer.swift */; };
 		88129554277F70D7008F1B1B /* InAppPurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E027745E840038E990 /* InAppPurchaseManager.swift */; };
 		88129556277F7106008F1B1B /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88129555277F7106008F1B1B /* SwiftyStoreKit */; };
 		88129557277F7138008F1B1B /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
-		88129558277F7225008F1B1B /* wordnet-lite.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */; };
 		8812955A2780BACF008F1B1B /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881295592780BACF008F1B1B /* SearchView.swift */; };
 		8812955B2780BACF008F1B1B /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881295592780BACF008F1B1B /* SearchView.swift */; };
 		8819C8FA2767B8D000FFD892 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 8819C8F92767B8D000FFD892 /* Introspect */; };
@@ -63,18 +72,9 @@
 		8833AC06274FDEDC00637B61 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8833AC05274FDEDC00637B61 /* CloudKit.framework */; };
 		8833AC13274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */; };
 		8833AC14274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */; };
-		8833AC19274FE8D000637B61 /* wordnet.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC16274FE8D000637B61 /* wordnet.sqlite */; };
-		8833AC1A274FE8D000637B61 /* wordnet.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC16274FE8D000637B61 /* wordnet.sqlite */; };
 		8833AC22274FE90400637B61 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC21274FE90400637B61 /* ShareViewController.swift */; };
 		8833AC25274FE90400637B61 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC23274FE90400637B61 /* MainInterface.storyboard */; };
 		8833AC29274FE90400637B61 /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8833AC1F274FE90400637B61 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		8833AC2F274FE98500637B61 /* wordnet-lite.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */; };
-		8833AC31274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */; };
-		8833AC32274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */; };
-		8833AC33274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */; };
-		8833AC36274FF33B00637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC35274FF33B00637B61 /* SQLite */; };
-		8833AC38274FF53300637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC37274FF53300637B61 /* SQLite */; };
-		8833AC3A274FF53900637B61 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 8833AC39274FF53900637B61 /* SQLite */; };
 		883B9AC62785D49900287A37 /* PushNotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */; };
 		883B9AC72785D49900287A37 /* PushNotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */; };
 		883B9AC82785D49900287A37 /* PushNotificationReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */; };
@@ -107,9 +107,6 @@
 		884EE6E52774600E0038E990 /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 884EE6E42774600E0038E990 /* SwiftyStoreKit */; };
 		884EE6E7277461120038E990 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
 		884EE6E8277461120038E990 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
-		884EE6EA277472990038E990 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E9277472990038E990 /* APIClient.swift */; };
-		884EE6EB277472990038E990 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E9277472990038E990 /* APIClient.swift */; };
-		884EE6EC2774729E0038E990 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E9277472990038E990 /* APIClient.swift */; };
 		884EE6EE27747DF20038E990 /* iCloudState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6ED27747DF20038E990 /* iCloudState.swift */; };
 		884EE6EF27747DF20038E990 /* iCloudState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6ED27747DF20038E990 /* iCloudState.swift */; };
 		884EE6F12774AAE20038E990 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6F02774AAE20038E990 /* SettingsView.swift */; };
@@ -156,18 +153,11 @@
 		88E042C527849B5E00B568C8 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E042C327849B5E00B568C8 /* PurchaseView.swift */; };
 		88E9571427B028770032742E /* eula.txt in Resources */ = {isa = PBXBuildFile; fileRef = 88E9571327B028770032742E /* eula.txt */; };
 		88E9571527B028770032742E /* eula.txt in Resources */ = {isa = PBXBuildFile; fileRef = 88E9571327B028770032742E /* eula.txt */; };
-		88F25273277B63270046BA15 /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
-		88F25274277B63270046BA15 /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
 		88F25276277B6EAD0046BA15 /* WordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8833ABFB274F621F00637B61 /* WordManager.swift */; };
-		88F25277277B6EB60046BA15 /* ExtraExplainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25272277B63260046BA15 /* ExtraExplainManager.swift */; };
 		88F25278277B6EC00046BA15 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E02DF527061D260015ECEA /* CoreDataManager.swift */; };
 		88F25279277B6F2C0046BA15 /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */; };
 		88F2527A277B6F3B0046BA15 /* iCloudState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6ED27747DF20038E990 /* iCloudState.swift */; };
 		88F2527B277B6F430046BA15 /* PausableTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE7032775C0630038E990 /* PausableTimer.swift */; };
-		88F2527E277B71090046BA15 /* WikipediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88F2527D277B71090046BA15 /* WikipediaKit */; };
-		88F25280277B74410046BA15 /* WikipediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88F2527F277B74410046BA15 /* WikipediaKit */; };
-		88F25283277B7D920046BA15 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 88F25282277B7D920046BA15 /* SwiftSoup */; };
-		88F25285277B7E160046BA15 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 88F25284277B7E160046BA15 /* SwiftSoup */; };
 		88F25288277CD7030046BA15 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884EE6E6277461120038E990 /* UserPreferences.swift */; };
 		88F2528A277CD9F00046BA15 /* SharedExtensionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F25289277CD9F00046BA15 /* SharedExtensionView.swift */; };
 		88F2528C277CDA0E0046BA15 /* WordFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F2528B277CDA0E0046BA15 /* WordFilter.swift */; };
@@ -276,6 +266,10 @@
 /* Begin PBXFileReference section */
 		A10000112F12345600000001 /* NaturalVoiceAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalVoiceAssets.swift; sourceTree = "<group>"; };
 		A10000132F12345600000001 /* NaturalVoiceModels */ = {isa = PBXFileReference; lastKnownFileType = folder; path = NaturalVoiceModels; sourceTree = "<group>"; };
+		A20000012F20000100000001 /* LocalTutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTutor.swift; sourceTree = "<group>"; };
+		A20000022F20000100000001 /* CompactLexicalIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactLexicalIndex.swift; sourceTree = "<group>"; };
+		A20000032F20000100000001 /* lexical-index.wbli */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lexical-index.wbli"; sourceTree = "<group>"; };
+		A20000042F20000100000001 /* LocalModels */ = {isa = PBXFileReference; lastKnownFileType = folder; path = LocalModels; sourceTree = "<group>"; };
 		88039BE7278AD5C7008EE125 /* WatchWordListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWordListViewModel.swift; sourceTree = "<group>"; };
 		88039BEA278B00A7008EE125 /* WatchCoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WatchCoreDataModel.xcdatamodel; sourceTree = "<group>"; };
 		8803F37C276F2B1200E46DAF /* SharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingViewModel.swift; sourceTree = "<group>"; };
@@ -304,14 +298,11 @@
 		8833AC04274FDEB500637B61 /* Wordbook--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Wordbook--iOS--Info.plist"; sourceTree = "<group>"; };
 		8833AC05274FDEDC00637B61 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		8833AC12274FE35800637B61 /* Memorable.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Memorable.xcdatamodel; sourceTree = "<group>"; };
-		8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "wordnet-lite.sqlite"; sourceTree = "<group>"; };
-		8833AC16274FE8D000637B61 /* wordnet.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = wordnet.sqlite; sourceTree = "<group>"; };
 		8833AC1F274FE90400637B61 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8833AC21274FE90400637B61 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		8833AC24274FE90400637B61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		8833AC26274FE90400637B61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8833AC2A274FE90400637B61 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
-		8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordDatabaseLocal.swift; sourceTree = "<group>"; };
 		883B9AC52785D49900287A37 /* PushNotificationReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationReceiver.swift; sourceTree = "<group>"; };
 		883B9ACF2785DA6300287A37 /* NotificationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		883B9AD02785DA6300287A37 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -331,7 +322,6 @@
 		884EE6CA2770D8710038E990 /* SF-Pro-Text-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Semibold.otf"; sourceTree = "<group>"; };
 		884EE6E027745E840038E990 /* InAppPurchaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppPurchaseManager.swift; sourceTree = "<group>"; };
 		884EE6E6277461120038E990 /* UserPreferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
-		884EE6E9277472990038E990 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		884EE6ED27747DF20038E990 /* iCloudState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudState.swift; sourceTree = "<group>"; };
 		884EE6F02774AAE20038E990 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		884EE6F3277575780038E990 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
@@ -362,7 +352,6 @@
 		88E042C12783FF2600B568C8 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS8.0.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		88E042C327849B5E00B568C8 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
 		88E9571327B028770032742E /* eula.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = eula.txt; sourceTree = "<group>"; };
-		88F25272277B63260046BA15 /* ExtraExplainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtraExplainManager.swift; sourceTree = "<group>"; };
 		88F25289277CD9F00046BA15 /* SharedExtensionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedExtensionView.swift; sourceTree = "<group>"; };
 		88F2528B277CDA0E0046BA15 /* WordFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordFilter.swift; sourceTree = "<group>"; };
 		88F319782781A0E8001FEACE /* TodayStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayStatusView.swift; sourceTree = "<group>"; };
@@ -377,12 +366,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88129549277F6FC8008F1B1B /* SQLite in Frameworks */,
 				88E042C22783FF2600B568C8 /* CoreData.framework in Frameworks */,
-				8812954E277F7023008F1B1B /* SwiftSoup in Frameworks */,
 				8812953E277F26DF008F1B1B /* CloudKit.framework in Frameworks */,
 				88129556277F7106008F1B1B /* SwiftyStoreKit in Frameworks */,
-				8812954C277F7019008F1B1B /* WikipediaKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,10 +376,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8833AC3A274FF53900637B61 /* SQLite in Frameworks */,
-				88F25285277B7E160046BA15 /* SwiftSoup in Frameworks */,
 				8819C8FC2767BACC00FFD892 /* Introspect in Frameworks */,
-				88F25280277B74410046BA15 /* WikipediaKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,13 +394,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000032F12345600000001 /* FluidAudio in Frameworks */,
+				A20000402F20000100000001 /* MLXLLM in Frameworks */,
+				A20000412F20000100000001 /* MLXLMCommon in Frameworks */,
+				A20000432F20000100000001 /* Tokenizers in Frameworks */,
 				888C571F277B0BC20029090A /* WebView in Frameworks */,
-				8833AC36274FF33B00637B61 /* SQLite in Frameworks */,
 				8819C8FA2767B8D000FFD892 /* Introspect in Frameworks */,
 				884EE6E52774600E0038E990 /* SwiftyStoreKit in Frameworks */,
-				88F2527E277B71090046BA15 /* WikipediaKit in Frameworks */,
 				8833AC03274FDE9500637B61 /* CloudKit.framework in Frameworks */,
-				88F25283277B7D920046BA15 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,7 +408,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8833AC38274FF53300637B61 /* SQLite in Frameworks */,
 				8833AC06274FDEDC00637B61 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -502,11 +484,9 @@
 		8833ABF0274F34F300637B61 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				884EE6E9277472990038E990 /* APIClient.swift */,
+				A20000012F20000100000001 /* LocalTutor.swift */,
 				884EE6E6277461120038E990 /* UserPreferences.swift */,
 				884EE6E027745E840038E990 /* InAppPurchaseManager.swift */,
-				88F25272277B63260046BA15 /* ExtraExplainManager.swift */,
-				8833AC30274FF1A700637B61 /* WordDatabaseLocal.swift */,
 				88E02DF527061D260015ECEA /* CoreDataManager.swift */,
 				8833ABFB274F621F00637B61 /* WordManager.swift */,
 				8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */,
@@ -586,8 +566,7 @@
 				8874799C27876F9200C66E85 /* privacy.txt */,
 				884EE6F8277577CF0038E990 /* about.txt */,
 				884EE6F7277577CF0038E990 /* plans.txt */,
-				8833AC15274FE8CC00637B61 /* wordnet-lite.sqlite */,
-				8833AC16274FE8D000637B61 /* wordnet.sqlite */,
+				A20000032F20000100000001 /* lexical-index.wbli */,
 				88E02DF627061D270015ECEA /* Assets.xcassets */,
 				884EE6C12770D85B0038E990 /* Fonts */,
 			);
@@ -612,6 +591,7 @@
 			isa = PBXGroup;
 			children = (
 				A10000112F12345600000001 /* NaturalVoiceAssets.swift */,
+				A20000022F20000100000001 /* CompactLexicalIndex.swift */,
 				88F2528B277CDA0E0046BA15 /* WordFilter.swift */,
 				88F517D527553EED004C174B /* Helper.swift */,
 				884EE7032775C0630038E990 /* PausableTimer.swift */,
@@ -623,6 +603,7 @@
 			isa = PBXGroup;
 			children = (
 				A10000132F12345600000001 /* NaturalVoiceModels */,
+				A20000042F20000100000001 /* LocalModels */,
 				88E042C0278370DC00B568C8 /* WatchApp.entitlements */,
 				8833AC04274FDEB500637B61 /* Wordbook--iOS--Info.plist */,
 				888EB1292722BF400067EA72 /* Wordbook (iOS).entitlements */,
@@ -727,9 +708,6 @@
 			);
 			name = "WatchKit Extension";
 			packageProductDependencies = (
-				88129548277F6FC8008F1B1B /* SQLite */,
-				8812954B277F7019008F1B1B /* WikipediaKit */,
-				8812954D277F7023008F1B1B /* SwiftSoup */,
 				88129555277F7106008F1B1B /* SwiftyStoreKit */,
 			);
 			productName = "Watch WatchKit Extension";
@@ -750,10 +728,7 @@
 			);
 			name = ShareExtension;
 			packageProductDependencies = (
-				8833AC39274FF53900637B61 /* SQLite */,
 				8819C8FB2767BACC00FFD892 /* Introspect */,
-				88F2527F277B74410046BA15 /* WikipediaKit */,
-				88F25284277B7E160046BA15 /* SwiftSoup */,
 			);
 			productName = Wordbook;
 			productReference = 8833AC1F274FE90400637B61 /* ShareExtension.appex */;
@@ -796,12 +771,12 @@
 			name = "Wordbook (iOS)";
 			packageProductDependencies = (
 				A10000022F12345600000001 /* FluidAudio */,
-				8833AC35274FF33B00637B61 /* SQLite */,
+				A20001102F20000100000001 /* MLXLLM */,
+				A20001112F20000100000001 /* MLXLMCommon */,
+				A20001132F20000100000001 /* Tokenizers */,
 				8819C8F92767B8D000FFD892 /* Introspect */,
 				884EE6E42774600E0038E990 /* SwiftyStoreKit */,
 				888C571E277B0BC20029090A /* WebView */,
-				88F2527D277B71090046BA15 /* WikipediaKit */,
-				88F25282277B7D920046BA15 /* SwiftSoup */,
 			);
 			productName = "Wordbook (iOS)";
 			productReference = 88E02DFB27061D270015ECEA /* Wordbook.app */;
@@ -821,7 +796,6 @@
 			);
 			name = "Wordbook (macOS)";
 			packageProductDependencies = (
-				8833AC37274FF53300637B61 /* SQLite */,
 			);
 			productName = "Wordbook (macOS)";
 			productReference = 88E02E0127061D270015ECEA /* Wordbook.app */;
@@ -911,13 +885,13 @@
 			);
 			mainGroup = 88E02DEB27061D260015ECEA;
 			packageReferences = (
-				A10000012F12345600000001 /* XCRemoteSwiftPackageReference "FluidAudio" */,
-				8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
+				A10000012F12345600000001 /* XCLocalSwiftPackageReference "FluidAudio" */,
+				A20001002F20000100000001 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */,
+				A20001012F20000100000001 /* XCRemoteSwiftPackageReference "swift-transformers" */,
+				A20001022F20000100000001 /* XCRemoteSwiftPackageReference "mlx-swift" */,
 				8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				884EE6E32774600E0038E990 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 				888C571D277B0BC20029090A /* XCRemoteSwiftPackageReference "SwiftUI-WebView" */,
-				88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */,
-				88F25281277B7D920046BA15 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 			);
 			productRefGroup = 88E02DFC27061D270015ECEA /* Products */;
 			projectDirPath = "";
@@ -948,8 +922,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A20000322F20000100000001 /* lexical-index.wbli in Resources */,
 				8812952D277F1EEC008F1B1B /* Preview Assets.xcassets in Resources */,
-				88129558277F7225008F1B1B /* wordnet-lite.sqlite in Resources */,
 				8812953B277F1F19008F1B1B /* Assets.xcassets in Resources */,
 				8812952A277F1EEC008F1B1B /* Assets.xcassets in Resources */,
 			);
@@ -959,12 +933,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A20000332F20000100000001 /* lexical-index.wbli in Resources */,
 				888C3CB02750BBF7003CE213 /* LaunchScreen.storyboard in Resources */,
 				884EE6FB277577CF0038E990 /* plans.txt in Resources */,
 				884EE6FE277577CF0038E990 /* about.txt in Resources */,
 				8833AC25274FE90400637B61 /* MainInterface.storyboard in Resources */,
 				88F2528F277E1DD70046BA15 /* Assets.xcassets in Resources */,
-				8833AC2F274FE98500637B61 /* wordnet-lite.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -981,10 +955,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000142F12345600000001 /* NaturalVoiceModels in Resources */,
+				A20000302F20000100000001 /* lexical-index.wbli in Resources */,
+				A20000342F20000100000001 /* LocalModels in Resources */,
 				884EE6DB2770D8710038E990 /* SF-Pro-Text-Semibold.otf in Resources */,
 				884EE6CF2770D8710038E990 /* SF-Pro-Text-Regular.otf in Resources */,
 				888C3CAE2750BBF7003CE213 /* LaunchScreen.storyboard in Resources */,
-				8833AC19274FE8D000637B61 /* wordnet.sqlite in Resources */,
 				8874799D27876F9200C66E85 /* privacy.txt in Resources */,
 				884EE6D92770D8710038E990 /* SF-Pro-Text-Heavy.otf in Resources */,
 				884EE6CB2770D8710038E990 /* SF-Pro-Text-Bold.otf in Resources */,
@@ -1004,10 +979,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A20000312F20000100000001 /* lexical-index.wbli in Resources */,
 				884EE6DC2770D8710038E990 /* SF-Pro-Text-Semibold.otf in Resources */,
 				884EE6D02770D8710038E990 /* SF-Pro-Text-Regular.otf in Resources */,
 				888C3CAF2750BBF7003CE213 /* LaunchScreen.storyboard in Resources */,
-				8833AC1A274FE8D000637B61 /* wordnet.sqlite in Resources */,
 				8874799E27876F9200C66E85 /* privacy.txt in Resources */,
 				884EE6DA2770D8710038E990 /* SF-Pro-Text-Heavy.otf in Resources */,
 				884EE6CC2770D8710038E990 /* SF-Pro-Text-Bold.otf in Resources */,
@@ -1044,6 +1019,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A20000122F20000100000001 /* LocalTutor.swift in Sources */,
+				A20000222F20000100000001 /* CompactLexicalIndex.swift in Sources */,
 				88129524277F1EEC008F1B1B /* NotificationController.swift in Sources */,
 				883B9ACA2785D59400287A37 /* PushNotificationReceiver.swift in Sources */,
 				88129554277F70D7008F1B1B /* InAppPurchaseManager.swift in Sources */,
@@ -1052,14 +1029,11 @@
 				88F31985278301AC001FEACE /* WordListViewModel.swift in Sources */,
 				88129522277F1EEC008F1B1B /* WatchMasterView.swift in Sources */,
 				88129543277F31C8008F1B1B /* WatchCardView.swift in Sources */,
-				8812954A277F7000008F1B1B /* ExtraExplainManager.swift in Sources */,
-				88129547277F6FB1008F1B1B /* WordDatabaseLocal.swift in Sources */,
 				88129557277F7138008F1B1B /* UserPreferences.swift in Sources */,
 				88129552277F70BE008F1B1B /* Helper.swift in Sources */,
 				88129553277F70CA008F1B1B /* PausableTimer.swift in Sources */,
 				88129546277F6FA3008F1B1B /* CardViewModel.swift in Sources */,
 				88F319822782DDD2001FEACE /* TodaysViewModel.swift in Sources */,
-				88129551277F70B2008F1B1B /* APIClient.swift in Sources */,
 				8812953F277F26F0008F1B1B /* iCloudState.swift in Sources */,
 				88129528277F1EEC008F1B1B /* ComplicationController.swift in Sources */,
 				88039BE8278AD5C7008EE125 /* WatchWordListViewModel.swift in Sources */,
@@ -1074,17 +1048,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A20000132F20000100000001 /* LocalTutor.swift in Sources */,
+				A20000232F20000100000001 /* CompactLexicalIndex.swift in Sources */,
 				88F2528A277CD9F00046BA15 /* SharedExtensionView.swift in Sources */,
 				8833AC22274FE90400637B61 /* ShareViewController.swift in Sources */,
 				88F319812782DDD2001FEACE /* TodaysViewModel.swift in Sources */,
 				88F25288277CD7030046BA15 /* UserPreferences.swift in Sources */,
 				888C3CAC2750B8BF003CE213 /* ViewHelper.swift in Sources */,
 				883B9AC82785D49900287A37 /* PushNotificationReceiver.swift in Sources */,
-				8833AC33274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
 				88F2527A277B6F3B0046BA15 /* iCloudState.swift in Sources */,
 				88F25276277B6EAD0046BA15 /* WordManager.swift in Sources */,
-				884EE6EC2774729E0038E990 /* APIClient.swift in Sources */,
-				88F25277277B6EB60046BA15 /* ExtraExplainManager.swift in Sources */,
 				88F2528E277CDA0E0046BA15 /* WordFilter.swift in Sources */,
 				88F2527B277B6F430046BA15 /* PausableTimer.swift in Sources */,
 				88F25278277B6EC00046BA15 /* CoreDataManager.swift in Sources */,
@@ -1106,18 +1079,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000122F12345600000001 /* NaturalVoiceAssets.swift in Sources */,
+				A20000102F20000100000001 /* LocalTutor.swift in Sources */,
+				A20000202F20000100000001 /* CompactLexicalIndex.swift in Sources */,
 				8833AC13274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
 				88F3197C2782D916001FEACE /* TodaysView.swift in Sources */,
 				88F3197F2782DDD2001FEACE /* TodaysViewModel.swift in Sources */,
 				88F517D627553EED004C174B /* Helper.swift in Sources */,
 				884EE6F12774AAE20038E990 /* SettingsView.swift in Sources */,
 				88E02E1E27061D280015ECEA /* WordbookApp.swift in Sources */,
-				884EE6EA277472990038E990 /* APIClient.swift in Sources */,
 				884EE6F4277575780038E990 /* TextView.swift in Sources */,
 				8803F37D276F2B1200E46DAF /* SharingViewModel.swift in Sources */,
 				8833ABFC274F621F00637B61 /* WordManager.swift in Sources */,
 				88F319792781A0E8001FEACE /* TodayStatusView.swift in Sources */,
-				8833AC31274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
 				884EE6E7277461120038E990 /* UserPreferences.swift in Sources */,
 				88F517D327524C4F004C174B /* FlipView.swift in Sources */,
 				884EE6EE27747DF20038E990 /* iCloudState.swift in Sources */,
@@ -1136,7 +1109,6 @@
 				88E02E2027061D280015ECEA /* MasterView.swift in Sources */,
 				884EE7042775C0630038E990 /* PausableTimer.swift in Sources */,
 				884EE6E127745E840038E990 /* InAppPurchaseManager.swift in Sources */,
-				88F25273277B63270046BA15 /* ExtraExplainManager.swift in Sources */,
 				888C3CB22750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833ABFF274F65D900637B61 /* CardViewModel.swift in Sources */,
 			);
@@ -1146,18 +1118,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A20000112F20000100000001 /* LocalTutor.swift in Sources */,
+				A20000212F20000100000001 /* CompactLexicalIndex.swift in Sources */,
 				8833AC14274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
 				88F3197D2782D916001FEACE /* TodaysView.swift in Sources */,
 				88F319802782DDD2001FEACE /* TodaysViewModel.swift in Sources */,
 				88F517D727553EED004C174B /* Helper.swift in Sources */,
 				884EE6F22774AAE20038E990 /* SettingsView.swift in Sources */,
 				88E02E1F27061D280015ECEA /* WordbookApp.swift in Sources */,
-				884EE6EB277472990038E990 /* APIClient.swift in Sources */,
 				884EE6F5277575780038E990 /* TextView.swift in Sources */,
 				8803F37E276F2B1200E46DAF /* SharingViewModel.swift in Sources */,
 				8833ABFD274F621F00637B61 /* WordManager.swift in Sources */,
 				88F3197A2781A0E8001FEACE /* TodayStatusView.swift in Sources */,
-				8833AC32274FF1A700637B61 /* WordDatabaseLocal.swift in Sources */,
 				884EE6E8277461120038E990 /* UserPreferences.swift in Sources */,
 				88F517D427524C4F004C174B /* FlipView.swift in Sources */,
 				884EE6EF27747DF20038E990 /* iCloudState.swift in Sources */,
@@ -1176,7 +1148,6 @@
 				88E02E2127061D280015ECEA /* MasterView.swift in Sources */,
 				884EE7052775C0630038E990 /* PausableTimer.swift in Sources */,
 				884EE6E227745E840038E990 /* InAppPurchaseManager.swift in Sources */,
-				88F25274277B63270046BA15 /* ExtraExplainManager.swift in Sources */,
 				888C3CB32750C865003CE213 /* WordListViewModel.swift in Sources */,
 				8833AC00274F65D900637B61 /* CardViewModel.swift in Sources */,
 			);
@@ -1642,7 +1613,7 @@
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WORDBOOK_NATURAL_VOICE";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WORDBOOK_NATURAL_VOICE WORDBOOK_LOCAL_LLM";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
@@ -1679,7 +1650,7 @@
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WORDBOOK_NATURAL_VOICE";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WORDBOOK_NATURAL_VOICE WORDBOOK_LOCAL_LLM";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
@@ -1932,13 +1903,36 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		A10000012F12345600000001 /* XCLocalSwiftPackageReference "FluidAudio" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Vendor/FluidAudio;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
-		A10000012F12345600000001 /* XCRemoteSwiftPackageReference "FluidAudio" */ = {
+		A20001002F20000100000001 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/FluidInference/FluidAudio.git";
+			repositoryURL = "https://github.com/ml-explore/mlx-swift-lm.git";
+			requirement = {
+				kind = revision;
+				revision = 38927f5f3da6d4720ac952f4d97f88d4424f11aa;
+			};
+		};
+		A20001012F20000100000001 /* XCRemoteSwiftPackageReference "swift-transformers" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/huggingface/swift-transformers.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.15.5;
+				version = 1.3.0;
+			};
+		};
+		A20001022F20000100000001 /* XCRemoteSwiftPackageReference "mlx-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.31.6;
 			};
 		};
 		8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
@@ -1947,14 +1941,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.1.3;
-			};
-		};
-		8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.13.1;
 			};
 		};
 		884EE6E32774600E0038E990 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
@@ -1973,44 +1959,28 @@
 				minimumVersion = 0.3.0;
 			};
 		};
-		88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Raureif/WikipediaKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
-		88F25281277B7D920046BA15 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/scinfu/SwiftSoup";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		A10000022F12345600000001 /* FluidAudio */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A10000012F12345600000001 /* XCRemoteSwiftPackageReference "FluidAudio" */;
+			package = A10000012F12345600000001 /* XCLocalSwiftPackageReference "FluidAudio" */;
 			productName = FluidAudio;
 		};
-		88129548277F6FC8008F1B1B /* SQLite */ = {
+		A20001102F20000100000001 /* MLXLLM */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
-			productName = SQLite;
+			package = A20001002F20000100000001 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */;
+			productName = MLXLLM;
 		};
-		8812954B277F7019008F1B1B /* WikipediaKit */ = {
+		A20001112F20000100000001 /* MLXLMCommon */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */;
-			productName = WikipediaKit;
+			package = A20001002F20000100000001 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */;
+			productName = MLXLMCommon;
 		};
-		8812954D277F7023008F1B1B /* SwiftSoup */ = {
+		A20001132F20000100000001 /* Tokenizers */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 88F25281277B7D920046BA15 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
-			productName = SwiftSoup;
+			package = A20001012F20000100000001 /* XCRemoteSwiftPackageReference "swift-transformers" */;
+			productName = Tokenizers;
 		};
 		88129555277F7106008F1B1B /* SwiftyStoreKit */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -2027,21 +1997,6 @@
 			package = 8819C8F82767B8D000FFD892 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
 			productName = Introspect;
 		};
-		8833AC35274FF33B00637B61 /* SQLite */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
-			productName = SQLite;
-		};
-		8833AC37274FF53300637B61 /* SQLite */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
-			productName = SQLite;
-		};
-		8833AC39274FF53900637B61 /* SQLite */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8833AC34274FF33B00637B61 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
-			productName = SQLite;
-		};
 		884EE6E42774600E0038E990 /* SwiftyStoreKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 884EE6E32774600E0038E990 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
@@ -2051,26 +2006,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 888C571D277B0BC20029090A /* XCRemoteSwiftPackageReference "SwiftUI-WebView" */;
 			productName = WebView;
-		};
-		88F2527D277B71090046BA15 /* WikipediaKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */;
-			productName = WikipediaKit;
-		};
-		88F2527F277B74410046BA15 /* WikipediaKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 88F2527C277B71090046BA15 /* XCRemoteSwiftPackageReference "WikipediaKit" */;
-			productName = WikipediaKit;
-		};
-		88F25282277B7D920046BA15 /* SwiftSoup */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 88F25281277B7D920046BA15 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
-			productName = SwiftSoup;
-		};
-		88F25284277B7E160046BA15 /* SwiftSoup */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 88F25281277B7D920046BA15 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
-			productName = SwiftSoup;
 		};
 /* End XCSwiftPackageProductDependency section */
 

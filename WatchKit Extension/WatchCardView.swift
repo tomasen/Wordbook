@@ -31,45 +31,64 @@ struct WatchCardView: View {
                 
                 Spacer()
                 
-                if let mnemonic = viewModel.mnemonic {
-                    VStack(alignment: .leading){
-                        Text("\(mnemonic)")
-                    }
-                    .padding(3)
-                }
-                
-                if viewModel.senses.count > 0 {
+                switch viewModel.explanationState {
+                case .ready(let explanation):
                     VStack(alignment: .leading) {
-                        ForEach(viewModel.senses) { ss in
-                            VStack(alignment: .leading){
-                                Text("\(ss.gloss).")
+                        HStack(alignment: .firstTextBaseline) {
+                            Text("\(explanation.partOfSpeech).")
+                            VStack(alignment: .leading) {
+                                Text(explanation.meaning)
                                     .multilineTextAlignment(.leading)
-                                    .padding(.bottom, 2)
+                                    .padding(.bottom, 4)
                                     .fixedSize(horizontal: false, vertical: true)
                                     .frame(maxWidth: .infinity, alignment: .leading)
+                                if !explanation.synonyms.isEmpty {
+                                    Text("Similar: \(explanation.synonyms.joined(separator: ", "))")
+                                }
+                                HStack(alignment: .top) {
+                                    Text("·")
+                                    Text("\"\(explanation.example)\"")
+                                        .italic()
+                                        .multilineTextAlignment(.leading)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
                             }
                         }
-                        
+
+                        if !explanation.memoryAid.isEmpty {
+                            Divider()
+                            Text(explanation.memoryAidText)
+                                .multilineTextAlignment(.leading)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 4)
+                        }
                         Spacer()
                     }
                     .font(.caption2)
                     .lineSpacing(2)
-                    
-                    if closeMyself {
-                        Spacer()
-                        Button(action: {
-                            _ = WordManager.shared.addWordCard(viewModel.word)
-                            closeMyself.toggle()
-                        }) {
-                            Text("Add")
-                                .foregroundColor(Color("fontBody"))
-                        }
-                    }
-                } else {
+
+                case .idle, .loading:
+                    EmptyView()
+
+                case .unavailable(let message):
                     VStack{
                         Spacer()
-                        Text("word not found")
+                        Text(message)
+                            .multilineTextAlignment(.center)
                         Spacer()
+                    }
+                }
+
+                if closeMyself {
+                    Spacer()
+                    Button(action: {
+                        _ = WordManager.shared.addWordCard(viewModel.word)
+                        closeMyself.toggle()
+                    }) {
+                        Text("Add")
+                            .foregroundColor(Color("fontBody"))
                     }
                 }
             }

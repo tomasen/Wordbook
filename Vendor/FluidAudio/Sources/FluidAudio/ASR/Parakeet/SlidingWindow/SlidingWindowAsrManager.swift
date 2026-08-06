@@ -1,0 +1,895 @@
+@preconcurrency import AVFoundation
+@preconcurrency import CoreML
+import Foundation
+import OSLog
+
+/// A high-level sliding-window ASR manager that provides a simple API for real-time transcription.
+///
+/// Uses an offline TDT encoder with overlapping windows for pseudo-streaming.
+/// Similar to Apple's SpeechAnalyzer, it handles audio conversion and buffering automatically.
+public actor SlidingWindowAsrManager {
+    private let logger = AppLogger(category: "SlidingWindowASR")
+    private let audioConverter: AudioConverter = AudioConverter()
+    private let config: SlidingWindowAsrConfig
+
+    // Audio input stream
+    private let inputSequence: AsyncStream<AVAudioPCMBuffer>
+    private let inputBuilder: AsyncStream<AVAudioPCMBuffer>.Continuation
+
+    // Transcription output stream
+    private var updateContinuation: AsyncStream<SlidingWindowTranscriptionUpdate>.Continuation?
+
+    // ASR components
+    private var asrManager: AsrManager?
+    private var recognizerTask: Task<Void, Error>?
+    private var audioSource: AudioSource = .microphone
+
+    // Decoder state for this sliding window session
+    private var decoderState: TdtDecoderState?
+
+    // Sliding window state
+    private var segmentIndex: Int = 0
+    private var lastProcessedFrame: Int = 0
+    private var accumulatedTokens: [Int] = []
+
+    // Raw sample buffer for sliding-window assembly (absolute indexing)
+    private var sampleBuffer: [Float] = []
+    private var bufferStartIndex: Int = 0  // absolute index of sampleBuffer[0]
+    private var nextWindowCenterStart: Int = 0  // absolute index where next chunk (center) begins
+
+    // Two-tier transcription state (like Apple's Speech API)
+    public private(set) var volatileTranscript: String = ""
+    public private(set) var confirmedTranscript: String = ""
+
+    /// The audio source this stream is configured for
+    public var source: AudioSource {
+        return audioSource
+    }
+
+    // Metrics
+    private var startTime: Date?
+    private var processedChunks: Int = 0
+
+    // Window-processing error tracking so total failure is surfaced by finish()
+    // instead of being silently absorbed by error recovery
+    private var failedWindowCount: Int = 0
+    private var lastWindowError: SlidingWindowAsrError?
+
+    // Vocabulary boosting
+    // These are initialized via configureVocabularyBoosting() before start()
+    private var customVocabulary: CustomVocabularyContext?
+    private var ctcSpotter: CtcKeywordSpotter?
+    private var vocabularyRescorer: VocabularyRescorer?
+    private var vocabSizeConfig: ContextBiasingConstants.VocabSizeConfig?
+    private var vocabBoostingEnabled: Bool { customVocabulary != nil && vocabularyRescorer != nil }
+
+    /// Initialize the sliding-window ASR manager
+    /// - Parameter config: Configuration for streaming behavior
+    public init(config: SlidingWindowAsrConfig = .default) {
+        self.config = config
+
+        // Create input stream
+        let (stream, continuation) = AsyncStream<AVAudioPCMBuffer>.makeStream()
+        self.inputSequence = stream
+        self.inputBuilder = continuation
+
+        logger.info(
+            "Initialized SlidingWindowAsrManager with config: chunk=\(config.chunkSeconds)s left=\(config.leftContextSeconds)s right=\(config.rightContextSeconds)s"
+        )
+    }
+
+    /// Configure vocabulary boosting for streaming transcription
+    ///
+    /// When configured, vocabulary terms will be rescored when text is confirmed during streaming.
+    /// This provides real-time vocabulary corrections visible in confirmed updates.
+    ///
+    /// - Parameters:
+    ///   - vocabulary: Custom vocabulary context with terms to detect
+    ///   - ctcModels: Pre-loaded CTC models for keyword spotting
+    ///   - config: Optional rescorer configuration (default: vocabulary-size-aware config)
+    /// - Throws: Error if rescorer initialization fails
+    public func configureVocabularyBoosting(
+        vocabulary: CustomVocabularyContext,
+        ctcModels: CtcModels,
+        config: VocabularyRescorer.Config? = nil
+    ) async throws {
+        self.customVocabulary = vocabulary
+
+        // Create CTC spotter
+        let blankId = ctcModels.vocabulary.count
+        self.ctcSpotter = CtcKeywordSpotter(models: ctcModels, blankId: blankId)
+
+        // Use vocabulary-size-aware config (matching batch mode behavior)
+        let vocabSize = vocabulary.terms.count
+        let vocabConfig = ContextBiasingConstants.rescorerConfig(forVocabSize: vocabSize)
+        self.vocabSizeConfig = vocabConfig
+        let effectiveConfig = config ?? .default
+
+        // Create rescorer
+        let ctcModelDir = CtcModels.defaultCacheDirectory(for: ctcModels.variant)
+        self.vocabularyRescorer = try await VocabularyRescorer.create(
+            spotter: ctcSpotter!,
+            vocabulary: vocabulary,
+            config: effectiveConfig,
+            ctcModelDirectory: ctcModelDir
+        )
+
+        let isLargeVocab = vocabSize > ContextBiasingConstants.largeVocabThreshold
+        logger.info(
+            "Vocabulary boosting configured with \(vocabSize) terms (isLargeVocab: \(isLargeVocab))"
+        )
+    }
+
+    /// Load ASR models (downloads if needed)
+    ///
+    /// If you need custom MLModelConfiguration, use `AsrModels.downloadAndLoad(configuration:)`
+    /// to pre-load models and then call `loadModels(_:)`.
+    ///
+    /// - Parameters:
+    ///   - to: Optional cache directory (default: system cache)
+    ///   - progressHandler: Optional download progress callback
+    public func loadModels(
+        to directory: URL? = nil,
+        progressHandler: ProgressHandler? = nil
+    ) async throws {
+        logger.info("Loading ASR models...")
+        let models = try await AsrModels.downloadAndLoad(
+            to: directory,
+            progressHandler: progressHandler
+        )
+        try await loadModels(models)
+    }
+
+    /// Load pre-loaded ASR models
+    /// - Parameter models: Pre-loaded ASR models to use
+    public func loadModels(_ models: AsrModels) async throws {
+        logger.info("Loading SlidingWindowAsrManager with provided models")
+
+        // Configure ASR manager with provided models
+        asrManager = AsrManager(config: config.asrConfig)
+        try await asrManager?.loadModels(models)
+
+        logger.info("SlidingWindowAsrManager loaded successfully")
+    }
+
+    /// Start the sliding-window streaming engine
+    ///
+    /// Models must be loaded first via `loadModels()` or `loadModels(_:)`
+    ///
+    /// - Parameter source: The audio source to use (default: microphone)
+    /// - Throws: `SlidingWindowAsrError.invalidConfiguration` if the configured window
+    ///   (left + chunk + right context) exceeds the model's maximum input size,
+    ///   `ASRError.notInitialized` if models are not loaded
+    public func startStreaming(source: AudioSource = .microphone) async throws {
+        try config.validate()
+
+        guard asrManager != nil else {
+            throw ASRError.notInitialized
+        }
+
+        logger.info("Starting sliding-window ASR engine for source: \(String(describing: source))...")
+
+        self.audioSource = source
+
+        // Create decoder state with correct layer count for this model
+        if let mgr = asrManager {
+            self.decoderState = TdtDecoderState.make(decoderLayers: await mgr.decoderLayerCount)
+        }
+
+        // Reset sliding window state
+        segmentIndex = 0
+        lastProcessedFrame = 0
+        accumulatedTokens.removeAll()
+        failedWindowCount = 0
+        lastWindowError = nil
+
+        startTime = Date()
+
+        // Start background recognition task
+        recognizerTask = Task {
+            logger.info("Recognition task started, waiting for audio...")
+
+            for await pcmBuffer in self.inputSequence {
+                do {
+                    // Convert to 16kHz mono (streaming)
+                    let samples = try audioConverter.resampleBuffer(pcmBuffer)
+
+                    // Append to raw sample buffer and attempt windowed processing
+                    await self.appendSamplesAndProcess(samples)
+                } catch {
+                    if error is CancellationError || Task.isCancelled {
+                        return
+                    }
+                    let streamingError = SlidingWindowAsrError.audioBufferProcessingFailed(error)
+                    logger.error(
+                        "Audio buffer processing error: \(streamingError.localizedDescription)")
+                    await attemptErrorRecovery(error: streamingError)
+                }
+            }
+
+            // Stream ended: no need to flush converter since each conversion is stateless
+
+            // Then flush remaining assembled audio (no right-context requirement)
+            await self.flushRemaining()
+
+            logger.info("Recognition task completed")
+        }
+
+        logger.info("Sliding-window ASR engine started successfully")
+    }
+
+    /// Stream audio data for transcription
+    /// - Parameter buffer: Audio buffer in any format (will be converted to 16kHz mono)
+    public func streamAudio(_ buffer: AVAudioPCMBuffer) {
+        inputBuilder.yield(buffer)
+    }
+
+    /// Get an async stream of transcription updates
+    public var transcriptionUpdates: AsyncStream<SlidingWindowTranscriptionUpdate> {
+        AsyncStream { continuation in
+            self.updateContinuation = continuation
+
+            continuation.onTermination = { @Sendable _ in
+                Task { [weak self] in
+                    await self?.clearUpdateContinuation()
+                }
+            }
+        }
+    }
+
+    /// Finish streaming and get the final transcription
+    /// - Returns: The complete transcription text
+    public func finish() async throws -> String {
+        logger.info("Finishing sliding-window ASR...")
+
+        // Signal end of input
+        inputBuilder.finish()
+
+        // Wait for recognition task to complete
+        do {
+            try await recognizerTask?.value
+        } catch {
+            logger.error("Recognition task failed: \(error)")
+            throw error
+        }
+
+        // Surface total failure: every window errored, so the transcript is empty
+        // or covers only a fraction of the audio. Silently returning it would be
+        // indistinguishable from silence in the input.
+        if processedChunks == 0, let windowError = lastWindowError {
+            logger.error(
+                "All \(self.failedWindowCount) window(s) failed to process; throwing last error instead of returning an empty transcript"
+            )
+            throw windowError
+        }
+        if failedWindowCount > 0 {
+            logger.warning(
+                "\(self.failedWindowCount) window(s) failed during streaming; transcript may be missing segments"
+            )
+        }
+
+        let finalText: String
+        if vocabBoostingEnabled {
+            // Text-based reconstruction preserves rescored corrections from processWindow().
+            // Token-based reconstruction would undo rescoring since it decodes raw tokens.
+            var parts: [String] = []
+            if !confirmedTranscript.isEmpty { parts.append(confirmedTranscript) }
+            if !volatileTranscript.isEmpty { parts.append(volatileTranscript) }
+            finalText = parts.joined(separator: " ")
+        } else if !accumulatedTokens.isEmpty,
+            let reconstructedText = await asrManager?.convertTokensToText(accumulatedTokens)
+        {
+            // finish() only needs the merged text. Re-entering ASRResult processing here
+            // fabricates a missing-confidence warning even though no confidence score is required.
+            finalText = reconstructedText
+        } else {
+            var parts: [String] = []
+            if !confirmedTranscript.isEmpty { parts.append(confirmedTranscript) }
+            if !volatileTranscript.isEmpty { parts.append(volatileTranscript) }
+            finalText = parts.joined(separator: " ")
+        }
+
+        logger.info("Final transcription: \(finalText.count) characters")
+        return finalText
+    }
+
+    /// Reset the transcriber for a new session
+    public func reset() async throws {
+        volatileTranscript = ""
+        confirmedTranscript = ""
+        processedChunks = 0
+        failedWindowCount = 0
+        lastWindowError = nil
+        startTime = Date()
+        sampleBuffer.removeAll(keepingCapacity: false)
+        bufferStartIndex = 0
+        nextWindowCenterStart = 0
+
+        // Reset decoder state
+        if let mgr = asrManager {
+            self.decoderState = TdtDecoderState.make(decoderLayers: await mgr.decoderLayerCount)
+        }
+
+        // Reset sliding window state
+        segmentIndex = 0
+        lastProcessedFrame = 0
+        accumulatedTokens.removeAll()
+
+        logger.info("SlidingWindowAsrManager reset for source: \(String(describing: self.audioSource))")
+    }
+
+    /// Release all loaded models and free memory.
+    /// The manager cannot be used for transcription after this until `start()` is called again.
+    public func cleanup() async {
+        await cancel()
+        await asrManager?.cleanup()
+        asrManager = nil
+        logger.info("SlidingWindowAsrManager resources cleaned up")
+    }
+
+    /// Cancel streaming without getting results
+    public func cancel() async {
+        inputBuilder.finish()
+        recognizerTask?.cancel()
+        updateContinuation?.finish()
+
+        logger.info("SlidingWindowAsrManager cancelled")
+    }
+
+    /// Clear the update continuation
+    private func clearUpdateContinuation() {
+        updateContinuation = nil
+    }
+
+    // MARK: - Private Methods
+
+    /// Append new samples and process as many windows as available
+    private func appendSamplesAndProcess(_ samples: [Float]) async {
+        // Append samples to buffer
+        sampleBuffer.append(contentsOf: samples)
+
+        // Process while we have at least chunk + right ahead of the current center start
+        let chunk = config.chunkSamples
+        let right = config.rightContextSamples
+        let left = config.leftContextSamples
+        let sampleRate = config.asrConfig.sampleRate
+
+        var currentAbsEnd = bufferStartIndex + sampleBuffer.count
+        while currentAbsEnd >= (nextWindowCenterStart + chunk + right) {
+            let leftStartAbs = max(0, nextWindowCenterStart - left)
+            let rightEndAbs = nextWindowCenterStart + chunk + right
+            let startIdx = max(leftStartAbs - bufferStartIndex, 0)
+            let endIdx = rightEndAbs - bufferStartIndex
+            if startIdx < 0 || endIdx > sampleBuffer.count || startIdx >= endIdx {
+                break
+            }
+
+            let window = Array(sampleBuffer[startIdx..<endIdx])
+            await processWindow(window, windowStartSample: leftStartAbs)
+
+            // Advance by chunk size
+            nextWindowCenterStart += chunk
+
+            // Trim buffer to keep only what's needed for left context
+            let trimToAbs = max(0, nextWindowCenterStart - left)
+            let dropCount = max(0, trimToAbs - bufferStartIndex)
+            if dropCount > 0 && dropCount <= sampleBuffer.count {
+                sampleBuffer.removeFirst(dropCount)
+                bufferStartIndex += dropCount
+            }
+
+            currentAbsEnd = bufferStartIndex + sampleBuffer.count
+        }
+    }
+
+    /// Flush any remaining audio at end of stream (no right-context requirement)
+    private func flushRemaining() async {
+        let chunk = config.chunkSamples
+        let left = config.leftContextSamples
+        let sampleRate = config.asrConfig.sampleRate
+
+        var currentAbsEnd = bufferStartIndex + sampleBuffer.count
+        while currentAbsEnd > nextWindowCenterStart {  // process until we exhaust
+            // If we have less than a chunk ahead, process the final partial chunk
+            let availableAhead = currentAbsEnd - nextWindowCenterStart
+            if availableAhead <= 0 { break }
+            let effectiveChunk = min(chunk, availableAhead)
+
+            let leftStartAbs = max(0, nextWindowCenterStart - left)
+            let rightEndAbs = nextWindowCenterStart + effectiveChunk
+            let startIdx = max(leftStartAbs - bufferStartIndex, 0)
+            let endIdx = max(rightEndAbs - bufferStartIndex, startIdx)
+            if startIdx < 0 || endIdx > sampleBuffer.count || startIdx >= endIdx { break }
+
+            let window = Array(sampleBuffer[startIdx..<endIdx])
+            let isLastWindow = (nextWindowCenterStart + effectiveChunk) >= currentAbsEnd
+            await processWindow(
+                window,
+                windowStartSample: leftStartAbs,
+                isLastChunk: isLastWindow
+            )
+
+            nextWindowCenterStart += effectiveChunk
+
+            // Trim
+            let trimToAbs = max(0, nextWindowCenterStart - left)
+            let dropCount = max(0, trimToAbs - bufferStartIndex)
+            if dropCount > 0 && dropCount <= sampleBuffer.count {
+                sampleBuffer.removeFirst(dropCount)
+                bufferStartIndex += dropCount
+            }
+
+            currentAbsEnd = bufferStartIndex + sampleBuffer.count
+        }
+    }
+
+    /// Process a single assembled window: [left, chunk, right]
+    private func processWindow(
+        _ windowSamples: [Float],
+        windowStartSample: Int,
+        isLastChunk: Bool = false
+    ) async {
+        do {
+            let chunkStartTime = Date()
+
+            // Start frame offset is now handled by decoder's timeJump mechanism
+
+            // Call AsrManager directly with deduplication
+            guard var state = decoderState else {
+                logger.error("Decoder state not initialized")
+                return
+            }
+
+            guard
+                let result = try await asrManager?.transcribeChunk(
+                    windowSamples,
+                    decoderState: &state,
+                    previousTokens: accumulatedTokens,
+                    isLastChunk: isLastChunk
+                )
+            else { return }
+
+            // Update stored decoder state
+            self.decoderState = state
+
+            let (tokens, timestamps, confidences, _) = result
+
+            let adjustedTimestamps = Self.applyGlobalFrameOffset(
+                to: timestamps,
+                windowStartSample: windowStartSample
+            )
+
+            let processingTime = Date().timeIntervalSince(chunkStartTime)
+
+            // Convert only the current chunk tokens to text for clean incremental updates
+            // The final result will use all accumulated tokens for proper deduplication
+            guard
+                let interim = await asrManager?.processTranscriptionResult(
+                    tokenIds: tokens,  // Only current chunk tokens for progress updates
+                    timestamps: adjustedTimestamps,
+                    confidences: confidences,
+                    encoderSequenceLength: 0,
+                    audioSamples: windowSamples,
+                    processingTime: processingTime
+                )
+            else { return }
+
+            // Update state only after all required async calls complete successfully
+            accumulatedTokens.append(contentsOf: tokens)
+            lastProcessedFrame = max(lastProcessedFrame, adjustedTimestamps.max() ?? 0)
+            segmentIndex += 1
+            processedChunks += 1
+
+            logger.debug(
+                "Chunk \(self.processedChunks): '\(interim.text)', time: \(String(format: "%.3f", processingTime))s)"
+            )
+
+            let totalAudioProcessed = Double(bufferStartIndex + sampleBuffer.count) / 16000.0
+            let hasMinimumContext = totalAudioProcessed >= config.minContextForConfirmation
+            let isHighConfidence = Double(interim.confidence) >= config.confirmationThreshold
+            let shouldConfirm = isHighConfidence && hasMinimumContext
+
+            // Rescore before updating transcript state so finish() returns rescored content
+            var displayResult = interim
+            if shouldConfirm && vocabBoostingEnabled,
+                let chunkLocalResult = await asrManager?.processTranscriptionResult(
+                    tokenIds: tokens,
+                    timestamps: timestamps,  // Original chunk-local timestamps (not adjusted)
+                    confidences: confidences,
+                    encoderSequenceLength: 0,
+                    audioSamples: windowSamples,
+                    processingTime: processingTime
+                )
+            {
+                let chunkLocalTimings = chunkLocalResult.tokenTimings ?? []
+
+                if let rescored = await applyVocabularyRescoring(
+                    text: interim.text,
+                    tokenTimings: chunkLocalTimings,
+                    windowSamples: windowSamples
+                ) {
+                    let detected = rescored.replacements.compactMap { $0.replacementWord }
+                    let applied = rescored.replacements.filter { $0.shouldReplace }.compactMap {
+                        $0.replacementWord
+                    }
+                    displayResult = interim.withRescoring(
+                        text: rescored.text,
+                        detected: detected.isEmpty ? nil : detected,
+                        applied: applied.isEmpty ? nil : applied
+                    )
+                }
+            }
+
+            await updateTranscriptionState(with: displayResult, shouldConfirm: shouldConfirm)
+
+            let update = SlidingWindowTranscriptionUpdate(
+                text: displayResult.text,
+                isConfirmed: shouldConfirm,
+                confidence: interim.confidence,
+                timestamp: Date(),
+                tokenIds: tokens,
+                tokenTimings: displayResult.tokenTimings ?? []
+            )
+
+            updateContinuation?.yield(update)
+
+        } catch {
+            if error is CancellationError || Task.isCancelled {
+                return
+            }
+            let streamingError = SlidingWindowAsrError.modelProcessingFailed(error)
+            failedWindowCount += 1
+            lastWindowError = streamingError
+            logger.error(
+                "Model processing error (window failure #\(self.failedWindowCount)): \(streamingError.localizedDescription)"
+            )
+
+            // Attempt error recovery
+            await attemptErrorRecovery(error: streamingError)
+        }
+    }
+
+    private func updateTranscriptionState(with result: ASRResult, shouldConfirm: Bool) async {
+        let totalAudioProcessed = Double(bufferStartIndex + sampleBuffer.count) / 16000.0
+
+        if shouldConfirm {
+            if !volatileTranscript.isEmpty {
+                var components: [String] = []
+                if !confirmedTranscript.isEmpty {
+                    components.append(confirmedTranscript)
+                }
+                components.append(volatileTranscript)
+                confirmedTranscript = components.joined(separator: " ")
+            }
+            volatileTranscript = result.text
+            logger.debug(
+                "CONFIRMED (\(result.confidence), \(String(format: "%.1f", totalAudioProcessed))s context): promoted to confirmed; new volatile '\(result.text)'"
+            )
+        } else {
+            volatileTranscript = result.text
+            let hasMinimumContext = totalAudioProcessed >= config.minContextForConfirmation
+            let reason =
+                !hasMinimumContext
+                ? "insufficient context (\(String(format: "%.1f", totalAudioProcessed))s)" : "low confidence"
+            logger.debug("VOLATILE (\(result.confidence)): \(reason) - updated volatile '\(result.text)'")
+        }
+    }
+
+    /// Apply vocabulary rescoring to confirmed text using CTC-based constrained decoding.
+    ///
+    /// This runs CTC inference on the chunk audio and applies vocabulary rescoring
+    /// to replace misrecognized words with vocabulary terms when acoustic evidence supports it.
+    ///
+    /// - Parameters:
+    ///   - text: Original transcript text from ASR
+    ///   - tokenTimings: Token-level timing information
+    ///   - windowSamples: Audio samples for the current window
+    /// - Returns: Rescored output if modifications were made, nil otherwise
+    private func applyVocabularyRescoring(
+        text: String,
+        tokenTimings: [TokenTiming],
+        windowSamples: [Float]
+    ) async -> VocabularyRescorer.RescoreOutput? {
+        guard let spotter = ctcSpotter,
+            let rescorer = vocabularyRescorer,
+            let vocab = customVocabulary,
+            !tokenTimings.isEmpty
+        else {
+            return nil
+        }
+
+        do {
+            // Run CTC inference on the chunk audio to get log probabilities
+            let spotResult = try await spotter.spotKeywordsWithLogProbs(
+                audioSamples: windowSamples,
+                customVocabulary: vocab,
+                minScore: nil
+            )
+
+            let logProbs = spotResult.logProbs
+            guard !logProbs.isEmpty else {
+                logger.debug("Vocabulary rescoring skipped: no log probs from CTC")
+                return nil
+            }
+
+            // Determine rescoring parameters based on vocabulary size,
+            // but respect the caller-specified threshold when stricter.
+            let vocabConfig = vocabSizeConfig ?? ContextBiasingConstants.rescorerConfig(forVocabSize: 0)
+            let minSimilarity = max(vocabConfig.minSimilarity, vocab.minSimilarity)
+            let cbw = vocabConfig.cbw
+
+            // Apply constrained CTC rescoring
+            let rescoreOutput = rescorer.ctcTokenRescore(
+                transcript: text,
+                tokenTimings: tokenTimings,
+                logProbs: logProbs,
+                frameDuration: spotResult.frameDuration,
+                cbw: cbw,
+                marginSeconds: 0.5,
+                minSimilarity: minSimilarity
+            )
+
+            if rescoreOutput.wasModified {
+                logger.info(
+                    "Vocabulary rescoring applied \(rescoreOutput.replacements.count) replacement(s) in streaming chunk"
+                )
+                for replacement in rescoreOutput.replacements where replacement.shouldReplace {
+                    logger.debug(
+                        "  '\(replacement.originalWord)' → '\(replacement.replacementWord ?? "")'"
+                    )
+                }
+                return rescoreOutput
+            }
+
+            return nil
+        } catch {
+            logger.warning("Vocabulary rescoring failed: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    /// Apply encoder-frame offset derived from the absolute window start sample.
+    /// Streaming runs in disjoint chunks, so we need to add the global offset to
+    /// keep each chunk's token timings aligned to the full audio timeline rather
+    /// than resetting back to zero for every window.
+    internal static func applyGlobalFrameOffset(to timestamps: [Int], windowStartSample: Int) -> [Int] {
+        guard !timestamps.isEmpty else { return timestamps }
+
+        let frameOffset = windowStartSample / ASRConstants.samplesPerEncoderFrame
+        guard frameOffset != 0 else { return timestamps }
+
+        return timestamps.map { $0 + frameOffset }
+    }
+
+    /// Attempt to recover from processing errors
+    private func attemptErrorRecovery(error: Error) async {
+        logger.warning("Attempting error recovery for: \(error)")
+
+        // Handle specific error types with targeted recovery
+        if let streamingError = error as? SlidingWindowAsrError {
+            switch streamingError {
+            case .modelsNotLoaded:
+                logger.error("Models not loaded - cannot recover automatically")
+
+            case .streamAlreadyExists:
+                logger.error("Stream already exists - cannot recover automatically")
+
+            case .audioBufferProcessingFailed:
+                logger.info("Recovering from audio buffer error")
+
+            case .audioConversionFailed:
+                logger.info("Recovering from audio conversion error")
+
+            case .modelProcessingFailed:
+                logger.info("Recovering from model processing error - resetting decoder state")
+                await resetDecoderForRecovery()
+
+            case .bufferOverflow:
+                logger.info("Buffer overflow handled automatically")
+
+            case .invalidConfiguration:
+                logger.error("Configuration error cannot be recovered automatically")
+            }
+        } else {
+            // Generic recovery for non-streaming errors
+            await resetDecoderForRecovery()
+        }
+    }
+
+    /// Reset decoder state for error recovery
+    private func resetDecoderForRecovery() async {
+        guard let mgr = asrManager else { return }
+
+        // Recreate decoder state
+        self.decoderState = TdtDecoderState.make(decoderLayers: await mgr.decoderLayerCount)
+        logger.info("Successfully reset decoder state during error recovery")
+    }
+}
+
+/// Configuration for the sliding-window ASR manager
+public struct SlidingWindowAsrConfig: Sendable {
+    /// Main chunk size for stable transcription (seconds). Should be 10-11s for best quality
+    public let chunkSeconds: TimeInterval
+    /// Quick hypothesis chunk size for immediate feedback (seconds). Typical: 1.0s
+    public let hypothesisChunkSeconds: TimeInterval
+    /// Left context appended to each window (seconds). Typical: 10.0s
+    public let leftContextSeconds: TimeInterval
+    /// Right context lookahead (seconds). Typical: 2.0s (adds latency)
+    public let rightContextSeconds: TimeInterval
+    /// Minimum audio duration before confirming text (seconds). Should be ~10s
+    public let minContextForConfirmation: TimeInterval
+
+    /// Confidence threshold for promoting volatile text to confirmed (0.0...1.0)
+    public let confirmationThreshold: Double
+
+    /// TDT decoder configuration. When `nil`, `TdtConfig()` is used (blankId 8192, v3 default).
+    /// Pass an explicit value when using a v2 model (blankId 1024) to avoid relying on
+    /// `AsrManager`'s internal blank-token auto-adaptation.
+    public let tdtConfig: TdtConfig?
+
+    /// Default configuration using the proven 11+2+2 window layout.
+    /// The assembled window (left + chunk + right) must fit the model's fixed
+    /// 15 s input (`ASRConstants.maxModelSamples`); 2 + 11 + 2 = 15 s fits exactly.
+    public static let `default` = SlidingWindowAsrConfig(
+        chunkSeconds: 11.0,
+        hypothesisChunkSeconds: 2.0,
+        leftContextSeconds: 2.0,
+        rightContextSeconds: 2.0,
+        minContextForConfirmation: 10.0,
+        confirmationThreshold: 0.85
+    )
+
+    /// Optimized streaming configuration: Dual-track processing for best experience
+    /// Uses ChunkProcessor's proven 11-2-2 approach for stable transcription
+    /// Plus quick hypothesis updates for immediate feedback
+    public static let streaming = SlidingWindowAsrConfig(
+        chunkSeconds: 11.0,  // Match ChunkProcessor for stable transcription
+        hypothesisChunkSeconds: 1.0,  // Quick hypothesis updates
+        leftContextSeconds: 2.0,  // Match ChunkProcessor left context
+        rightContextSeconds: 2.0,  // Match ChunkProcessor right context
+        minContextForConfirmation: 10.0,  // Need sufficient context before confirming
+        confirmationThreshold: 0.80  // Higher threshold for more stable confirmations
+    )
+
+    public init(
+        chunkSeconds: TimeInterval = 10.0,
+        hypothesisChunkSeconds: TimeInterval = 1.0,
+        leftContextSeconds: TimeInterval = 2.0,
+        rightContextSeconds: TimeInterval = 2.0,
+        minContextForConfirmation: TimeInterval = 10.0,
+        confirmationThreshold: Double = 0.85,
+        tdtConfig: TdtConfig? = nil
+    ) {
+        self.chunkSeconds = chunkSeconds
+        self.hypothesisChunkSeconds = hypothesisChunkSeconds
+        self.leftContextSeconds = leftContextSeconds
+        self.rightContextSeconds = rightContextSeconds
+        self.minContextForConfirmation = minContextForConfirmation
+        self.confirmationThreshold = confirmationThreshold
+        self.tdtConfig = tdtConfig
+    }
+
+    /// Returns a copy of this config with the given TDT configuration applied.
+    public func applying(tdtConfig: TdtConfig) -> SlidingWindowAsrConfig {
+        SlidingWindowAsrConfig(
+            chunkSeconds: chunkSeconds,
+            hypothesisChunkSeconds: hypothesisChunkSeconds,
+            leftContextSeconds: leftContextSeconds,
+            rightContextSeconds: rightContextSeconds,
+            minContextForConfirmation: minContextForConfirmation,
+            confirmationThreshold: confirmationThreshold,
+            tdtConfig: tdtConfig
+        )
+    }
+
+    /// Backward-compatible convenience initializer used by tests (chunkDuration label)
+    public init(
+        confirmationThreshold: Double = 0.85,
+        chunkDuration: TimeInterval
+    ) {
+        self.init(
+            chunkSeconds: chunkDuration,
+            hypothesisChunkSeconds: min(1.0, chunkDuration / 2.0),  // Default to half chunk duration
+            leftContextSeconds: 2.0,
+            rightContextSeconds: 2.0,
+            minContextForConfirmation: 10.0,
+            confirmationThreshold: confirmationThreshold
+        )
+    }
+
+    /// Custom configuration factory expected by tests
+    public static func custom(
+        chunkDuration: TimeInterval,
+        confirmationThreshold: Double
+    ) -> SlidingWindowAsrConfig {
+        SlidingWindowAsrConfig(
+            chunkSeconds: chunkDuration,
+            hypothesisChunkSeconds: min(1.0, chunkDuration / 2.0),  // Default to half chunk duration
+            leftContextSeconds: 2.0,
+            rightContextSeconds: 2.0,
+            minContextForConfirmation: 10.0,
+            confirmationThreshold: confirmationThreshold
+        )
+    }
+
+    // Internal ASR configuration
+    var asrConfig: ASRConfig {
+        ASRConfig(
+            sampleRate: 16000,
+            tdtConfig: tdtConfig ?? TdtConfig()
+        )
+    }
+
+    // Sample counts at 16 kHz
+    var chunkSamples: Int { Int(chunkSeconds * 16000) }
+    var hypothesisChunkSamples: Int { Int(hypothesisChunkSeconds * 16000) }
+    var leftContextSamples: Int { Int(leftContextSeconds * 16000) }
+    var rightContextSamples: Int { Int(rightContextSeconds * 16000) }
+    var minContextForConfirmationSamples: Int { Int(minContextForConfirmation * 16000) }
+
+    /// Total samples in an assembled window: left context + chunk + right context.
+    public var windowSamples: Int { leftContextSamples + chunkSamples + rightContextSamples }
+
+    /// Validates that the assembled window fits the model's fixed input size.
+    /// - Throws: `SlidingWindowAsrError.invalidConfiguration` if
+    ///   `leftContextSeconds + chunkSeconds + rightContextSeconds` exceeds the
+    ///   model's maximum input (`ASRConstants.maxModelSamples`, 15 s at 16 kHz).
+    public func validate() throws {
+        guard windowSamples <= ASRConstants.maxModelSamples else {
+            let windowSeconds = leftContextSeconds + chunkSeconds + rightContextSeconds
+            let maxSeconds = Double(ASRConstants.maxModelSamples) / 16000.0
+            throw SlidingWindowAsrError.invalidConfiguration(
+                "leftContextSeconds + chunkSeconds + rightContextSeconds = \(windowSeconds)s "
+                    + "(\(windowSamples) samples) exceeds the model's maximum input of "
+                    + "\(maxSeconds)s (\(ASRConstants.maxModelSamples) samples at 16 kHz)"
+            )
+        }
+    }
+
+    // Backward-compat convenience for existing call-sites/tests
+    var chunkDuration: TimeInterval { chunkSeconds }
+    var bufferCapacity: Int { Int(15.0 * 16000) }
+    var chunkSizeInSamples: Int { chunkSamples }
+}
+
+/// Transcription update from sliding-window ASR
+public struct SlidingWindowTranscriptionUpdate: Sendable {
+    /// The transcribed text
+    public let text: String
+
+    /// Whether this text is confirmed (high confidence) or volatile (may change)
+    public let isConfirmed: Bool
+
+    /// Confidence score (0.0 - 1.0)
+    public let confidence: Float
+
+    /// Timestamp of this update
+    public let timestamp: Date
+
+    /// Raw token identifiers emitted for this update
+    public let tokenIds: [Int]
+
+    /// Token-level timing information aligned with the decoded text
+    public let tokenTimings: [TokenTiming]
+
+    /// Human-readable tokens (normalized) for this update
+    public var tokens: [String] {
+        tokenTimings.map(\.token)
+    }
+
+    public init(
+        text: String,
+        isConfirmed: Bool,
+        confidence: Float,
+        timestamp: Date,
+        tokenIds: [Int] = [],
+        tokenTimings: [TokenTiming] = []
+    ) {
+        self.text = text
+        self.isConfirmed = isConfirmed
+        self.confidence = confidence
+        self.timestamp = timestamp
+        self.tokenIds = tokenIds
+        self.tokenTimings = tokenTimings
+    }
+}

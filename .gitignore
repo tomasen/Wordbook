@@ -11,7 +11,9 @@ xcuserdata/
 
 ## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
 build/
+.build/
 DerivedData/
+.DS_Store
 *.moved-aside
 *.pbxuser
 !default.pbxuser
@@ -27,3 +29,5 @@ DerivedData/
 
 ._*
 
+# Recreated by scripts/setup_local_model.py; never commit the 1 GiB payload.
+/LocalModels/Qwen3.5-2B-4bit-text/model.safetensors

@@ -21,16 +21,11 @@ class PushNotificationReceiver: NSObject, ObservableObject, UNUserNotificationCe
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
         if let w = response.notification.request.content.userInfo["word"] as? String {
-            switch response.actionIdentifier {
-            case "good":
-                WordManager.shared.answer(w, .WELLKNOWN)
-                break
-            default:
-                break
-            }
-            
             print("MSG: didReceive \(w)")
             DispatchQueue.main.async {
+                if response.actionIdentifier == "good" {
+                    WordManager.shared.answer(w, .WELLKNOWN)
+                }
                 self.notificatedWord = w
             }
         }

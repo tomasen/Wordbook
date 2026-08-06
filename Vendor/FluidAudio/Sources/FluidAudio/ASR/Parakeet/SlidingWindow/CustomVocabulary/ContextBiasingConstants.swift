@@ -1,0 +1,414 @@
+import Foundation
+
+/// Centralized constants for the ContextBiasing module.
+///
+/// This file consolidates magic numbers and thresholds used across vocabulary boosting,
+/// CTC keyword spotting, and rescoring components.
+///
+/// ## Similarity Threshold Hierarchy
+/// The similarity thresholds form a hierarchy from lenient to strict:
+/// ```
+/// 0.50 (floor) < 0.52 (default) < 0.55 (single-word) < 0.65 (alias) < 0.75 (length-ratio) < 0.80 (multi-word/short) < 0.85 (stopword)
+/// ```
+public enum ContextBiasingConstants {
+
+    // MARK: - Token IDs
+
+    /// Sentinel value representing wildcard token ID for pattern matching in
+    /// CTC dynamic programming paths.
+    ///
+    /// Represents "*" in keyword patterns that matches any token at zero cost.
+    /// Used in the DP alignment algorithm ported from NeMo's `ctc_word_spotter.py`.
+    ///
+    /// - Value: `-1` (matches any token during path scoring)
+    /// - Used in: `CtcKeywordSpotter.swift` for flexible keyword matching
+    public static let wildcardTokenId: Int = -1
+
+    /// Default blank token ID for CTC models.
+    ///
+    /// In CTC models, the blank token is typically the last token in the vocabulary.
+    /// For parakeet-ctc-110m, the vocabulary has 1024 tokens (indices 0-1023),
+    /// so the blank token is at index 1024.
+    ///
+    /// - Value: `1024` (vocab_size for parakeet-ctc-110m)
+    /// - Used in: `CtcKeywordSpotter.init()` as default parameter
+    public static let defaultBlankId: Int = 1024
+
+    // MARK: - CTC Score Thresholds
+
+    /// Default minimum CTC score for keyword spotting detections.
+    ///
+    /// Keywords with CTC scores below this threshold are filtered out as low-confidence.
+    /// CTC scores are log-probabilities (negative values), so -15.0 represents very low
+    /// probability. This lenient default allows rescoring to make final decisions.
+    ///
+    /// - Value: `-15.0` (log-probability, ~3e-7 probability)
+    /// - Range: Typically -20.0 (very lenient) to -5.0 (strict)
+    /// - Used in: `CtcKeywordSpotter.spotKeywordsWithLogProbs()` for initial filtering
+    public static let defaultMinSpotterScore: Float = -15.0
+
+    /// Default minimum CTC score for vocabulary context matching.
+    ///
+    /// Slightly stricter than spotter score since this is used after initial detection.
+    /// Balances catching valid vocabulary terms vs. reducing false positives.
+    ///
+    /// - Value: `-12.0` (log-probability, ~6e-6 probability)
+    /// - Used in: `CustomVocabularyContext.init()` as default
+    public static let defaultMinVocabCtcScore: Float = -12.0
+
+    /// CTC temperature for softmax probability distribution.
+    ///
+    /// Controls the "sharpness" of the probability distribution:
+    /// - Higher values (>1.0): Softer, more uniform probabilities
+    /// - Lower values (<1.0): Sharper, more peaked at top prediction
+    /// - Value 1.0: Standard softmax
+    ///
+    /// - Value: `1.0` (standard softmax)
+    /// - Used in: `CtcKeywordSpotter.swift` for log-prob computation
+    public static let ctcTemperature: Float = 1.0
+
+    /// Blank bias correction applied to CTC log-probabilities.
+    ///
+    /// Positive values penalize the blank token, making non-blank tokens
+    /// more likely. Useful for models that over-predict blank.
+    ///
+    /// - Value: `0.0` (no bias)
+    /// - Used in: `CtcKeywordSpotter.swift` for log-prob computation
+    public static let blankBias: Float = 0.0
+
+    // MARK: - Similarity Thresholds
+
+    /// Absolute minimum similarity floor for any vocabulary matching.
+    ///
+    /// No replacement is considered if string similarity falls below this floor.
+    /// Uses Levenshtein-based similarity: 1 - (editDistance / maxLength).
+    ///
+    /// - Value: `0.50` (50% character overlap required)
+    /// - Example: "nvidia" vs "nvida" = 0.83 ✓, "nvidia" vs "intel" = 0.17 ✗
+    /// - Used in: Debug logging, BK-tree candidate filtering
+    public static let minSimilarityFloor: Float = 0.50
+
+    /// Default minimum similarity for vocabulary term matching.
+    ///
+    /// Slightly above floor to reduce false positives while remaining permissive.
+    /// Can be overridden per-vocabulary via `CustomVocabularyContext.minSimilarity`.
+    ///
+    /// - Value: `0.52` (52% similarity required)
+    /// - Used in: `CustomVocabularyContext.init()` as default parameter
+    public static let defaultMinSimilarity: Float = 0.52
+
+    /// Default minimum combined confidence threshold.
+    ///
+    /// Used when combining CTC acoustic score with string similarity score.
+    /// The combined score must exceed this threshold for replacement.
+    ///
+    /// - Value: `0.54` (slightly above default similarity)
+    /// - Used in: `CustomVocabularyContext.init()` as default parameter
+    public static let defaultMinCombinedConfidence: Float = 0.54
+
+    /// Length ratio threshold below which stricter similarity is required.
+    ///
+    /// When original word is significantly shorter than vocabulary term
+    /// (ratio < 0.75), we require higher similarity to prevent false positives
+    /// like "and" (3 chars) matching "Andre" (5 chars) at 60% similarity.
+    ///
+    /// - Value: `0.75` (original must be at least 75% of vocab term length)
+    /// - Formula: `originalWord.count / vocabTerm.count`
+    /// - Example: "and"/"Andre" = 0.60 < 0.75 → requires stricter threshold
+    /// - Used in: `VocabularyRescorer+ConstrainedCTC.swift` length ratio check
+    public static let lengthRatioThreshold: Float = 0.75
+
+    /// Similarity threshold for short words with low length ratio.
+    ///
+    /// Short common words (≤4 chars) with low length ratio need very high
+    /// similarity to replace, preventing "you" → "Yu", "or" → "VR".
+    ///
+    /// - Value: `0.80` (80% similarity for short words)
+    /// - Applies when: `word.count <= 4` AND `lengthRatio < 0.75`
+    /// - Used in: `VocabularyRescorer+ConstrainedCTC.swift` short word guard
+    public static let shortWordSimilarity: Float = 0.80
+
+    /// Similarity threshold for spans containing stopwords.
+    ///
+    /// When a multi-word span contains common stopwords (articles, prepositions,
+    /// pronouns), require very high similarity. Prevents replacing common
+    /// phrases like "and we" → "Andre", "at this" → "Matthew".
+    ///
+    /// - Value: `0.85` (85% similarity when stopwords present)
+    /// - Stopwords: "a", "the", "and", "or", "is", "to", "for", "in", etc.
+    /// - Used in: `VocabularyRescorer+ConstrainedCTC.swift` stopword check
+    public static let stopwordSpanSimilarity: Float = 0.85
+
+    // MARK: - Context Biasing Weights
+
+    /// Default context-biasing weight (CBW) per NeMo paper.
+    ///
+    /// Added to vocabulary term CTC scores to boost their likelihood.
+    /// Higher values make vocabulary terms more likely to be selected.
+    /// From NVIDIA NeMo's context biasing implementation.
+    ///
+    /// - Value: `3.0` (log-probability boost)
+    /// - Effect: Multiplies vocabulary term probability by ~20x (e^3.0)
+    /// - Used in: `VocabularyRescorer.ctcTokenRescore()` and constrained CTC methods
+    public static let defaultCbw: Float = 3.0
+
+    /// Default alpha value for weighted score combination.
+    ///
+    /// Used when combining acoustic and language model scores:
+    /// `combinedScore = alpha * acousticScore + (1-alpha) * lmScore`
+    ///
+    /// - Value: `0.5` (equal weighting)
+    /// - Range: 0.0 (LM only) to 1.0 (acoustic only)
+    /// - Used in: `CustomVocabularyContext.init()` as default parameter
+    public static let defaultAlpha: Float = 0.5
+
+    /// Default margin in seconds for CTC frame alignment.
+    ///
+    /// When aligning vocabulary terms to transcript words, this margin
+    /// allows for timing imprecision in word boundaries.
+    ///
+    /// - Value: `0.10` seconds (~5 encoder frames each side at 12.5 fps).
+    ///   Reduced from 0.5 after the +1-frame TDT emission-delay correction
+    ///   in `AsrManager+TokenProcessing.createTokenTimings`. Sweep on
+    ///   earnings22 / FDA / FDA-extended showed identical metrics from 0.5
+    ///   down to 0.10, with the first regression at 0.05 (-8 TP earnings22).
+    /// - Used in: `VocabularyRescorer+TokenRescoring.ctcTokenRescore()`
+    public static let defaultMarginSeconds: Double = 0.10
+
+    // MARK: - Vocabulary Size
+
+    /// Threshold for classifying vocabulary as "large".
+    ///
+    /// Vocabularies with more terms than this threshold use tighter rescorer
+    /// parameters to reduce false positives. File-mode vocabularies typically
+    /// have 15-25 keywords (large), while chunk-mode may have fewer.
+    ///
+    /// - Value: `10` terms
+    /// - Used in: `rescorerConfig(forVocabSize:)` and call sites
+    public static let largeVocabThreshold: Int = 10
+
+    /// Vocabulary-size-aware rescorer parameters.
+    ///
+    /// Large vocabularies (>10 terms) use tighter thresholds to reduce false
+    /// positives from the larger candidate set.
+    public struct VocabSizeConfig: Sendable {
+        public let minSimilarity: Float
+        public let cbw: Float
+    }
+
+    /// Threshold for classifying vocabulary as "extra-large".
+    ///
+    /// Vocabularies above this size require even tighter similarity
+    /// thresholds because the dictionary contains many real drug/brand
+    /// names that *don't* appear in the audio (distractors). At V=670
+    /// with `minSimilarity=0.55`, FDA-extended produced 33 false
+    /// positives (precision 86.2%); raising to 0.60 cut that to 8
+    /// (precision 96.3%) at the cost of 1 TP. Above V=100 the
+    /// distractor density becomes large enough that the looser large-
+    /// vocab threshold becomes harmful.
+    ///
+    /// - Value: `100` terms
+    /// - Used in: `rescorerConfig(forVocabSize:)`
+    public static let extraLargeVocabThreshold: Int = 100
+
+    /// Returns rescorer configuration tuned for the given vocabulary size.
+    ///
+    /// Tuning was performed on three benchmarks after the blank-aware DP fix:
+    ///
+    /// **Small-vocab path (earnings22 KWS, ≤9 terms/file):**
+    /// CBW sweep showed F-score plateaus at cbw ≈ 4.5 (TP=1075/1253,
+    /// FP unchanged at 8 across cbw ∈ [3.5, 6.0]). Below 3.5 each step
+    /// costs 1-5 TPs; above 4.5 the curve is flat.
+    ///
+    /// **Large-vocab path (FDA-approved-drugs KWS, 37-55 terms/file):**
+    /// minSimilarity sweep showed F-score peaks at 0.50-0.55 (TP=218,
+    /// FP=0, F-score 96.0%). The prior 0.60 default left 5 TPs on the
+    /// table.
+    ///
+    /// **Extra-large-vocab path (FDA-extended, ~670 terms/file with
+    /// 600+ Purple Book biologic distractors that never appear in
+    /// audio):**
+    /// minSimilarity 0.55 → 33 FPs, F=86.8%. Raising to 0.60 collapses
+    /// FPs to 8 (precision 86.2 → 96.3%) for only -1 TP, F=91.4%.
+    /// At V≥100 the distractor pool becomes large enough that the
+    /// 0.55 gate is too permissive.
+    ///
+    /// CBW had no measurable effect on either large-vocab benchmark
+    /// (precision was already high or the gate was the binding
+    /// constraint, not the score-vs-baseline comparison). All sizes
+    /// converge on cbw=4.5.
+    ///
+    /// - Parameter size: Number of vocabulary terms.
+    /// - Returns: `VocabSizeConfig` with appropriate thresholds.
+    public static func rescorerConfig(forVocabSize size: Int) -> VocabSizeConfig {
+        let isExtraLarge = size > extraLargeVocabThreshold
+        let isLarge = size > largeVocabThreshold
+        let minSimilarity: Float
+        if isExtraLarge {
+            minSimilarity = 0.60
+        } else if isLarge {
+            minSimilarity = 0.55
+        } else {
+            minSimilarity = 0.50
+        }
+        return VocabSizeConfig(minSimilarity: minSimilarity, cbw: 4.5)
+    }
+
+    /// Baseline token count for multi-token phrase threshold adjustment.
+    ///
+    /// Phrases with more tokens than this baseline get relaxed score thresholds,
+    /// since longer phrases naturally accumulate lower per-token scores in CTC.
+    /// Each token beyond this count relaxes the threshold by `thresholdRelaxationPerToken`.
+    ///
+    /// - Value: `3` tokens
+    /// - Formula: `extraTokens = max(0, tokenCount - baselineTokenCountForThreshold)`
+    /// - Used in: `CtcKeywordSpotter.spotKeywordsWithLogProbs()` threshold adjustment
+    public static let baselineTokenCountForThreshold: Int = 3
+
+    /// Threshold relaxation amount per extra token beyond baseline.
+    ///
+    /// For multi-token phrases, the minimum score threshold is relaxed by this
+    /// amount for each token beyond `baselineTokenCountForThreshold`. This accounts
+    /// for the fact that longer phrases naturally have lower average per-token scores.
+    ///
+    /// - Value: `1.0` (log-probability units)
+    /// - Formula: `adjustedThreshold = baseThreshold - extraTokens * thresholdRelaxationPerToken`
+    /// - Example: 5-token phrase with -12.0 base → -12.0 - (5-3)*1.0 = -14.0
+    /// - Used in: `CtcKeywordSpotter.spotKeywordsWithLogProbs()` threshold adjustment
+    public static let thresholdRelaxationPerToken: Float = 1.0
+
+    /// Default reference token count for adaptive threshold scaling.
+    ///
+    /// When adaptive thresholds are enabled, tokens beyond this count get
+    /// adjusted similarity requirements. Longer vocabulary terms are allowed
+    /// slightly lower per-character similarity.
+    ///
+    /// - Value: `3` tokens
+    /// - Used in: `VocabularyRescorer.Config.default` and init
+    public static let defaultReferenceTokenCount: Int = 3
+
+    // MARK: - Short-Term Over-Fire Controls (#702, opt-in)
+    //
+    // The blank-aware DP score is a per-token average log-prob. A short
+    // keyword (few tokens) can free-start align to its single best-matching
+    // frame-run and score close to zero per token, so it can beat a correctly
+    // transcribed common word — short distractors over-fire (`ran` → `CRAN`,
+    // `Hall of Q4.` → `Snyk`). Benchmarking shows that gating this hard enough
+    // to suppress short-vocab false positives also costs KWS recall on
+    // distinctive-name vocabularies (earnings22), because the same mechanisms
+    // produce both. These controls therefore DEFAULT TO DISABLED (no behavior
+    // change) and are opt-in for short-keyword KWS via `VocabularyRescorer.Config`,
+    // the `transcribe` CLI flags, or the `FLUID_*` env overrides below.
+    //
+    // Recommended short-vocab opt-in values: taper pivot 5 / exponent 2.0,
+    // spotter floors 0.30 (single) / 0.50 (multi-word).
+
+    /// Default token-count pivot for the short-term cbw taper. A value `<= 1`
+    /// disables the taper (the default). When enabled (e.g. 5), terms with
+    /// fewer tokens than the pivot have their boost scaled by
+    /// `(tokenCount / pivot) ** exponent`. Env: `FLUID_CBW_TAPER_PIVOT`.
+    public static var defaultShortTermCbwTaperPivot: Int {
+        envInt("FLUID_CBW_TAPER_PIVOT") ?? 1
+    }
+
+    /// Default exponent for the short-term cbw taper. Higher = more
+    /// conservative on short terms. Env: `FLUID_CBW_TAPER_EXP`.
+    public static var defaultShortTermCbwTaperExponent: Float {
+        envFloat("FLUID_CBW_TAPER_EXP") ?? 2.0
+    }
+
+    /// Default minimum string similarity for a single-word spotter-anchored
+    /// rescue. `0.0` disables the floor (the default), preserving the
+    /// acoustic-only rescue. Env: `FLUID_SPOTTER_MIN_SIM`.
+    public static var defaultSpotterRescueMinSimilarity: Float {
+        envFloat("FLUID_SPOTTER_MIN_SIM") ?? 0.0
+    }
+
+    /// Default minimum string similarity for a multi-word spotter-anchored
+    /// rescue (replacing several words with one term is more error-prone).
+    /// `0.0` disables. Env: `FLUID_SPOTTER_MIN_SIM_MULTI`.
+    public static var defaultSpotterRescueMultiWordMinSimilarity: Float {
+        envFloat("FLUID_SPOTTER_MIN_SIM_MULTI") ?? 0.0
+    }
+
+    /// Whether the spotter-anchored acoustic rescue pass runs at all (#724).
+    /// `true` (default) preserves current behavior. The acoustic rescue is the
+    /// mechanism #634 added on top of the pre-0.14.5 pipeline; it recovers
+    /// brand names TDT mangles past the string-similarity gate, but it is also
+    /// the dominant source of short-keyword over-firing (#702) — on a 90-clip
+    /// short-distractor set, disabling it drops false-positive insertions from
+    /// ~94 to ~19 (the pre-#634 / 0.14.5 level) with no loss of biasing recall
+    /// on distinctive-name vocabularies. Set to `false` for short-vocab KWS
+    /// where the acoustic rescue costs more than it recovers. Env:
+    /// `FLUID_SPOTTER_RESCUE` (`0`/`false`/`no`/`off` disables).
+    public static var defaultSpotterRescueEnabled: Bool {
+        envBool("FLUID_SPOTTER_RESCUE") ?? true
+    }
+
+    /// Read a `Float` tuning override from the environment, if present and valid.
+    private static func envFloat(_ name: String) -> Float? {
+        guard let raw = ProcessInfo.processInfo.environment[name], let value = Float(raw) else { return nil }
+        return value
+    }
+
+    /// Read a `Bool` tuning override from the environment. Accepts
+    /// `1/0`, `true/false`, `yes/no`, `on/off` (case-insensitive); nil if
+    /// absent/invalid.
+    private static func envBool(_ name: String) -> Bool? {
+        guard let raw = ProcessInfo.processInfo.environment[name]?.lowercased() else { return nil }
+        switch raw {
+        case "1", "true", "yes", "on": return true
+        case "0", "false", "no", "off": return false
+        default: return nil
+        }
+    }
+
+    /// Read an `Int` tuning override from the environment, if present and valid.
+    private static func envInt(_ name: String) -> Int? {
+        guard let raw = ProcessInfo.processInfo.environment[name], let value = Int(raw) else { return nil }
+        return value
+    }
+
+    /// Default setting for adaptive thresholds.
+    ///
+    /// When enabled, similarity thresholds scale based on token count,
+    /// allowing longer terms slightly more lenient matching.
+    ///
+    /// - Value: `true` (enabled by default)
+    /// - Used in: `VocabularyRescorer.Config.default` and init
+    public static let defaultUseAdaptiveThresholds: Bool = true
+
+    // MARK: - Word Length Thresholds
+
+    /// Maximum character count for "short word" classification.
+    ///
+    /// Words at or below this length are considered "short" and receive
+    /// stricter similarity requirements to prevent false positives on
+    /// common short words like "the", "and", "you", "or".
+    ///
+    /// - Value: `4` characters
+    /// - Examples: "you" (3) is short, "nvidia" (6) is not
+    /// - Used in: `VocabularyRescorer+ConstrainedCTC.swift` length checks
+    public static let shortWordMaxLength: Int = 4
+
+    // MARK: - BK-Tree (Experimental)
+
+    /// Enable BK-tree for approximate string matching (experimental).
+    ///
+    /// When enabled, the word-centric rescoring path uses a BK-tree to find
+    /// candidate vocabulary terms within edit distance, providing O(log V)
+    /// lookup instead of O(V) linear scan per word.
+    ///
+    /// - Value: `false` (disabled by default, linear scan used instead)
+    /// - Used in: `VocabularyRescorer.create()` to build BK-tree
+    public static let useBkTree: Bool = false
+
+    /// Maximum edit distance for BK-tree fuzzy matching.
+    ///
+    /// Controls how many character edits are tolerated when searching
+    /// the BK-tree for candidate vocabulary terms.
+    ///
+    /// - Value: `3` (up to 3 character insertions/deletions/substitutions)
+    /// - Used in: `VocabularyRescorer+CandidateMatching.swift` BK-tree queries
+    public static let bkTreeMaxDistance: Int = 3
+}
