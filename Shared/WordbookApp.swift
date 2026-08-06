@@ -169,7 +169,7 @@ private struct PreparationView: View {
         if !soundManager.isNaturalVoiceReady {
             return soundManager.naturalVoicePreparationStatus
         }
-        return "Finishing preparation…"
+        return "Almost ready…"
     }
 
     var body: some View {
@@ -177,44 +177,121 @@ private struct PreparationView: View {
             Color("Background")
                 .ignoresSafeArea()
 
-            VStack(spacing: 16) {
-                if let error {
-                    Text("Preparation failed")
-                        .font(.headline)
-                    Text(error)
-                        .font(.footnote)
-                        .multilineTextAlignment(.center)
-                    Button("Retry") {
-                        preparationStartedAt = Date()
-                        if tutorManager.preparationError != nil {
-                            tutorManager.retryPreparation()
-                        }
-                        if soundManager.naturalVoiceError != nil {
-                            soundManager.retryNaturalVoicePreparation()
-                        }
+            VStack(spacing: 0) {
+                Spacer(minLength: 32)
+
+                VStack(spacing: 26) {
+                    Image(systemName: "book.closed.fill")
+                        .font(.system(size: 32, weight: .medium))
+                        .foregroundColor(Color("fontLink"))
+                        .frame(width: 72, height: 72)
+                        .background(
+                            Circle()
+                                .fill(Color("BackgroundHighlight"))
+                        )
+
+                    VStack(spacing: 10) {
+                        Text("Getting Wordbook ready")
+                            .font(.title2.weight(.semibold))
+                        Text("Setting up the local language model and pronunciation on this device.")
+                            .font(.subheadline)
+                            .foregroundColor(Color("fontGray"))
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
-                    .buttonStyle(.borderedProminent)
-                } else {
-                    ProgressView()
-                    Text(preparationStatus)
-                        .font(.headline)
-                    Text("The first preparation may take a few minutes.")
-                        .font(.footnote)
-                        .multilineTextAlignment(.center)
+
+                    if let error {
+                        errorPanel(error)
+                    } else {
+                        statusPanel
+                        Text("Initial setup can take a little longer.")
+                            .font(.footnote)
+                            .foregroundColor(Color("fontGray"))
+                            .multilineTextAlignment(.center)
+                    }
+                }
+                .frame(maxWidth: 480)
+                .padding(.horizontal, 28)
+
+                Spacer(minLength: 28)
+
+                if error == nil {
                     TimelineView(.periodic(from: .now, by: 1)) { context in
-                        Text(elapsedText(at: context.date))
-                            .font(.caption.monospacedDigit())
+                        HStack(spacing: 5) {
+                            Image(systemName: "clock")
+                            Text(elapsedText(at: context.date))
+                        }
+                        .font(.caption2.monospacedDigit())
+                        .foregroundColor(Color("fontGray").opacity(0.75))
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Setup time")
+                        .accessibilityValue(elapsedAccessibilityText(at: context.date))
                     }
+                    .padding(.bottom, 22)
                 }
             }
             .foregroundColor(Color("fontBody"))
-            .padding(32)
         }
+    }
+
+    private var statusPanel: some View {
+        HStack(spacing: 14) {
+            ProgressView()
+                .controlSize(.small)
+                .tint(Color("fontLink"))
+            Text(preparationStatus)
+                .font(.body.weight(.medium))
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.horizontal, 18)
+        .frame(minHeight: 62)
+        .background(panelBackground)
+    }
+
+    private func errorPanel(_ message: String) -> some View {
+        VStack(spacing: 16) {
+            Label("We couldn’t finish setup", systemImage: "exclamationmark.triangle.fill")
+                .font(.headline)
+                .foregroundColor(Color("fontTitle"))
+            Text(message)
+                .font(.footnote)
+                .foregroundColor(Color("fontGray"))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Button("Try Again") {
+                preparationStartedAt = Date()
+                if tutorManager.preparationError != nil {
+                    tutorManager.retryPreparation()
+                }
+                if soundManager.naturalVoiceError != nil {
+                    soundManager.retryNaturalVoicePreparation()
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(Color("fontLink"))
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity)
+        .background(panelBackground)
+    }
+
+    private var panelBackground: some View {
+        RoundedRectangle(cornerRadius: 18, style: .continuous)
+            .fill(Color("BackgroundHighlight"))
+            .overlay {
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(Color("fontBody").opacity(0.10), lineWidth: 1)
+            }
     }
 
     private func elapsedText(at date: Date) -> String {
         let elapsed = max(Int(date.timeIntervalSince(preparationStartedAt)), 0)
-        return String(format: "Elapsed %d:%02d", elapsed / 60, elapsed % 60)
+        return String(format: "%d:%02d", elapsed / 60, elapsed % 60)
+    }
+
+    private func elapsedAccessibilityText(at date: Date) -> String {
+        let elapsed = max(Int(date.timeIntervalSince(preparationStartedAt)), 0)
+        return "\(elapsed / 60) minutes, \(elapsed % 60) seconds"
     }
 }
 #endif

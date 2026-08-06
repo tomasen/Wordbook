@@ -8,8 +8,12 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class SharingViewModel: ObservableObject {
     static let shared = SharingViewModel()
+
+    @Published private(set) var todayWordsTotal: Int16 = 0
+    @Published private(set) var todayStudyTimeInSeconds: TimeInterval = 0
     
     var shareViewRect: CGRect = CGRect.zero
     var systemSharingImage: UIImage?
@@ -67,21 +71,9 @@ class SharingViewModel: ObservableObject {
         WordManager.shared.date(from: WordManager.shared.today)
     }
     
-    var minCanvasHeight: CGFloat? {
-        if UIScreen.main.bounds.width < UIScreen.main.bounds.height {
-            return UIScreen.main.bounds.width
-        }
-        return nil
-    }
-    
-    var todayWordsTotal: Int16 {
-        let e = WordManager.shared.fetchEngagement()
-        return e.working + e.good
-    }
-    
-    var todayStudyTimeInSeconds: TimeInterval {
-        return WordManager.shared.fetchEngagement().duration//
-        
+    func refresh() {
+        let engagement = WordManager.shared.refreshTodayEngagement()
+        todayWordsTotal = engagement.working + engagement.good
+        todayStudyTimeInSeconds = engagement.duration
     }
 }
-

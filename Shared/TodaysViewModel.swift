@@ -36,7 +36,7 @@ class TodaysViewModel: ObservableObject {
     }
     
     func updateStat() {
-        let e = WordManager.shared.fetchEngagement()
+        let e = WordManager.shared.refreshTodayEngagement()
         let goal = Int16(max(UserPreferences.shared.dailyGoal, 1))
         working = e.working
         good = e.good

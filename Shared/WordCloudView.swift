@@ -5,6 +5,10 @@
 //  Created by SHEN SHENG on 12/20/21.
 //
 
+import Foundation
+import CoreGraphics
+
+#if !WORD_CLOUD_LAYOUT_HARNESS
 import SwiftUI
 
 struct WordElement {
@@ -17,224 +21,233 @@ struct WordElement {
 struct WordCloudView: View {
     private let words: [WordElement]
 
-    @State private var positionCache = WordCloudPositionCache()
-    @State private var canvasRect = CGRect()
+    @State private var topologyCache = WordCloudTopologyCache()
     @State private var wordSizes: [CGSize]
-    @State private var fontSizeRatio: CGFloat = 1
+    @State private var measuredWordsSignature: String
 
     init() {
-        words = [WordElement].generate()
+        let generatedWords = [WordElement].generate()
+        words = generatedWords
         self._wordSizes = State(
-            initialValue: [CGSize](repeating: CGSize.zero, count: words.count)
+            initialValue: [CGSize](repeating: .zero, count: generatedWords.count)
+        )
+        self._measuredWordsSignature = State(
+            initialValue: Self.signature(for: generatedWords)
         )
     }
 
     init(_ words: [WordElement]) {
         self.words = words
         self._wordSizes = State(
-            initialValue: [CGSize](repeating: CGSize.zero, count: words.count)
+            initialValue: [CGSize](repeating: .zero, count: words.count)
+        )
+        self._measuredWordsSignature = State(
+            initialValue: Self.signature(for: words)
         )
     }
 
     var body: some View {
-        let positions = calcPositions(canvasSize: canvasRect.size, itemSizes: wordSizes)
-        let layoutIsReady = words.isEmpty
-            || positionCache.matches(
-                words: words,
-                canvasSize: canvasRect.size,
-                wordSizes: wordSizes,
-                fontSizeRatio: fontSizeRatio
+        GeometryReader { proxy in
+            cloud(canvasSize: proxy.size)
+        }
+    }
+
+    private func cloud(canvasSize: CGSize) -> some View {
+        let wordsSignature = Self.signature(for: words)
+        let measurementsAreCurrent = measuredWordsSignature == wordsSignature
+            && wordSizes.count == words.count
+        let hasAllMeasurements = measurementsAreCurrent
+            && wordSizes.allSatisfy { $0.width > 0 && $0.height > 0 }
+        let packing = hasAllMeasurements
+            ? topologyCache.packing(
+                itemSizes: wordSizes,
+                canvasAspectRatio: canvasSize.width / max(canvasSize.height, 1),
+                spacing: 4
             )
+            : WordCloudPacking(
+                positions: [CGPoint](repeating: .zero, count: words.count),
+                bounds: .zero
+            )
+        let renderScale = hasAllMeasurements
+            ? WordCloudLayoutMetrics.renderScale(
+                packingBounds: packing.bounds,
+                canvasSize: canvasSize,
+                inset: 10,
+                fillFraction: 0.96,
+                maximumScale: 1.55
+            )
+            : 1
 
         return ZStack {
             ForEach(Array(words.enumerated()), id: \.offset) { index, word in
                 NavigationLink(destination: CardView(word.text, true, true)) {
                     Text(word.text)
                         .foregroundColor(word.color)
-                        .font(
-                            Font.custom(
-                                word.fontName,
-                                size: word.fontSize * fontSizeRatio
-                            )
-                        )
+                        .font(Font.custom(word.fontName, size: word.fontSize))
                         .lineLimit(1)
                         .fixedSize()
                         .padding(2)
                         .background(WordSizeGetter($wordSizes, index))
                 }
+                // Measurement always happens at the reference font size.
+                // Scaling is visual only, so it cannot trigger a remeasure/repack loop.
+                .scaleEffect(renderScale, anchor: .center)
                 .position(
-                    x: canvasRect.width / 2 + positions[index].x,
-                    y: canvasRect.height / 2 + positions[index].y
+                    x: canvasSize.width / 2 + packing.positions[index].x * renderScale,
+                    y: canvasSize.height / 2 + packing.positions[index].y * renderScale
                 )
             }
         }
-        .opacity(layoutIsReady ? 1 : 0)
-        .background(RectGetter($canvasRect))
-        .onChange(of: words.count) {
-            if wordSizes.count != words.count {
-                wordSizes = [CGSize](repeating: .zero, count: words.count)
-                fontSizeRatio = 1
-                positionCache.invalidate()
-            }
+        .frame(width: canvasSize.width, height: canvasSize.height)
+        .clipped()
+        .opacity(words.isEmpty || hasAllMeasurements ? 1 : 0)
+        .onChange(of: wordsSignature) { newSignature in
+            measuredWordsSignature = newSignature
+            wordSizes = [CGSize](repeating: .zero, count: words.count)
+            topologyCache.invalidate()
         }
     }
 
-    func calcPositions(canvasSize: CGSize, itemSizes: [CGSize]) -> [CGPoint] {
-        let emptyPositions = [CGPoint](repeating: .zero, count: words.count)
-        guard canvasSize.width > 0,
-            canvasSize.height > 0,
-            !words.isEmpty,
-            itemSizes.count == words.count,
-            itemSizes.allSatisfy({ $0.width > 0 && $0.height > 0 })
-        else {
-            return emptyPositions
+    private static func signature(for words: [WordElement]) -> String {
+        words.map { word in
+            "\(word.text.count):\(word.text)|\(word.fontName)|\(word.fontSize)"
         }
+        .joined(separator: "\u{1f}")
+    }
+}
 
-        if positionCache.matches(
-            words: words,
-            canvasSize: canvasSize,
-            wordSizes: itemSizes,
-            fontSizeRatio: fontSizeRatio
-        ) {
-            return positionCache.positions
+private final class WordCloudTopologyCache {
+    private var itemSizes = [CGSize]()
+    private var canvasAspectRatio: CGFloat = 0
+    private var spacing: CGFloat = 0
+    private var cachedPacking: WordCloudPacking?
+
+    func packing(
+        itemSizes: [CGSize],
+        canvasAspectRatio: CGFloat,
+        spacing: CGFloat
+    ) -> WordCloudPacking {
+        if let cachedPacking,
+            sizesMatch(itemSizes, self.itemSizes),
+            abs(canvasAspectRatio - self.canvasAspectRatio) < 0.015,
+            abs(spacing - self.spacing) < 0.01
+        {
+            return cachedPacking
         }
 
         let packing = WordCloudPacker.pack(
             itemSizes: itemSizes,
-            canvasAspectRatio: canvasSize.width / canvasSize.height,
-            spacing: 4
+            canvasAspectRatio: canvasAspectRatio,
+            spacing: spacing
         )
-
-        // Fit the packed cluster to about 92% of the available square. Unlike
-        // the old layout, this can enlarge a small cloud as well as shrink a
-        // crowded one. Fitting all words inside the canvas takes precedence;
-        // the upper cap keeps a small cloud from becoming poster-sized.
-        let canvasInset: CGFloat = 10
-        let usableWidth = max(canvasSize.width - canvasInset * 2, 1)
-        let usableHeight = max(canvasSize.height - canvasInset * 2, 1)
-        let widthScale = usableWidth / max(packing.bounds.width, 1)
-        let heightScale = usableHeight / max(packing.bounds.height, 1)
-        let fitMultiplier = min(widthScale, heightScale) * 0.92
-        let desiredRatio = min(fontSizeRatio * fitMultiplier, 1.35)
-        let roundedRatio = (desiredRatio * 100).rounded() / 100
-
-        if abs(roundedRatio - fontSizeRatio) > 0.015 {
-            let expectedRatio = fontSizeRatio
-            let scaleRevision = positionCache.beginScaleUpdate()
-            DispatchQueue.main.async {
-                guard positionCache.isCurrentScaleUpdate(scaleRevision),
-                    abs(fontSizeRatio - expectedRatio) < 0.005
-                else {
-                    return
-                }
-                guard abs(roundedRatio - fontSizeRatio) > 0.015 else { return }
-                fontSizeRatio = roundedRatio
-                wordSizes = [CGSize](repeating: .zero, count: words.count)
-                positionCache.invalidate()
-            }
-            return packing.positions
-        }
-
-        positionCache.store(
-            words: words,
-            canvasSize: canvasSize,
-            wordSizes: itemSizes,
-            positions: packing.positions,
-            fontSizeRatio: fontSizeRatio
-        )
-        return packing.positions
-    }
-}
-
-private final class WordCloudPositionCache {
-    var words = [WordElement]()
-    var canvasSize = CGSize.zero
-    var wordSizes = [CGSize]()
-    var positions = [CGPoint]()
-    var fontSizeRatio: CGFloat = 1
-    private var scaleRevision = 0
-
-    func matches(
-        words: [WordElement],
-        canvasSize: CGSize,
-        wordSizes: [CGSize],
-        fontSizeRatio: CGFloat
-    ) -> Bool {
-        positions.count == words.count
-            && elementsMatch(words, self.words)
-            && sizesMatch([canvasSize], [self.canvasSize], tolerance: 0.25)
-            && sizesMatch(wordSizes, self.wordSizes, tolerance: 0.25)
-            && abs(fontSizeRatio - self.fontSizeRatio) < 0.005
-    }
-
-    func store(
-        words: [WordElement],
-        canvasSize: CGSize,
-        wordSizes: [CGSize],
-        positions: [CGPoint],
-        fontSizeRatio: CGFloat
-    ) {
-        cancelScaleUpdate()
-        self.words = words
-        self.canvasSize = canvasSize
-        self.wordSizes = wordSizes
-        self.positions = positions
-        self.fontSizeRatio = fontSizeRatio
+        self.itemSizes = itemSizes
+        self.canvasAspectRatio = canvasAspectRatio
+        self.spacing = spacing
+        self.cachedPacking = packing
+        return packing
     }
 
     func invalidate() {
-        cancelScaleUpdate()
-        words = []
-        canvasSize = .zero
-        wordSizes = []
-        positions = []
-        fontSizeRatio = 1
+        itemSizes = []
+        canvasAspectRatio = 0
+        spacing = 0
+        cachedPacking = nil
     }
 
-    func beginScaleUpdate() -> Int {
-        scaleRevision &+= 1
-        return scaleRevision
-    }
-
-    func isCurrentScaleUpdate(_ revision: Int) -> Bool {
-        scaleRevision == revision
-    }
-
-    private func cancelScaleUpdate() {
-        scaleRevision &+= 1
-    }
-
-    private func elementsMatch(_ lhs: [WordElement], _ rhs: [WordElement]) -> Bool {
+    private func sizesMatch(_ lhs: [CGSize], _ rhs: [CGSize]) -> Bool {
         guard lhs.count == rhs.count else { return false }
         return zip(lhs, rhs).allSatisfy { first, second in
-            first.text == second.text
-                && first.fontName == second.fontName
-                && abs(first.fontSize - second.fontSize) < 0.005
-        }
-    }
-
-    private func sizesMatch(
-        _ lhs: [CGSize],
-        _ rhs: [CGSize],
-        tolerance: CGFloat
-    ) -> Bool {
-        guard lhs.count == rhs.count else { return false }
-        return zip(lhs, rhs).allSatisfy { first, second in
-            abs(first.width - second.width) < tolerance
-                && abs(first.height - second.height) < tolerance
+            abs(first.width - second.width) < 0.25
+                && abs(first.height - second.height) < 0.25
         }
     }
 }
+#endif
 
-private struct WordCloudPacking {
+struct WordCloudPacking {
     let positions: [CGPoint]
     let bounds: CGRect
 }
 
-/// Deterministic edge-contact packing. Large words establish the center and
-/// smaller words fill the remaining gaps. Candidate scoring keeps the cluster
-/// compact while preferring the canvas aspect ratio.
-private enum WordCloudPacker {
+enum WordCloudLayoutMetrics {
+    static func renderScale(
+        packingBounds: CGRect,
+        canvasSize: CGSize,
+        inset: CGFloat,
+        fillFraction: CGFloat,
+        maximumScale: CGFloat
+    ) -> CGFloat {
+        guard packingBounds.width > 0,
+            packingBounds.height > 0,
+            canvasSize.width > inset * 2,
+            canvasSize.height > inset * 2
+        else {
+            return 1
+        }
+
+        let usableWidth = canvasSize.width - inset * 2
+        let usableHeight = canvasSize.height - inset * 2
+        let fitScale = min(
+            usableWidth / packingBounds.width,
+            usableHeight / packingBounds.height
+        ) * fillFraction
+        return max(0.05, min(fitScale, maximumScale))
+    }
+}
+
+/// Deterministic edge-contact packing. Every candidate is scored by the
+/// normalized canvas extent needed to contain it, rather than raw area alone.
+/// Several stable order and direction variants are evaluated and the best
+/// final topology is returned.
+enum WordCloudPacker {
+    private enum OrderStrategy {
+        case area
+        case longestSide
+        case width
+        case height
+    }
+
+    private enum SearchDirection {
+        case horizontalForward
+        case horizontalReverse
+        case verticalForward
+        case verticalReverse
+
+        var prefersHorizontalGrowth: Bool {
+            switch self {
+            case .horizontalForward, .horizontalReverse:
+                return true
+            case .verticalForward, .verticalReverse:
+                return false
+            }
+        }
+
+        var reversesAnchors: Bool {
+            switch self {
+            case .horizontalReverse, .verticalReverse:
+                return true
+            case .horizontalForward, .verticalForward:
+                return false
+            }
+        }
+    }
+
+    private struct Variant {
+        let order: OrderStrategy
+        let direction: SearchDirection
+    }
+
+    private static let variants = [
+        Variant(order: .area, direction: .horizontalForward),
+        Variant(order: .area, direction: .verticalForward),
+        Variant(order: .longestSide, direction: .horizontalReverse),
+        Variant(order: .longestSide, direction: .verticalReverse),
+        Variant(order: .width, direction: .horizontalForward),
+        Variant(order: .width, direction: .verticalReverse),
+        Variant(order: .height, direction: .verticalForward),
+        Variant(order: .height, direction: .horizontalReverse),
+    ]
+
     static func pack(
         itemSizes: [CGSize],
         canvasAspectRatio: CGFloat,
@@ -244,22 +257,46 @@ private enum WordCloudPacker {
             return WordCloudPacking(positions: [], bounds: .zero)
         }
 
-        let placementOrder = itemSizes.indices.sorted { first, second in
-            let firstArea = itemSizes[first].width * itemSizes[first].height
-            let secondArea = itemSizes[second].width * itemSizes[second].height
-            if abs(firstArea - secondArea) > 0.01 {
-                return firstArea > secondArea
+        let targetAspect = min(max(canvasAspectRatio, 0.35), 3)
+        var bestPacking: WordCloudPacking?
+        var bestScore = CGFloat.greatestFiniteMagnitude
+
+        for variant in variants {
+            let packing = pack(
+                itemSizes: itemSizes,
+                spacing: spacing,
+                targetAspect: targetAspect,
+                variant: variant
+            )
+            let score = packingScore(
+                bounds: packing.bounds,
+                targetAspect: targetAspect
+            )
+            if score < bestScore - 0.0001 {
+                bestScore = score
+                bestPacking = packing
             }
-            if abs(itemSizes[first].width - itemSizes[second].width) > 0.01 {
-                return itemSizes[first].width > itemSizes[second].width
-            }
-            return first < second
         }
 
+        return bestPacking ?? WordCloudPacking(
+            positions: [CGPoint](repeating: .zero, count: itemSizes.count),
+            bounds: .zero
+        )
+    }
+
+    private static func pack(
+        itemSizes: [CGSize],
+        spacing: CGFloat,
+        targetAspect: CGFloat,
+        variant: Variant
+    ) -> WordCloudPacking {
+        let placementOrder = sortedIndices(
+            for: itemSizes,
+            strategy: variant.order
+        )
         var positions = [CGPoint](repeating: .zero, count: itemSizes.count)
-        var placedFrames: [CGRect] = []
+        var placedFrames = [CGRect]()
         var clusterBounds = CGRect.null
-        let targetAspect = min(max(canvasAspectRatio, 0.6), 1.8)
 
         for index in placementOrder {
             let itemSize = itemSizes[index]
@@ -267,19 +304,15 @@ private enum WordCloudPacker {
                 width: itemSize.width + spacing,
                 height: itemSize.height + spacing
             )
-
-            let center: CGPoint
-            if placedFrames.isEmpty {
-                center = .zero
-            } else {
-                center = bestCenter(
+            let center = placedFrames.isEmpty
+                ? CGPoint.zero
+                : bestCenter(
                     for: paddedSize,
                     placedFrames: placedFrames,
                     clusterBounds: clusterBounds,
-                    targetAspect: targetAspect
+                    targetAspect: targetAspect,
+                    direction: variant.direction
                 )
-            }
-
             let frame = CGRect(
                 x: center.x - paddedSize.width / 2,
                 y: center.y - paddedSize.height / 2,
@@ -292,51 +325,104 @@ private enum WordCloudPacker {
         }
 
         let packedCenter = clusterBounds.center
-        let centeredPositions = positions.map {
-            CGPoint(x: $0.x - packedCenter.x, y: $0.y - packedCenter.y)
-        }
-        let centeredBounds = clusterBounds.offsetBy(
-            dx: -packedCenter.x,
-            dy: -packedCenter.y
+        return WordCloudPacking(
+            positions: positions.map {
+                CGPoint(x: $0.x - packedCenter.x, y: $0.y - packedCenter.y)
+            },
+            bounds: clusterBounds.offsetBy(
+                dx: -packedCenter.x,
+                dy: -packedCenter.y
+            )
         )
-        return WordCloudPacking(positions: centeredPositions, bounds: centeredBounds)
+    }
+
+    private static func sortedIndices(
+        for itemSizes: [CGSize],
+        strategy: OrderStrategy
+    ) -> [Int] {
+        itemSizes.indices.sorted { first, second in
+            let firstSize = itemSizes[first]
+            let secondSize = itemSizes[second]
+            let firstPrimary: CGFloat
+            let secondPrimary: CGFloat
+
+            switch strategy {
+            case .area:
+                firstPrimary = firstSize.width * firstSize.height
+                secondPrimary = secondSize.width * secondSize.height
+            case .longestSide:
+                firstPrimary = max(firstSize.width, firstSize.height)
+                secondPrimary = max(secondSize.width, secondSize.height)
+            case .width:
+                firstPrimary = firstSize.width
+                secondPrimary = secondSize.width
+            case .height:
+                firstPrimary = firstSize.height
+                secondPrimary = secondSize.height
+            }
+
+            if abs(firstPrimary - secondPrimary) > 0.01 {
+                return firstPrimary > secondPrimary
+            }
+            let firstArea = firstSize.width * firstSize.height
+            let secondArea = secondSize.width * secondSize.height
+            if abs(firstArea - secondArea) > 0.01 {
+                return firstArea > secondArea
+            }
+            if abs(firstSize.width - secondSize.width) > 0.01 {
+                return firstSize.width > secondSize.width
+            }
+            return first < second
+        }
     }
 
     private static func bestCenter(
         for size: CGSize,
         placedFrames: [CGRect],
         clusterBounds: CGRect,
-        targetAspect: CGFloat
+        targetAspect: CGFloat,
+        direction: SearchDirection
     ) -> CGPoint {
-        var candidates: [CGPoint] = []
+        var candidates = [CGPoint]()
         let halfWidth = size.width / 2
         let halfHeight = size.height / 2
+        let anchors = direction.reversesAnchors
+            ? Array(placedFrames.reversed())
+            : placedFrames
 
-        for anchor in placedFrames {
-            let left = anchor.minX - halfWidth
-            let right = anchor.maxX + halfWidth
-            let top = anchor.minY - halfHeight
-            let bottom = anchor.maxY + halfHeight
-            let alignedY = [
-                CGFloat.zero,
-                anchor.minY + halfHeight,
+        for anchor in anchors {
+            let horizontalAlignments = uniqueValues([
                 anchor.midY,
+                anchor.minY + halfHeight,
                 anchor.maxY - halfHeight,
-            ]
-            let alignedX = [
-                CGFloat.zero,
-                anchor.minX + halfWidth,
+                0,
+            ])
+            let verticalAlignments = uniqueValues([
                 anchor.midX,
+                anchor.minX + halfWidth,
                 anchor.maxX - halfWidth,
-            ]
+                0,
+            ])
 
-            for y in alignedY {
-                candidates.append(CGPoint(x: left, y: y))
-                candidates.append(CGPoint(x: right, y: y))
+            let appendHorizontalCandidates = {
+                for y in horizontalAlignments {
+                    candidates.append(CGPoint(x: anchor.maxX + halfWidth, y: y))
+                    candidates.append(CGPoint(x: anchor.minX - halfWidth, y: y))
+                }
             }
-            for x in alignedX {
-                candidates.append(CGPoint(x: x, y: top))
-                candidates.append(CGPoint(x: x, y: bottom))
+            let appendVerticalCandidates = {
+                for x in verticalAlignments {
+                    candidates.append(CGPoint(x: x, y: anchor.maxY + halfHeight))
+                    candidates.append(CGPoint(x: x, y: anchor.minY - halfHeight))
+                }
+            }
+
+            if direction.prefersHorizontalGrowth {
+                appendHorizontalCandidates()
+                appendVerticalCandidates()
+            } else {
+                appendVerticalCandidates()
+                appendHorizontalCandidates()
             }
         }
 
@@ -353,12 +439,11 @@ private enum WordCloudPacker {
                 continue
             }
 
-            let candidateBounds = clusterBounds.union(frame)
             let score = packingScore(
-                bounds: candidateBounds,
+                bounds: clusterBounds.union(frame),
                 targetAspect: targetAspect
             )
-            if score < bestScore {
+            if score < bestScore - 0.0001 {
                 bestScore = score
                 bestPoint = candidate
             }
@@ -368,8 +453,9 @@ private enum WordCloudPacker {
             return bestPoint
         }
 
-        // Edge candidates always have an open exterior in normal input. Keep
-        // a deterministic spiral fallback for unusually interlocked shapes.
+        // Edge candidates normally guarantee a result. This deterministic
+        // spiral remains as a defensive fallback for unusual floating-point
+        // intersections.
         let goldenAngle = CGFloat.pi * (3 - sqrt(5))
         for sample in 1...20_000 {
             let radius = sqrt(CGFloat(sample)) * 3
@@ -389,12 +475,18 @@ private enum WordCloudPacker {
             }
         }
 
-        // This is practically unreachable, but remains deterministic and
-        // avoids collapsing every word onto the origin.
         return CGPoint(
             x: clusterBounds.maxX + halfWidth + 1,
             y: clusterBounds.midY
         )
+    }
+
+    private static func uniqueValues(_ values: [CGFloat]) -> [CGFloat] {
+        var result = [CGFloat]()
+        for value in values where !result.contains(where: { abs($0 - value) < 0.01 }) {
+            result.append(value)
+        }
+        return result
     }
 
     private static func packingScore(
@@ -403,40 +495,51 @@ private enum WordCloudPacker {
     ) -> CGFloat {
         let width = max(bounds.width, 1)
         let height = max(bounds.height, 1)
-        let area = width * height
-        let aspectPenalty = abs(width / height - targetAspect) / targetAspect
-        let centerX = bounds.midX / width
-        let centerY = bounds.midY / height
-        let centerPenalty = sqrt(centerX * centerX + centerY * centerY)
-        return area * (1 + aspectPenalty * 0.75 + centerPenalty * 0.04)
-    }
-}
-
-extension CGRect {
-    var center: CGPoint {
-        CGPoint(
-            x: origin.x + size.width / 2,
-            y: origin.y + size.height / 2
+        // With a normalized canvas height of 1, this is the exact canvas
+        // extent required for a uniform fit of the candidate bounds.
+        let normalizedExtent = max(width / targetAspect, height)
+        let canvasEnvelopeArea = max(
+            targetAspect * normalizedExtent * normalizedExtent,
+            1
         )
+        let unusedFraction = max(
+            0,
+            1 - (width * height / canvasEnvelopeArea)
+        )
+        let normalizedCenterX = bounds.midX / max(targetAspect * normalizedExtent, 1)
+        let normalizedCenterY = bounds.midY / max(normalizedExtent, 1)
+        let centerPenalty = sqrt(
+            normalizedCenterX * normalizedCenterX
+                + normalizedCenterY * normalizedCenterY
+        )
+        return normalizedExtent
+            * (1 + unusedFraction * 0.12 + centerPenalty * 0.004)
     }
 }
 
+private extension CGRect {
+    var center: CGPoint {
+        CGPoint(x: midX, y: midY)
+    }
+}
+
+#if !WORD_CLOUD_LAYOUT_HARNESS
 struct WordSizeGetter: View {
     @Binding var sizeStorage: [CGSize]
     private var index: Int
-    
+
     init(_ sizeStorage: Binding<[CGSize]>, _ index: Int) {
         _sizeStorage = sizeStorage
         self.index = index
     }
-    
+
     var body: some View {
         GeometryReader { proxy in
-            self.createView(proxy: proxy)
+            createView(proxy: proxy)
         }
     }
-    
-    func createView(proxy: GeometryProxy) -> some View {
+
+    private func createView(proxy: GeometryProxy) -> some View {
         let measuredSize = proxy.size
         DispatchQueue.main.async {
             guard index < sizeStorage.count else { return }
@@ -447,26 +550,29 @@ struct WordSizeGetter: View {
                 sizeStorage[index] = measuredSize
             }
         }
-
         return Rectangle().fill(Color.clear)
     }
 }
 
 extension Array where Element == WordElement {
-    static let colorPlate =  ["shareFont1", "shareFont2", "shareFont3",
-                              "shareFont1", "shareFont5"]
-    static let fontPlate = [ "SFProText-Bold",
-                             "SFProText-Medium", "SFProText-Regular", "SFProText-Semibold"]
-    
+    static let colorPlate = ["shareFont1", "shareFont2", "shareFont3",
+                             "shareFont1", "shareFont5"]
+    static let fontPlate = ["SFProText-Bold", "SFProText-Medium",
+                            "SFProText-Regular", "SFProText-Semibold"]
+
     static func generate(_ cap: Int = Int.random(in: 1...50)) -> [WordElement] {
         let letters = "abcdefghijklmnopqrstuvwxyz"
         var words = [WordElement]()
         for _ in 0...cap {
             words.append(
-                WordElement(text: String((0...Int.random(in: 4...9)).map{ _ in letters.randomElement()! }),
-                            color: Color(colorPlate.randomElement()!),
-                            fontName: fontPlate.randomElement()!,
-                            fontSize: CGFloat.random(in:20...50))
+                WordElement(
+                    text: String((0...Int.random(in: 4...9)).map { _ in
+                        letters.randomElement()!
+                    }),
+                    color: Color(colorPlate.randomElement()!),
+                    fontName: fontPlate.randomElement()!,
+                    fontSize: CGFloat.random(in: 20...50)
+                )
             )
         }
         return words
@@ -475,11 +581,13 @@ extension Array where Element == WordElement {
 
 struct WordCloudView_Previews: PreviewProvider {
     static var previews: some View {
-        VStack{
-            Spacer()
+        Group {
             WordCloudView()
-            Spacer().padding()
+                .previewLayout(.fixed(width: 390, height: 430))
+            WordCloudView()
+                .previewLayout(.fixed(width: 720, height: 520))
         }
         .background(Color.black.edgesIgnoringSafeArea(.all))
     }
 }
+#endif

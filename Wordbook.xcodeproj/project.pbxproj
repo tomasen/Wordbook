@@ -25,6 +25,7 @@
 		A20000342F20000100000001 /* LocalModels in Resources */ = {isa = PBXBuildFile; fileRef = A20000042F20000100000001 /* LocalModels */; };
 		A20000402F20000100000001 /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = A20001102F20000100000001 /* MLXLLM */; };
 		A20000412F20000100000001 /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = A20001112F20000100000001 /* MLXLMCommon */; };
+		A20000422F20000100000001 /* MLXGuidedGeneration in Frameworks */ = {isa = PBXBuildFile; productRef = A20001122F20000100000001 /* MLXGuidedGeneration */; };
 		A20000432F20000100000001 /* Tokenizers in Frameworks */ = {isa = PBXBuildFile; productRef = A20001132F20000100000001 /* Tokenizers */; };
 		88039BE8278AD5C7008EE125 /* WatchWordListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88039BE7278AD5C7008EE125 /* WatchWordListViewModel.swift */; };
 		8803F37D276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
@@ -396,6 +397,7 @@
 				A10000032F12345600000001 /* FluidAudio in Frameworks */,
 				A20000402F20000100000001 /* MLXLLM in Frameworks */,
 				A20000412F20000100000001 /* MLXLMCommon in Frameworks */,
+				A20000422F20000100000001 /* MLXGuidedGeneration in Frameworks */,
 				A20000432F20000100000001 /* Tokenizers in Frameworks */,
 				888C571F277B0BC20029090A /* WebView in Frameworks */,
 				8819C8FA2767B8D000FFD892 /* Introspect in Frameworks */,
@@ -773,6 +775,7 @@
 				A10000022F12345600000001 /* FluidAudio */,
 				A20001102F20000100000001 /* MLXLLM */,
 				A20001112F20000100000001 /* MLXLMCommon */,
+				A20001122F20000100000001 /* MLXGuidedGeneration */,
 				A20001132F20000100000001 /* Tokenizers */,
 				8819C8F92767B8D000FFD892 /* Introspect */,
 				884EE6E42774600E0038E990 /* SwiftyStoreKit */,
@@ -1976,6 +1979,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A20001002F20000100000001 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */;
 			productName = MLXLMCommon;
+		};
+		A20001122F20000100000001 /* MLXGuidedGeneration */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A20001002F20000100000001 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */;
+			productName = MLXGuidedGeneration;
 		};
 		A20001132F20000100000001 /* Tokenizers */ = {
 			isa = XCSwiftPackageProductDependency;

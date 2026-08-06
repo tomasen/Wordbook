@@ -138,7 +138,7 @@ class WordManager {
         let end = EndOfTheDay(today)
         
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "AnswerHistory")
-        req.predicate = NSPredicate(format: "date > %@ AND date < %@ AND word.category >= 0",
+        req.predicate = NSPredicate(format: "date >= %@ AND date < %@ AND word.category >= 0",
                                     begin as NSDate,
                                     end as NSDate)
         req.sortDescriptors = [NSSortDescriptor(keyPath: \AnswerHistory.date, ascending: true)]
@@ -415,9 +415,7 @@ class WordManager {
             card.updateDueByMinute(1)
         }
         
-        fetchEngagement(today).update()
-        
-        CoreDataManager.shared.save()
+        refreshTodayEngagement()
     }
     
     // ------ Engagement ------
@@ -437,6 +435,17 @@ class WordManager {
             return eg
         }
         return ret
+    }
+
+    /// Rebuilds today's cached statistics from AnswerHistory and persists any
+    /// resulting changes. UI entry points share this path so an app upgrade can
+    /// repair the current study day before displaying its totals.
+    @discardableResult
+    func refreshTodayEngagement() -> Engagement {
+        let engagement = fetchEngagement()
+        engagement.update()
+        CoreDataManager.shared.save()
+        return engagement
     }
     
     // ---------
@@ -487,24 +496,59 @@ class WordManager {
         day(from: now())
     }
     
-    // day of today, how many days since 2000-01-01
-    // 4AM is the beginning of reset cycle
+    /// Local civil-day anchor for the integer IDs stored in Engagement.
+    /// Using the absolute Unix epoch directly made the ID roll over at the
+    /// epoch's local clock time (16:00 in Los Angeles), not at the study cutoff.
+    /// This mapping intentionally follows the device's current calendar and
+    /// time zone; it is not a cross-time-zone identifier.
+    private var dayAnchor: Date {
+        Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 0))
+    }
+
+    // A study day begins at 4 AM local time. Dates before that cutoff belong
+    // to the previous civil day, matching the review/reset behavior.
     func day(from date: Date) -> Int32 {
-        return Int32(Calendar.current.dateComponents([.day],
-                                                     from: Date(timeIntervalSince1970: 0),
-                                                     to: date).day!)
+        let calendar = Calendar.current
+        let civilDay = calendar.startOfDay(for: date)
+        let cutoff = calendar.date(
+            bySettingHour: cutoffHour,
+            minute: 0,
+            second: 0,
+            of: civilDay
+        )!
+        let studyCivilDay = date < cutoff
+            ? calendar.date(byAdding: .day, value: -1, to: civilDay)!
+            : civilDay
+        return Int32(
+            calendar.dateComponents(
+                [.day],
+                from: dayAnchor,
+                to: studyCivilDay
+            ).day!
+        )
     }
     
     func date(from day: Int32) -> Date {
-        return Calendar.current.date(byAdding: .day, value: Int(day), to: Date.init(timeIntervalSince1970: 0))!
+        Calendar.current.date(
+            byAdding: .day,
+            value: Int(day),
+            to: dayAnchor
+        )!
     }
     
     func BeginOfTheDay(_ day: Int32) -> Date {
-        return Calendar.current.date(bySettingHour: cutoffHour, minute: 0, second: 0, of: date(from: day))!
+        Calendar.current.date(
+            bySettingHour: cutoffHour,
+            minute: 0,
+            second: 0,
+            of: date(from: day)
+        )!
     }
     
+    /// Exclusive end of the study day. Calendar arithmetic keeps the cutoff
+    /// at 4 AM across 23- and 25-hour daylight-saving transitions.
     func EndOfTheDay(_ day: Int32) -> Date {
-        return Date(timeInterval: 24*3600-1, since: BeginOfTheDay(day))
+        BeginOfTheDay(day + 1)
     }
     
     func todayDateString() -> String {
@@ -576,7 +620,7 @@ extension AnswerHistory {
     
     static func fetch(_ begin: Date, _ end: Date) -> [AnswerHistory] {
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "AnswerHistory")
-        req.predicate = NSPredicate(format: "date > %@ AND date < %@ AND word.category >= 0", begin as NSDate, end as NSDate)
+        req.predicate = NSPredicate(format: "date >= %@ AND date < %@ AND word.category >= 0", begin as NSDate, end as NSDate)
         
         return try! moc.fetch(req) as! [AnswerHistory]
     }
@@ -629,16 +673,28 @@ extension Engagement {
             }
         }
         
-        self.noidea = noideaAnswerCount
-        self.vague = vagueAnswerCount
-        self.good = goodAnswerCount
+        if self.noidea != noideaAnswerCount {
+            self.noidea = noideaAnswerCount
+        }
+        if self.vague != vagueAnswerCount {
+            self.vague = vagueAnswerCount
+        }
+        if self.good != goodAnswerCount {
+            self.good = goodAnswerCount
+        }
         
         // how many answered today but due day is tommorow
-        self.finished = goodAnswerCount
-        self.working = noGoodAnswerCount
+        if self.finished != goodAnswerCount {
+            self.finished = goodAnswerCount
+        }
+        if self.working != noGoodAnswerCount {
+            self.working = noGoodAnswerCount
+        }
         
         // update time spend
-        self.duration = timespend
+        if abs(self.duration - timespend) > 0.000_001 {
+            self.duration = timespend
+        }
     }
 }
 

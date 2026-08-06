@@ -23,8 +23,8 @@ struct SharingView: View {
     }
     
     var body: some View {
-        VStack{
-            VStack{
+        VStack {
+            VStack {
                 Text(dateFormatter.string(from: viewModel.todayDate))
                     .foregroundColor(Color("fontTitle"))
                     .customFont(name: "Baskerville-SemiBold", style: .largeTitle, weight: .heavy)
@@ -32,7 +32,8 @@ struct SharingView: View {
                     .customFont(name: "AvenirNext-DemiBold", style: .caption2, weight: .semibold)
                 
                 WordCloudView(viewModel.wordsOfToday)
-                    .frame(height: viewModel.minCanvasHeight)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .layoutPriority(1)
                 
                 HStack{
                     VStack{
@@ -61,12 +62,11 @@ struct SharingView: View {
                 }
                 .frame(height: 90)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .layoutPriority(1)
             .padding(10)
             .background(RectGetter($viewModel.shareViewRect))
-            
-            Spacer()
-                .padding()
-            
+
             Divider()
             
             NextButtons()
@@ -75,6 +75,9 @@ struct SharingView: View {
         .navigationBarItems(trailing: trailingBarItem())
         .foregroundColor(Color("fontBody"))
         .background(Color("Background").edgesIgnoringSafeArea(.all))
+        .onAppear {
+            viewModel.refresh()
+        }
     }
     
     func trailingBarItem() -> some View {

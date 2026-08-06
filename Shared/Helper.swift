@@ -74,7 +74,7 @@ final class SoundManager: ObservableObject {
 
     @Published private(set) var naturalVoiceError: String?
     @Published private(set) var isNaturalVoiceReady = false
-    @Published private(set) var naturalVoicePreparationStatus = "Checking speech resources…"
+    @Published private(set) var naturalVoicePreparationStatus = "Checking pronunciation resources…"
 
     private var soundPlayer: AVAudioPlayer?
 
@@ -160,7 +160,7 @@ final class SoundManager: ObservableObject {
             case .invalidAudio:
                 return "The natural voice produced invalid audio."
             case .preparationFailed:
-                return "The natural voice audio could not be prepared."
+                return "Pronunciation audio couldn’t be started."
             case .playbackFailed:
                 return "The natural voice audio could not be played."
             }
@@ -227,7 +227,7 @@ final class SoundManager: ObservableObject {
     func prepareNaturalVoice() {
         #if WORDBOOK_NATURAL_VOICE
         guard naturalVoice == nil, naturalVoicePreparationTask == nil else { return }
-        naturalVoicePreparationStatus = "Checking speech resources…"
+        naturalVoicePreparationStatus = "Checking pronunciation resources…"
 
         Task { [weak self] in
             do {
@@ -259,7 +259,7 @@ final class SoundManager: ObservableObject {
 
         let preparationTask = Task<KokoroAneManager, Error> {
             let modelRoot = try await BundledNaturalVoiceAssets.shared.prepare()
-            naturalVoicePreparationStatus = "Loading speech models…"
+            naturalVoicePreparationStatus = "Loading pronunciation…"
             let voice = KokoroAneManager(
                 variant: .english,
                 defaultVoice: "af_heart",
@@ -273,7 +273,7 @@ final class SoundManager: ObservableObject {
             // bundled lexicon: an invented OOV warm-up token needlessly runs
             // the much heavier fallback G2P model and has crashed inside
             // Apple's BNNS runtime on otherwise supported devices.
-            naturalVoicePreparationStatus = "Warming pronunciation…"
+            naturalVoicePreparationStatus = "Getting pronunciation ready…"
             _ = try await OnDeviceInferenceGate.shared.withExclusiveAccess(
                 priority: .pronunciation
             ) {
@@ -292,7 +292,7 @@ final class SoundManager: ObservableObject {
             naturalVoice = voice
             naturalVoicePreparationTask = nil
             isNaturalVoiceReady = true
-            naturalVoicePreparationStatus = "Natural voice ready"
+            naturalVoicePreparationStatus = "Pronunciation ready"
             return voice
         } catch {
             naturalVoicePreparationTask = nil
