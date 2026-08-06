@@ -1,61 +1,69 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "SQLite.swift",
-        "repositoryURL": "https://github.com/stephencelis/SQLite.swift.git",
-        "state": {
-          "branch": null,
-          "revision": "60a65015f6402b7c34b9a924f755ca0a73afeeaa",
-          "version": "0.13.1"
-        }
-      },
-      {
-        "package": "SwiftSoup",
-        "repositoryURL": "https://github.com/scinfu/SwiftSoup",
-        "state": {
-          "branch": null,
-          "revision": "45a7566f7ec2de0b977f28e825f8df874f210327",
-          "version": "2.3.6"
-        }
-      },
-      {
-        "package": "Introspect",
-        "repositoryURL": "https://github.com/siteline/SwiftUI-Introspect.git",
-        "state": {
-          "branch": null,
-          "revision": "2e09be8af614401bc9f87d40093ec19ce56ccaf2",
-          "version": "0.1.3"
-        }
-      },
-      {
-        "package": "WebView",
-        "repositoryURL": "https://github.com/kylehickinson/SwiftUI-WebView",
-        "state": {
-          "branch": null,
-          "revision": "a67dcaff2377573a51f75761bb6e768b78931909",
-          "version": "0.3.0"
-        }
-      },
-      {
-        "package": "SwiftyStoreKit",
-        "repositoryURL": "https://github.com/bizz84/SwiftyStoreKit",
-        "state": {
-          "branch": null,
-          "revision": "9ce911639680113dac9b554d6243e406a9758ebe",
-          "version": "0.16.4"
-        }
-      },
-      {
-        "package": "WikipediaKit",
-        "repositoryURL": "https://github.com/Raureif/WikipediaKit",
-        "state": {
-          "branch": null,
-          "revision": "be13ff505b88b3e2161c4f187fc4a5a2a1af4ba4",
-          "version": "3.0.3"
-        }
+  "originHash" : "3547e74c2dd204cfe07db02ade59c8116304296fb046a0748362cfd851ed701a",
+  "pins" : [
+    {
+      "identity" : "fluidaudio",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/FluidInference/FluidAudio.git",
+      "state" : {
+        "revision" : "19600a485baa4998812e4654b70d2bab8f2c9949",
+        "version" : "0.15.5"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "sqlite.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stephencelis/SQLite.swift.git",
+      "state" : {
+        "revision" : "60a65015f6402b7c34b9a924f755ca0a73afeeaa",
+        "version" : "0.13.1"
+      }
+    },
+    {
+      "identity" : "swiftsoup",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/scinfu/SwiftSoup",
+      "state" : {
+        "revision" : "45a7566f7ec2de0b977f28e825f8df874f210327",
+        "version" : "2.3.6"
+      }
+    },
+    {
+      "identity" : "swiftui-introspect",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/siteline/SwiftUI-Introspect.git",
+      "state" : {
+        "revision" : "2e09be8af614401bc9f87d40093ec19ce56ccaf2",
+        "version" : "0.1.3"
+      }
+    },
+    {
+      "identity" : "swiftui-webview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kylehickinson/SwiftUI-WebView",
+      "state" : {
+        "revision" : "a67dcaff2377573a51f75761bb6e768b78931909",
+        "version" : "0.3.0"
+      }
+    },
+    {
+      "identity" : "swiftystorekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bizz84/SwiftyStoreKit",
+      "state" : {
+        "revision" : "9ce911639680113dac9b554d6243e406a9758ebe",
+        "version" : "0.16.4"
+      }
+    },
+    {
+      "identity" : "wikipediakit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Raureif/WikipediaKit",
+      "state" : {
+        "revision" : "be13ff505b88b3e2161c4f187fc4a5a2a1af4ba4",
+        "version" : "3.0.3"
+      }
+    }
+  ],
+  "version" : 3
 }

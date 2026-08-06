@@ -9,6 +9,8 @@ import SwiftUI
 import Introspect
 
 struct CardView: View {
+    @ObservedObject private var soundManager = SoundManager.shared
+
     @State var showDefinition: Bool = false
     @State var disableFlip: Bool = false
     @State var enableGoodButton: Bool = false
@@ -107,16 +109,12 @@ struct CardView: View {
                     }
                 },
                 tap: {
-                    if let sound = self.viewModel.sound {
-                        SoundManager.shared.PlaySound(sound)
-                    } else {
-                        SoundManager.shared.PlayTTS(self.viewModel.word)
-                    }
+                    SoundManager.shared.playTTS(self.viewModel.word)
                 },
                 flipped: $showDefinition,
                 disabled: self.$editing || $disableFlip
             )
-            
+
             Divider()
             
             ReviewButtons()
@@ -136,6 +134,22 @@ struct CardView: View {
         }
         .navigationBarItems(trailing: trailingBarItem())
         .background(Color("Background").edgesIgnoringSafeArea(.all))
+        .alert(isPresented: Binding(
+            get: { soundManager.naturalVoiceError != nil },
+            set: { isPresented in
+                if !isPresented {
+                    soundManager.dismissNaturalVoiceError()
+                }
+            }
+        )) {
+            Alert(
+                title: Text("Natural Voice"),
+                message: Text(soundManager.naturalVoiceError ?? "Unable to generate speech."),
+                dismissButton: .default(Text("OK")) {
+                    soundManager.dismissNaturalVoiceError()
+                }
+            )
+        }
     }
     
     func trailingBarItem() -> some View {

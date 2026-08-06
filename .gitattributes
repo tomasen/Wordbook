@@ -3,3 +3,5 @@
 *.psd filter=lfs diff=lfs merge=lfs -text
 *.psb filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
+NaturalVoiceModels/** filter=lfs diff=lfs merge=lfs -text
+NaturalVoiceModels/manifest.sha256 -filter !diff !merge text

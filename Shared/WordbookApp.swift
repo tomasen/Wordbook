@@ -16,7 +16,7 @@ struct WordbookApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MasterView()
+            WordbookRootView()
                 .environment(\.colorScheme, .dark)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
@@ -109,3 +109,56 @@ struct WordbookApp: App {
         }
     }
 }
+
+private struct WordbookRootView: View {
+    @ObservedObject private var soundManager = SoundManager.shared
+
+    var body: some View {
+        #if WORDBOOK_NATURAL_VOICE
+        Group {
+            if soundManager.isNaturalVoiceReady {
+                MasterView()
+            } else {
+                PreparationView(soundManager: soundManager)
+            }
+        }
+        .task {
+            soundManager.prepareNaturalVoice()
+        }
+        #else
+        MasterView()
+        #endif
+    }
+}
+
+#if WORDBOOK_NATURAL_VOICE
+private struct PreparationView: View {
+    @ObservedObject var soundManager: SoundManager
+
+    var body: some View {
+        ZStack {
+            Color("Background")
+                .ignoresSafeArea()
+
+            VStack(spacing: 16) {
+                if let error = soundManager.naturalVoiceError {
+                    Text("Preparation failed")
+                        .font(.headline)
+                    Text(error)
+                        .font(.footnote)
+                        .multilineTextAlignment(.center)
+                    Button("Retry") {
+                        soundManager.retryNaturalVoicePreparation()
+                    }
+                    .buttonStyle(.borderedProminent)
+                } else {
+                    ProgressView()
+                    Text("Preparing…")
+                }
+            }
+            .foregroundColor(Color("fontBody"))
+            .padding(32)
+        }
+    }
+}
+#endif
