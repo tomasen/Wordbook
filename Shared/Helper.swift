@@ -77,14 +77,34 @@ final class SoundManager: ObservableObject {
     @Published private(set) var naturalVoicePreparationStatus = "Checking pronunciation resources…"
 
     private var soundPlayer: AVAudioPlayer?
+    private var playingSpeechCacheKey: String?
 
     #if WORDBOOK_NATURAL_VOICE
+    private enum SpeechRequestPurpose: Sendable {
+        case playback
+        case prefetch
+    }
+
+    private struct SpeechPreparationKey: Hashable, Sendable {
+        let cacheKey: String
+        let cacheRevision: Int
+    }
+
     private struct SpeechRequest: Sendable {
         let id: UUID
         let text: String
         let phonemes: String?
         let cacheKey: String
         let cacheRevision: Int
+        let purpose: SpeechRequestPurpose
+        let isForegroundPrefetch: Bool
+
+        var preparationKey: SpeechPreparationKey {
+            SpeechPreparationKey(
+                cacheKey: cacheKey,
+                cacheRevision: cacheRevision
+            )
+        }
     }
 
     private struct CompletedSpeechSynthesis: Sendable {
@@ -100,8 +120,13 @@ final class SoundManager: ObservableObject {
 
     private var speechWorkerTask: Task<Void, Never>?
     private var pendingSpeechRequest: SpeechRequest?
+    private var pendingSpeechPrefetchRequest: SpeechRequest?
     private var activeSpeechRequest: SpeechRequest?
     private var currentSpeechRequest: SpeechRequest?
+    private var speechPreparationWaiters: [
+        SpeechPreparationKey: [UUID: CheckedContinuation<Bool, Never>]
+    ] = [:]
+    private var abandonedSpeechRequestIDs: Set<UUID> = []
     private var speechCacheRevision = 0
     private var memoryWarningCancellable: AnyCancellable?
     private let generatedSpeechCache: NSCache<NSString, NSData> = {
@@ -130,15 +155,31 @@ final class SoundManager: ObservableObject {
                 let interruptedSpeech = self.pendingSpeechRequest != nil
                     || currentRequestIsActive
                     || self.soundPlayer?.isPlaying == true
+                let interruptedWaiters = self.speechPreparationWaiters.values
+                    .flatMap { $0.values }
+                let currentRequestID = self.currentSpeechRequest?.id
                 // Do not cancel a Core ML prediction that may still be
                 // executing inside E5RT/BNNS. Invalidate playback and let the
                 // serialized synthesis task finish before releasing buffers.
                 self.speechCacheRevision &+= 1
                 self.activeSpeechRequest = nil
                 self.pendingSpeechRequest = nil
+                self.pendingSpeechPrefetchRequest = nil
                 self.soundPlayer?.stop()
                 self.soundPlayer = nil
+                self.playingSpeechCacheKey = nil
                 self.generatedSpeechCache.removeAllObjects()
+                self.speechPreparationWaiters.removeAll()
+                self.abandonedSpeechRequestIDs.removeAll()
+                if let currentRequestID {
+                    // If this request is still waiting for the inference gate,
+                    // skip it. If Core ML has already started, it may finish
+                    // safely, but its old-revision result will be discarded.
+                    self.abandonedSpeechRequestIDs.insert(currentRequestID)
+                }
+                for waiter in interruptedWaiters {
+                    waiter.resume(returning: false)
+                }
                 if interruptedSpeech {
                     self.naturalVoiceError = "Pronunciation was interrupted because the device needed memory. Tap the word to try again."
                 }
@@ -176,7 +217,7 @@ final class SoundManager: ObservableObject {
         }
     }
 
-    private func startPlayback(_ audio: Data) throws {
+    private func startPlayback(_ audio: Data, cacheKey: String) throws {
         #if os(iOS) || os(tvOS) || os(watchOS)
         let audioSession = AVAudioSession.sharedInstance()
         do {
@@ -218,8 +259,10 @@ final class SoundManager: ObservableObject {
         soundPlayer = player
         guard player.play() else {
             soundPlayer = nil
+            playingSpeechCacheKey = nil
             throw SpeechPlaybackError.playbackFailed
         }
+        playingSpeechCacheKey = cacheKey
     }
 
     /// Starts loading and warming the bundled model as soon as the app's root
@@ -315,35 +358,39 @@ final class SoundManager: ObservableObject {
 
         soundPlayer?.stop()
         soundPlayer = nil
+        playingSpeechCacheKey = nil
         naturalVoiceError = nil
 
         #if WORDBOOK_NATURAL_VOICE
-        let trimmedPhonemes = phonemes?.trimmingCharacters(
-            in: .whitespacesAndNewlines
-        )
-        let normalizedPhonemes = trimmedPhonemes.flatMap { value in
-            value.isEmpty ? nil : value
-        }
-        let pronunciationInput = normalizedPhonemes.map { "phonemes:\($0)" }
-            ?? "text:\(text)"
-        let cacheKey = "\(BundledNaturalVoiceAssets.version)|af_heart|0.9|\(pronunciationInput)"
-        let request = SpeechRequest(
-            id: UUID(),
+        let request = makeSpeechRequest(
             text: text,
-            phonemes: normalizedPhonemes,
-            cacheKey: cacheKey,
-            cacheRevision: speechCacheRevision
+            phonemes: phonemes,
+            purpose: .playback
         )
 
         activeSpeechRequest = request
-        pendingSpeechRequest = nil
 
-        if let cachedAudio = cachedSpeech(for: cacheKey) {
+        if let cachedAudio = cachedSpeech(for: request.cacheKey) {
+            if let supersededRequest = pendingSpeechRequest {
+                pendingSpeechRequest = nil
+                if supersededRequest.preparationKey != request.preparationKey {
+                    finishSpeechPreparationIfIdle(
+                        for: supersededRequest
+                    )
+                }
+            }
+            if pendingSpeechPrefetchRequest?.preparationKey
+                == request.preparationKey {
+                pendingSpeechPrefetchRequest = nil
+            }
+            finishSpeechPreparation(for: request)
             do {
-                try startPlayback(cachedAudio)
+                try startPlayback(cachedAudio, cacheKey: request.cacheKey)
             } catch {
                 if shouldDiscardSpeechAudio(after: error) {
-                    generatedSpeechCache.removeObject(forKey: cacheKey as NSString)
+                    generatedSpeechCache.removeObject(
+                        forKey: request.cacheKey as NSString
+                    )
                     pendingSpeechRequest = request
                     startSpeechWorkerIfNeeded()
                 } else {
@@ -353,6 +400,18 @@ final class SoundManager: ObservableObject {
             return
         }
 
+        if let supersededRequest = pendingSpeechRequest,
+           supersededRequest.preparationKey != request.preparationKey {
+            pendingSpeechRequest = nil
+            finishSpeechPreparationIfIdle(for: supersededRequest)
+        }
+        if pendingSpeechPrefetchRequest?.preparationKey
+            == request.preparationKey {
+            // The explicit tap upgrades the silent request. If that request is
+            // already running, its completed audio will satisfy this new
+            // playback intent without a second synthesis.
+            pendingSpeechPrefetchRequest = nil
+        }
         pendingSpeechRequest = request
         startSpeechWorkerIfNeeded()
         #else
@@ -360,7 +419,177 @@ final class SoundManager: ObservableObject {
         #endif
     }
 
+    /// Silently generates and caches a word's audio. Awaiting this method lets
+    /// callers start the slower explanation model only after pronunciation has
+    /// had first use of the shared on-device inference pipeline.
+    func preparePronunciation(
+        _ word: String,
+        phonemes: String? = nil,
+        foreground: Bool = false
+    ) async -> Bool {
+        let text = word.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return false }
+
+        #if WORDBOOK_NATURAL_VOICE
+        let request = makeSpeechRequest(
+            text: text,
+            phonemes: phonemes,
+            purpose: .prefetch,
+            isForegroundPrefetch: foreground
+        )
+        guard cachedSpeech(for: request.cacheKey) == nil else { return true }
+
+        let waiterID = UUID()
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                guard !Task.isCancelled else {
+                    continuation.resume(returning: false)
+                    return
+                }
+                if cachedSpeech(for: request.cacheKey) != nil {
+                    continuation.resume(returning: true)
+                    return
+                }
+                speechPreparationWaiters[
+                    request.preparationKey,
+                    default: [:]
+                ][waiterID] = continuation
+                enqueueSpeechPrefetch(request)
+            }
+        } onCancel: {
+            Task { @MainActor [weak self] in
+                self?.cancelSpeechPreparationWaiter(
+                    waiterID,
+                    for: request.preparationKey
+                )
+            }
+        }
+        #else
+        return true
+        #endif
+    }
+
+    /// Stops playback intent for one word without cancelling a Core ML call
+    /// that may already be executing. In-flight work may safely finish and be
+    /// cached, but it can no longer speak after the user leaves the card.
+    func stopPronunciation(for word: String, phonemes: String? = nil) {
+        let text = word.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+
+        #if WORDBOOK_NATURAL_VOICE
+        let request = makeSpeechRequest(
+            text: text,
+            phonemes: phonemes,
+            purpose: .prefetch
+        )
+        let cacheKey = request.cacheKey
+
+        if activeSpeechRequest?.cacheKey == cacheKey {
+            activeSpeechRequest = nil
+        }
+        if let pendingRequest = pendingSpeechRequest,
+           pendingRequest.cacheKey == cacheKey {
+            pendingSpeechRequest = nil
+            finishSpeechPreparationIfIdle(
+                for: pendingRequest,
+                shouldContinue: false
+            )
+        }
+        if playingSpeechCacheKey == cacheKey {
+            soundPlayer?.stop()
+            soundPlayer = nil
+            playingSpeechCacheKey = nil
+        }
+        #else
+        soundPlayer?.stop()
+        soundPlayer = nil
+        playingSpeechCacheKey = nil
+        #endif
+    }
+
     #if WORDBOOK_NATURAL_VOICE
+    private func makeSpeechRequest(
+        text: String,
+        phonemes: String?,
+        purpose: SpeechRequestPurpose,
+        isForegroundPrefetch: Bool = false
+    ) -> SpeechRequest {
+        let trimmedPhonemes = phonemes?.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        let normalizedPhonemes = trimmedPhonemes.flatMap { value in
+            value.isEmpty ? nil : value
+        }
+        let pronunciationInput = normalizedPhonemes.map { "phonemes:\($0)" }
+            ?? "text:\(text)"
+        let cacheKey = "\(BundledNaturalVoiceAssets.version)|af_heart|0.9|\(pronunciationInput)"
+        return SpeechRequest(
+            id: UUID(),
+            text: text,
+            phonemes: normalizedPhonemes,
+            cacheKey: cacheKey,
+            cacheRevision: speechCacheRevision,
+            purpose: purpose,
+            isForegroundPrefetch: isForegroundPrefetch
+        )
+    }
+
+    private func enqueueSpeechPrefetch(_ request: SpeechRequest) {
+        guard cachedSpeech(for: request.cacheKey) == nil else {
+            finishSpeechPreparation(for: request)
+            return
+        }
+        if let currentRequest = currentSpeechRequest,
+           currentRequest.preparationKey == request.preparationKey {
+            abandonedSpeechRequestIDs.remove(currentRequest.id)
+            if request.isForegroundPrefetch
+                && !currentRequest.isForegroundPrefetch {
+                if let supersededRequest = pendingSpeechPrefetchRequest,
+                   supersededRequest.preparationKey
+                    != request.preparationKey {
+                    pendingSpeechPrefetchRequest = nil
+                    finishSpeechPreparationIfIdle(for: supersededRequest)
+                }
+                // Upgrade work that is still waiting for the inference gate.
+                // `takeRequestForSynthesis` will select this foreground copy
+                // without duplicating synthesis or its shared waiters.
+                pendingSpeechPrefetchRequest = request
+            }
+            startSpeechWorkerIfNeeded()
+            return
+        }
+        if pendingSpeechRequest?.preparationKey == request.preparationKey {
+            startSpeechWorkerIfNeeded()
+            return
+        }
+        if let pendingPrefetch = pendingSpeechPrefetchRequest,
+           pendingPrefetch.preparationKey == request.preparationKey {
+            if request.isForegroundPrefetch
+                && !pendingPrefetch.isForegroundPrefetch {
+                pendingSpeechPrefetchRequest = request
+            }
+            startSpeechWorkerIfNeeded()
+            return
+        }
+
+        if let supersededRequest = pendingSpeechPrefetchRequest {
+            if supersededRequest.isForegroundPrefetch
+                && !request.isForegroundPrefetch {
+                // A background reservation must not displace the word that is
+                // already on screen and waiting for responsive pronunciation.
+                finishSpeechPreparation(
+                    for: request,
+                    shouldContinue: false
+                )
+                return
+            }
+            pendingSpeechPrefetchRequest = nil
+            finishSpeechPreparationIfIdle(for: supersededRequest)
+        }
+        pendingSpeechPrefetchRequest = request
+        startSpeechWorkerIfNeeded()
+    }
+
     private func cachedSpeech(for cacheKey: String) -> Data? {
         guard let cachedAudio = generatedSpeechCache.object(
             forKey: cacheKey as NSString
@@ -387,22 +616,31 @@ final class SoundManager: ObservableObject {
         defer {
             currentSpeechRequest = nil
             speechWorkerTask = nil
-            if pendingSpeechRequest != nil {
+            if pendingSpeechRequest != nil
+                || pendingSpeechPrefetchRequest != nil {
                 startSpeechWorkerIfNeeded()
             }
         }
 
-        while let queuedRequest = pendingSpeechRequest {
-            pendingSpeechRequest = nil
-            currentSpeechRequest = queuedRequest
+        while let queuedRequest = dequeueNextSpeechRequest() {
 
             let voice: KokoroAneManager
             do {
                 voice = try await loadNaturalVoice()
             } catch {
                 currentSpeechRequest = nil
+                let abandonedRequests = [
+                    queuedRequest,
+                    pendingSpeechRequest,
+                    pendingSpeechPrefetchRequest,
+                ].compactMap { $0 }
                 pendingSpeechRequest = nil
-                if activeSpeechRequest?.cacheKey == queuedRequest.cacheKey {
+                pendingSpeechPrefetchRequest = nil
+                for request in abandonedRequests {
+                    finishSpeechPreparation(for: request)
+                }
+                if activeSpeechRequest?.preparationKey
+                    == queuedRequest.preparationKey {
                     naturalVoiceError = error.localizedDescription
                 }
                 break
@@ -470,19 +708,131 @@ final class SoundManager: ObservableObject {
         }
     }
 
+    private func dequeueNextSpeechRequest() -> SpeechRequest? {
+        if let request = pendingSpeechRequest {
+            pendingSpeechRequest = nil
+            currentSpeechRequest = request
+            return request
+        }
+        if let request = pendingSpeechPrefetchRequest {
+            pendingSpeechPrefetchRequest = nil
+            currentSpeechRequest = request
+            return request
+        }
+        currentSpeechRequest = nil
+        return nil
+    }
+
     private func takeRequestForSynthesis(
         fallback: SpeechRequest
     ) -> SpeechRequest? {
+        let fallbackWasAbandoned = abandonedSpeechRequestIDs.remove(
+            fallback.id
+        ) != nil
+
         if let latestRequest = pendingSpeechRequest {
             pendingSpeechRequest = nil
+            if fallback.purpose == .prefetch && fallbackWasAbandoned {
+                finishSpeechPreparation(
+                    for: fallback,
+                    shouldContinue: false
+                )
+            } else if fallback.purpose == .prefetch {
+                if pendingSpeechPrefetchRequest == nil {
+                    // A tap arrived while a silent request was waiting for the
+                    // inference gate. Preserve the prefetch for the next loop,
+                    // but let the tap go first.
+                    pendingSpeechPrefetchRequest = fallback
+                } else if let waitingPrefetch = pendingSpeechPrefetchRequest,
+                          waitingPrefetch.preparationKey
+                            != fallback.preparationKey {
+                    if fallback.isForegroundPrefetch
+                        && !waitingPrefetch.isForegroundPrefetch {
+                        pendingSpeechPrefetchRequest = fallback
+                        finishSpeechPreparation(
+                            for: waitingPrefetch,
+                            shouldContinue: false
+                        )
+                    } else {
+                        finishSpeechPreparation(
+                            for: fallback,
+                            shouldContinue: false
+                        )
+                    }
+                }
+            } else if fallback.preparationKey
+                        != latestRequest.preparationKey {
+                if pendingSpeechPrefetchRequest?.preparationKey
+                    != fallback.preparationKey {
+                    finishSpeechPreparation(
+                        for: fallback,
+                        shouldContinue: false
+                    )
+                }
+            }
             currentSpeechRequest = latestRequest
             return latestRequest
         }
 
-        guard activeSpeechRequest?.id == fallback.id else {
+        if fallbackWasAbandoned {
+            finishSpeechPreparation(
+                for: fallback,
+                shouldContinue: false
+            )
+            if let prefetchRequest = pendingSpeechPrefetchRequest {
+                pendingSpeechPrefetchRequest = nil
+                currentSpeechRequest = prefetchRequest
+                return prefetchRequest
+            }
             currentSpeechRequest = nil
             return nil
         }
+
+        switch fallback.purpose {
+        case .playback:
+            guard activeSpeechRequest?.id == fallback.id else {
+                if let prefetchRequest = pendingSpeechPrefetchRequest {
+                    pendingSpeechPrefetchRequest = nil
+                    if prefetchRequest.preparationKey
+                        != fallback.preparationKey {
+                        finishSpeechPreparation(
+                            for: fallback,
+                            shouldContinue: false
+                        )
+                    }
+                    currentSpeechRequest = prefetchRequest
+                    return prefetchRequest
+                }
+                finishSpeechPreparation(
+                    for: fallback,
+                    shouldContinue: false
+                )
+                currentSpeechRequest = nil
+                return nil
+            }
+
+        case .prefetch:
+            if let latestPrefetch = pendingSpeechPrefetchRequest {
+                if fallback.isForegroundPrefetch
+                    && !latestPrefetch.isForegroundPrefetch {
+                    // Finish the visible word first. The background request
+                    // remains queued for the following worker iteration.
+                    currentSpeechRequest = fallback
+                    return fallback
+                }
+                pendingSpeechPrefetchRequest = nil
+                if latestPrefetch.preparationKey
+                    != fallback.preparationKey {
+                    finishSpeechPreparation(
+                        for: fallback,
+                        shouldContinue: false
+                    )
+                }
+                currentSpeechRequest = latestPrefetch
+                return latestPrefetch
+            }
+        }
+
         currentSpeechRequest = fallback
         return fallback
     }
@@ -495,6 +845,10 @@ final class SoundManager: ObservableObject {
 
         case .completed(let completed):
             guard completed.request.cacheRevision == speechCacheRevision else {
+                finishSpeechPreparation(
+                    for: completed.request,
+                    shouldContinue: false
+                )
                 return
             }
             generatedSpeechCache.setObject(
@@ -505,15 +859,25 @@ final class SoundManager: ObservableObject {
 
             // A repeated tap for the same key is satisfied by the synthesis
             // that was already in progress; do not enqueue it a second time.
-            if pendingSpeechRequest?.cacheKey == completed.request.cacheKey {
+            if pendingSpeechRequest?.preparationKey
+                == completed.request.preparationKey {
                 pendingSpeechRequest = nil
             }
+            if pendingSpeechPrefetchRequest?.preparationKey
+                == completed.request.preparationKey {
+                pendingSpeechPrefetchRequest = nil
+            }
+            finishSpeechPreparation(for: completed.request)
 
-            guard activeSpeechRequest?.cacheKey == completed.request.cacheKey else {
+            guard activeSpeechRequest?.preparationKey
+                    == completed.request.preparationKey else {
                 return
             }
             do {
-                try startPlayback(completed.audio)
+                try startPlayback(
+                    completed.audio,
+                    cacheKey: completed.request.cacheKey
+                )
             } catch {
                 if shouldDiscardSpeechAudio(after: error) {
                     generatedSpeechCache.removeObject(
@@ -524,15 +888,81 @@ final class SoundManager: ObservableObject {
             }
 
         case .failed(let request, let message):
+            finishSpeechPreparation(for: request)
             guard request.cacheRevision == speechCacheRevision else {
                 return
             }
-            if pendingSpeechRequest?.cacheKey == request.cacheKey {
+            if pendingSpeechRequest?.preparationKey
+                == request.preparationKey {
                 pendingSpeechRequest = nil
             }
-            if activeSpeechRequest?.cacheKey == request.cacheKey {
+            if pendingSpeechPrefetchRequest?.preparationKey
+                == request.preparationKey {
+                pendingSpeechPrefetchRequest = nil
+            }
+            if activeSpeechRequest?.preparationKey == request.preparationKey {
                 naturalVoiceError = message
             }
+        }
+    }
+
+    private func finishSpeechPreparation(
+        for request: SpeechRequest,
+        shouldContinue: Bool = true
+    ) {
+        abandonedSpeechRequestIDs.remove(request.id)
+        let waiters = speechPreparationWaiters.removeValue(
+            forKey: request.preparationKey
+        ) ?? [:]
+        for waiter in waiters.values {
+            waiter.resume(returning: shouldContinue)
+        }
+    }
+
+    private func finishSpeechPreparationIfIdle(
+        for request: SpeechRequest,
+        shouldContinue: Bool = false
+    ) {
+        let preparationKey = request.preparationKey
+        guard currentSpeechRequest?.preparationKey != preparationKey,
+              pendingSpeechRequest?.preparationKey != preparationKey,
+              pendingSpeechPrefetchRequest?.preparationKey
+                != preparationKey else {
+            return
+        }
+        finishSpeechPreparation(
+            for: request,
+            shouldContinue: shouldContinue
+        )
+    }
+
+    private func cancelSpeechPreparationWaiter(
+        _ waiterID: UUID,
+        for preparationKey: SpeechPreparationKey
+    ) {
+        guard var waiters = speechPreparationWaiters[preparationKey],
+              let waiter = waiters.removeValue(forKey: waiterID) else {
+            return
+        }
+        waiter.resume(returning: false)
+
+        guard waiters.isEmpty else {
+            speechPreparationWaiters[preparationKey] = waiters
+            return
+        }
+        speechPreparationWaiters.removeValue(forKey: preparationKey)
+
+        if let pendingPrefetch = pendingSpeechPrefetchRequest,
+           pendingPrefetch.preparationKey == preparationKey {
+            pendingSpeechPrefetchRequest = nil
+        }
+        if let currentRequest = currentSpeechRequest,
+           currentRequest.purpose == .prefetch,
+           currentRequest.preparationKey == preparationKey {
+            // `takeRequestForSynthesis` checks this after it acquires the gate.
+            // If Core ML has already started, the request simply finishes into
+            // cache and playback remains disabled.
+            abandonedSpeechRequestIDs.insert(currentRequest.id)
         }
     }
     #endif

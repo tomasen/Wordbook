@@ -18,12 +18,6 @@ class SharingViewModel: ObservableObject {
     var shareViewRect: CGRect = CGRect.zero
     var systemSharingImage: UIImage?
     
-    private let colorPlate = ["shareFont1", "shareFont2", "shareFont3",
-                      "shareFont1", "shareFont5"]
-    private let fontPlate = [ "SFProText-Bold",
-                      "SFProText-Medium", "SFProText-Regular", "SFProText-Semibold"]
-    
-    
     var wordsOfToday: [WordElement] {
         var words = [WordElement]()
         
@@ -39,24 +33,25 @@ class SharingViewModel: ObservableObject {
             return first.value < second.value
         }
         
-        let maxRating = sortedOne.last!.value
-        let minRating = sortedOne.first!.value
-        let ratingRange = maxRating - minRating
-        for (step, word) in sortedOne.reversed().enumerated() {
-            let normalizedRating: CGFloat
-            if ratingRange == 0 {
-                normalizedRating = 0.5
-            } else {
-                normalizedRating = CGFloat(word.value - minRating) / CGFloat(ratingRange)
-            }
-            // A square-root curve preserves the emphasis on difficult words
-            // without making the middle of the cloud look under-filled.
-            let fontSize = 20 + 40 * sqrt(normalizedRating)
+        let maximumDifficulty = max(sortedOne.last!.value, 0)
+        for word in sortedOne.reversed() {
+            let normalizedDifficulty = WordCloudDifficultyScale.normalizedDifficulty(
+                for: word.value,
+                maximumDifficultyScore: maximumDifficulty
+            )
+            let fontSize = WordCloudDifficultyScale.fontSize(
+                for: word.value,
+                maximumDifficultyScore: maximumDifficulty
+            )
+            let visualStyle = WordCloudVisualStyle(
+                normalizedDifficulty: normalizedDifficulty
+            )
             words.append(
                 WordElement(text: word.key,
-                            color: Color(colorPlate[step % colorPlate.count]),
-                            fontName: fontPlate[step % fontPlate.count],
-                            fontSize: fontSize)
+                            color: Color(visualStyle.colorName),
+                            fontName: visualStyle.fontName,
+                            fontSize: fontSize,
+                            difficultyScore: word.value)
             )
         }
 #if targetEnvironment(simulator)
@@ -65,6 +60,28 @@ class SharingViewModel: ObservableObject {
         }
 #endif
         return words
+    }
+
+    /// Reinforces the confidence hierarchy without introducing a second,
+    /// unrelated rank-based visual order. Difficult words are brighter and
+    /// heavier; familiar words remain quieter.
+    private struct WordCloudVisualStyle {
+        let colorName: String
+        let fontName: String
+
+        init(normalizedDifficulty: CGFloat) {
+            switch normalizedDifficulty {
+            case 0.67...:
+                colorName = "shareFont5"
+                fontName = "SFProText-Bold"
+            case 0.25...:
+                colorName = "shareFont1"
+                fontName = "SFProText-Medium"
+            default:
+                colorName = "shareFont2"
+                fontName = "SFProText-Regular"
+            }
+        }
     }
     
     var todayDate: Date {

@@ -10,6 +10,10 @@ import SwiftUI
 @main
 struct WatchApp: App {
     private let pushReceiver = PushNotificationReceiver.shared
+
+    init() {
+        WatchEntrySnapshotBridge.shared.activate()
+    }
     
     @SceneBuilder var body: some Scene {
         WindowGroup {

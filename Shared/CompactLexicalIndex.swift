@@ -1,5 +1,26 @@
 import Foundation
 
+/// Deterministic lexical checks shared by local-tutor validation. Prompt text
+/// requests the exact spelling, and this boundary-aware check enforces it before
+/// generated content reaches the learner.
+enum LexicalTextMatcher {
+    static func containsExactSpelling(_ spelling: String, in text: String) -> Bool {
+        let target = spelling.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !target.isEmpty, !text.isEmpty else { return false }
+
+        let escapedTarget = NSRegularExpression.escapedPattern(for: target)
+        let pattern = #"(?<![A-Za-z0-9])\#(escapedTarget)(?![A-Za-z0-9])"#
+        guard let expression = try? NSRegularExpression(
+            pattern: pattern,
+            options: [.caseInsensitive]
+        ) else {
+            return false
+        }
+        let range = NSRange(text.startIndex..., in: text)
+        return expression.firstMatch(in: text, options: [], range: range) != nil
+    }
+}
+
 /// A read-only, memory-mapped index of English spellings, aliases, and
 /// vocabulary-book membership. It deliberately contains no definitions,
 /// pronunciation audio, or other dictionary content.

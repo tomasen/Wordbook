@@ -26,13 +26,20 @@ struct SimpleWordView: View {
     
     private let viewModel = SimpleWordViewModel()
     @StateObject private var explanationViewModel = CardViewModel()
+
+    private var displayedWord: String {
+        explanationViewModel.word.isEmpty ? word : explanationViewModel.word
+    }
     
     var body: some View {
         VStack{
             Button {
-                soundManager.playTTS(word)
+                soundManager.playTTS(
+                    displayedWord,
+                    phonemes: explanationViewModel.preferredPronunciationPhonemes
+                )
             } label: {
-                Text(word)
+                Text(displayedWord)
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
             }
@@ -40,7 +47,7 @@ struct SimpleWordView: View {
             .customFont(name: "AvenirNext-Medium", style: .largeTitle, weight: .medium)
             .foregroundColor(Color("fontTitle"))
             .padding(17.6)
-            .accessibilityLabel("Pronounce \(word)")
+            .accessibilityLabel("Pronounce \(displayedWord)")
             .accessibilityHint("Plays the natural voice pronunciation")
             
             ScrollView(.vertical) {
@@ -50,10 +57,13 @@ struct SimpleWordView: View {
             HStack{
                 Spacer()
                 Button(action: {
-                    viewModel.addToWordbook(word)
+                    viewModel.addToWordbook(displayedWord)
                     closeMyself.toggle()
                 }) {
-                    Text( viewModel.isWordAlreadyExistInWordbook(word) ? "BUMP" : "ADD")
+                    Text(
+                        viewModel.isWordAlreadyExistInWordbook(displayedWord)
+                            ? "BUMP" : "ADD"
+                    )
                 }
                 Spacer()
                 Divider()
@@ -75,7 +85,29 @@ struct SimpleWordView: View {
             explanationViewModel.word = word
             explanationViewModel.fetchExplain()
         }
+        .task(id: explanationViewModel.word) {
+            let wordToPrepare = explanationViewModel.word.trimmingCharacters(
+                in: .whitespacesAndNewlines
+            )
+            guard !wordToPrepare.isEmpty else { return }
+
+            let phonemes = await EntryExplanationRuntime.shared
+                .preferredLocalPronunciationPhonemes(for: wordToPrepare)
+            guard !Task.isCancelled,
+                  explanationViewModel.word.trimmingCharacters(
+                    in: .whitespacesAndNewlines
+                  ) == wordToPrepare else { return }
+            _ = await soundManager.preparePronunciation(
+                wordToPrepare,
+                phonemes: phonemes,
+                foreground: true
+            )
+        }
         .onDisappear {
+            soundManager.stopPronunciation(
+                for: displayedWord,
+                phonemes: explanationViewModel.preferredPronunciationPhonemes
+            )
             explanationViewModel.cancelExplanation()
         }
         .alert(isPresented: Binding(

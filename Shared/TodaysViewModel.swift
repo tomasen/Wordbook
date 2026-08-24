@@ -24,6 +24,10 @@ class TodaysViewModel: ObservableObject {
     @Published var totalLearningDays: Int = 0
     
     @Published var goal: Int16 = 15
+
+    var studyDayStartTimeString: String {
+        WordManager.shared.studyDayStartTimeString()
+    }
     
     private let moc = CoreDataManager.shared.container.viewContext
     
@@ -43,6 +47,17 @@ class TodaysViewModel: ObservableObject {
         queue = max(goal - e.working - e.good, 0)
 
         let nextWord = WordManager.shared.prepareNextStudyWord()
-        LocalTutorManager.shared.prefetchExplanation(for: nextWord)
+        #if WORDBOOK_EXPLANATION_REPOSITORY
+        EntryExplanationRuntime.shared.prefetchEntry(for: nextWord)
+        Task { @MainActor in
+            let phonemes = await EntryExplanationRuntime.shared
+                .preferredLocalPronunciationPhonemes(for: nextWord)
+            guard !Task.isCancelled else { return }
+            _ = await SoundManager.shared.preparePronunciation(
+                nextWord,
+                phonemes: phonemes
+            )
+        }
+        #endif
     }
 }

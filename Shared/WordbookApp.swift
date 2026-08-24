@@ -14,6 +14,12 @@ struct WordbookApp: App {
     private let persistenceController = CoreDataManager.shared
     private let pushReceiver = PushNotificationReceiver.shared
 
+    init() {
+        #if os(iOS)
+        WatchEntrySnapshotBridge.shared.activate()
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             WordbookRootView()
@@ -26,6 +32,9 @@ struct WordbookApp: App {
                         PausableTimer.shared.resume()
                         addingNewWordsFromShareExtension()
                         CoreDataManager.shared.refreshAndSync()
+                        #if os(iOS)
+                        publishWatchEntrySnapshots()
+                        #endif
                         print("scene is now active!")
                         
                     case .inactive, .background:
@@ -39,6 +48,32 @@ struct WordbookApp: App {
                     }
                 }
     }
+
+    #if os(iOS)
+    /// Makes a representative slice of all three Watch lists available
+    /// offline. Interleaving prevents one long list from consuming the whole
+    /// bounded Entry archive before the other Watch pages are represented.
+    private func publishWatchEntrySnapshots() {
+        let lists = [
+            WordManager.shared.learnedRecentlyWordList(fetchLimit: 20)
+                .words.array(),
+            WordManager.shared.addedRecentlyWordList(fetchLimit: 20)
+                .words.array(),
+            WordManager.shared.queueWordList(fetchLimit: 20)
+                .words.array()
+        ]
+        let longestList = lists.map(\.count).max() ?? 0
+        var interleaved: [String] = []
+        for index in 0..<longestList {
+            for list in lists where index < list.count {
+                interleaved.append(list[index])
+            }
+        }
+        WatchEntrySnapshotBridge.shared.publishLocallyAvailableEntries(
+            for: interleaved
+        )
+    }
+    #endif
     
     func addingNewWordsFromShareExtension() {
         // sort the word list first
@@ -118,53 +153,88 @@ struct WordbookApp: App {
 
 private struct WordbookRootView: View {
     @ObservedObject private var soundManager = SoundManager.shared
-    @ObservedObject private var tutorManager = LocalTutorManager.shared
+    @State private var explanationLibraryState: ExplanationLibraryPreparationState = .checking
 
     var body: some View {
-        #if WORDBOOK_LOCAL_LLM
+        #if WORDBOOK_NATURAL_VOICE
         Group {
-            if tutorManager.isReady && isNaturalVoicePrepared {
+            if soundManager.isNaturalVoiceReady && explanationLibraryState.isReady {
                 MasterView()
             } else {
                 PreparationView(
                     soundManager: soundManager,
-                    tutorManager: tutorManager
+                    explanationLibraryState: explanationLibraryState,
+                    retryExplanationLibrary: retryExplanationLibrary
                 )
             }
         }
         .task {
-            tutorManager.prepare()
-            #if WORDBOOK_NATURAL_VOICE
             soundManager.prepareNaturalVoice()
-            #endif
+            await prepareExplanationLibrary()
         }
         #else
         MasterView()
         #endif
     }
 
-    private var isNaturalVoicePrepared: Bool {
-        #if WORDBOOK_NATURAL_VOICE
-        soundManager.isNaturalVoiceReady
-        #else
-        true
-        #endif
+    private func retryExplanationLibrary() {
+        Task {
+            await prepareExplanationLibrary()
+        }
+    }
+
+    private func prepareExplanationLibrary() async {
+        guard !explanationLibraryState.isReady else { return }
+        explanationLibraryState = .checking
+        let result = await Task.detached(priority: .userInitiated) {
+            let runtime = EntryExplanationRuntime.shared
+            if runtime.repository != nil {
+                // Start the single process-level outbox pass as soon as the
+                // Entry repository has passed launch preflight. Delivery is
+                // asynchronous and does not hold the preparation gate open.
+                runtime.deliverPendingFeedbackOnce()
+                return ExplanationLibraryPreparationState.ready
+            }
+            return ExplanationLibraryPreparationState.failed(
+                runtime.initializationError
+                    ?? "The reviewed explanation library is unavailable."
+            )
+        }.value
+        guard !Task.isCancelled else { return }
+        explanationLibraryState = result
     }
 }
 
-#if WORDBOOK_LOCAL_LLM
+private enum ExplanationLibraryPreparationState: Equatable, Sendable {
+    case checking
+    case ready
+    case failed(String)
+
+    var isReady: Bool {
+        if case .ready = self { return true }
+        return false
+    }
+
+    var error: String? {
+        if case .failed(let message) = self { return message }
+        return nil
+    }
+}
+
+#if WORDBOOK_NATURAL_VOICE
 private struct PreparationView: View {
     @ObservedObject var soundManager: SoundManager
-    @ObservedObject var tutorManager: LocalTutorManager
+    let explanationLibraryState: ExplanationLibraryPreparationState
+    let retryExplanationLibrary: () -> Void
     @State private var preparationStartedAt = Date()
 
     private var error: String? {
-        tutorManager.preparationError ?? soundManager.naturalVoiceError
+        explanationLibraryState.error ?? soundManager.naturalVoiceError
     }
 
     private var preparationStatus: String {
-        if !tutorManager.isReady {
-            return tutorManager.preparationStatus
+        if !explanationLibraryState.isReady {
+            return "Checking explanation library…"
         }
         if !soundManager.isNaturalVoiceReady {
             return soundManager.naturalVoicePreparationStatus
@@ -193,7 +263,7 @@ private struct PreparationView: View {
                     VStack(spacing: 10) {
                         Text("Getting Wordbook ready")
                             .font(.title2.weight(.semibold))
-                        Text("Setting up the local language model and pronunciation on this device.")
+                        Text("Setting up pronunciation on this device.")
                             .font(.subheadline)
                             .foregroundColor(Color("fontGray"))
                             .multilineTextAlignment(.center)
@@ -203,11 +273,7 @@ private struct PreparationView: View {
                     if let error {
                         errorPanel(error)
                     } else {
-                        statusPanel
-                        Text("Initial setup can take a little longer.")
-                            .font(.footnote)
-                            .foregroundColor(Color("fontGray"))
-                            .multilineTextAlignment(.center)
+                        statusLine
                     }
                 }
                 .frame(maxWidth: 480)
@@ -217,15 +283,20 @@ private struct PreparationView: View {
 
                 if error == nil {
                     TimelineView(.periodic(from: .now, by: 1)) { context in
-                        HStack(spacing: 5) {
-                            Image(systemName: "clock")
-                            Text(elapsedText(at: context.date))
+                        VStack(spacing: 8) {
+                            Text("Initial setup can take a little longer.")
+                                .font(.footnote)
+
+                            HStack(spacing: 5) {
+                                Image(systemName: "clock")
+                                Text(elapsedText(at: context.date))
+                            }
+                            .font(.caption2.monospacedDigit())
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabel("Setup time")
+                            .accessibilityValue(elapsedAccessibilityText(at: context.date))
                         }
-                        .font(.caption2.monospacedDigit())
                         .foregroundColor(Color("fontGray").opacity(0.75))
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityLabel("Setup time")
-                        .accessibilityValue(elapsedAccessibilityText(at: context.date))
                     }
                     .padding(.bottom, 22)
                 }
@@ -234,18 +305,16 @@ private struct PreparationView: View {
         }
     }
 
-    private var statusPanel: some View {
-        HStack(spacing: 14) {
+    private var statusLine: some View {
+        HStack(spacing: 10) {
             ProgressView()
                 .controlSize(.small)
-                .tint(Color("fontLink"))
+                .tint(Color("fontLink").opacity(0.85))
             Text(preparationStatus)
-                .font(.body.weight(.medium))
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .font(.subheadline)
         }
-        .padding(.horizontal, 18)
-        .frame(minHeight: 62)
-        .background(panelBackground)
+        .foregroundColor(Color("fontGray"))
+        .frame(minHeight: 26)
     }
 
     private func errorPanel(_ message: String) -> some View {
@@ -260,11 +329,11 @@ private struct PreparationView: View {
                 .fixedSize(horizontal: false, vertical: true)
             Button("Try Again") {
                 preparationStartedAt = Date()
-                if tutorManager.preparationError != nil {
-                    tutorManager.retryPreparation()
-                }
                 if soundManager.naturalVoiceError != nil {
                     soundManager.retryNaturalVoicePreparation()
+                }
+                if explanationLibraryState.error != nil {
+                    retryExplanationLibrary()
                 }
             }
             .buttonStyle(.borderedProminent)

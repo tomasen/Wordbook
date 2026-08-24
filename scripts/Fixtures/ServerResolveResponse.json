@@ -1,0 +1,43 @@
+{
+  "form": "ran",
+  "normalizedForm": "ran",
+  "lemma": "run",
+  "partOfSpeech": "v",
+  "senseID": "source:sense-alpha",
+  "forms": [
+    {
+      "normalizedForm": "run",
+      "displayForm": "run",
+      "morphology": "lemma",
+      "rank": 0
+    },
+    {
+      "normalizedForm": "running",
+      "displayForm": "running",
+      "morphology": "presentParticiple",
+      "rank": 20
+    },
+    {
+      "normalizedForm": "ran",
+      "displayForm": "ran",
+      "morphology": ["past", "pastParticiple"],
+      "rank": 30
+    }
+  ],
+  "explanation": {
+    "id": "exp_114e2627389c88a09c846bc58b3b6a5d79c250b76a7ae3c9224372251eadde89",
+    "senseID": "source:sense-alpha",
+    "schemaVersion": 1,
+    "contentHash": "2f95c4d347a8783e10c6bd0d68a35f9581b2b8b3803907a8758d3e594229f704",
+    "content": {
+      "senseID": "source:sense-alpha",
+      "partOfSpeech": "v",
+      "meaning": "moved quickly using the feet in the past",
+      "memoryTechnique": null,
+      "memoryAid": [],
+      "example": "She ran home before sunset.",
+      "synonyms": ["sprint"]
+    },
+    "source": "content_pack"
+  }
+}

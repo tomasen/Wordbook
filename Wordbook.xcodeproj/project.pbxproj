@@ -27,6 +27,33 @@
 		A20000412F20000100000001 /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = A20001112F20000100000001 /* MLXLMCommon */; };
 		A20000422F20000100000001 /* MLXGuidedGeneration in Frameworks */ = {isa = PBXBuildFile; productRef = A20001122F20000100000001 /* MLXGuidedGeneration */; };
 		A20000432F20000100000001 /* Tokenizers in Frameworks */ = {isa = PBXBuildFile; productRef = A20001132F20000100000001 /* Tokenizers */; };
+		A30000102F30000100000001 /* ExplanationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30000012F30000100000001 /* ExplanationModels.swift */; };
+		A30000112F30000100000001 /* ExplanationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30000012F30000100000001 /* ExplanationModels.swift */; };
+		A30000122F30000100000001 /* ExplanationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30000012F30000100000001 /* ExplanationModels.swift */; };
+		A30000132F30000100000001 /* ExplanationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30000012F30000100000001 /* ExplanationModels.swift */; };
+		A30000202F30000100000001 /* SQLiteReadOnlyDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30000022F30000100000001 /* SQLiteReadOnlyDatabase.swift */; };
+		A30000212F30000100000001 /* SQLiteReadOnlyDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30000022F30000100000001 /* SQLiteReadOnlyDatabase.swift */; };
+		A30000302F30000100000001 /* OfflineExplanationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30000032F30000100000001 /* OfflineExplanationStore.swift */; };
+		A30000312F30000100000001 /* OfflineExplanationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30000032F30000100000001 /* OfflineExplanationStore.swift */; };
+		A80000102F80000100000001 /* NormalizationV1.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80000012F80000100000001 /* NormalizationV1.generated.swift */; };
+		A80000112F80000100000001 /* NormalizationV1.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80000012F80000100000001 /* NormalizationV1.generated.swift */; };
+		A80000122F80000100000001 /* NormalizationV1.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80000012F80000100000001 /* NormalizationV1.generated.swift */; };
+		A80000132F80000100000001 /* NormalizationV1.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A80000012F80000100000001 /* NormalizationV1.generated.swift */; };
+		A40000102F40000100000001 /* SQLiteWritableDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40000012F40000100000001 /* SQLiteWritableDatabase.swift */; };
+		A40000112F40000100000001 /* SQLiteWritableDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40000012F40000100000001 /* SQLiteWritableDatabase.swift */; };
+		A40000202F40000100000001 /* ExplanationOverlayStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40000022F40000100000001 /* ExplanationOverlayStore.swift */; };
+		A40000212F40000100000001 /* ExplanationOverlayStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40000022F40000100000001 /* ExplanationOverlayStore.swift */; };
+		A50000102F50000100000001 /* ExplanationServerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000012F50000100000001 /* ExplanationServerClient.swift */; };
+		A50000112F50000100000001 /* ExplanationServerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000012F50000100000001 /* ExplanationServerClient.swift */; };
+		A50000202F50000100000001 /* ExplanationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000022F50000100000001 /* ExplanationRepository.swift */; };
+		A50000212F50000100000001 /* ExplanationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000022F50000100000001 /* ExplanationRepository.swift */; };
+		A60000102F60000100000001 /* ExplanationRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60000012F60000100000001 /* ExplanationRuntime.swift */; };
+		A60000112F60000100000001 /* ExplanationRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60000012F60000100000001 /* ExplanationRuntime.swift */; };
+		A70000102F70000100000001 /* wordbook-content.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = A70000012F70000100000001 /* wordbook-content.sqlite */; };
+		A70000112F70000100000001 /* wordbook-content.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = A70000012F70000100000001 /* wordbook-content.sqlite */; };
+		B10000102F90000100000001 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B10000012F90000100000001 /* PrivacyInfo.xcprivacy */; };
+		B10000112F90000100000001 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B10000022F90000100000001 /* PrivacyInfo.xcprivacy */; };
+		B10000122F90000100000001 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B10000032F90000100000001 /* PrivacyInfo.xcprivacy */; };
 		88039BE8278AD5C7008EE125 /* WatchWordListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88039BE7278AD5C7008EE125 /* WatchWordListViewModel.swift */; };
 		8803F37D276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
 		8803F37E276F2B1200E46DAF /* SharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8803F37C276F2B1200E46DAF /* SharingViewModel.swift */; };
@@ -40,7 +67,7 @@
 		88129528277F1EEC008F1B1B /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88129527277F1EEC008F1B1B /* ComplicationController.swift */; };
 		8812952A277F1EEC008F1B1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88129529277F1EEC008F1B1B /* Assets.xcassets */; };
 		8812952D277F1EEC008F1B1B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8812952C277F1EEC008F1B1B /* Preview Assets.xcassets */; };
-		88129532277F1EEC008F1B1B /* Wordbook.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 88129512277F1EEA008F1B1B /* Wordbook.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		88129532277F1EEC008F1B1B /* Wordbook.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 88129512277F1EEA008F1B1B /* Wordbook.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8812953B277F1F19008F1B1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88E02DF627061D270015ECEA /* Assets.xcassets */; };
 		8812953C277F26B9008F1B1B /* Wordbook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8833AC11274FE35800637B61 /* Wordbook.xcdatamodeld */; };
 		8812953E277F26DF008F1B1B /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8812953D277F26DF008F1B1B /* CloudKit.framework */; };
@@ -130,7 +157,6 @@
 		888C3CAB2750B8BF003CE213 /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CA92750B8BF003CE213 /* ViewHelper.swift */; };
 		888C3CAC2750B8BF003CE213 /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CA92750B8BF003CE213 /* ViewHelper.swift */; };
 		888C3CAE2750BBF7003CE213 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 888C3CAD2750BBF7003CE213 /* LaunchScreen.storyboard */; };
-		888C3CAF2750BBF7003CE213 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 888C3CAD2750BBF7003CE213 /* LaunchScreen.storyboard */; };
 		888C3CB02750BBF7003CE213 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 888C3CAD2750BBF7003CE213 /* LaunchScreen.storyboard */; };
 		888C3CB22750C865003CE213 /* WordListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CB12750C865003CE213 /* WordListViewModel.swift */; };
 		888C3CB32750C865003CE213 /* WordListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888C3CB12750C865003CE213 /* WordListViewModel.swift */; };
@@ -271,6 +297,19 @@
 		A20000022F20000100000001 /* CompactLexicalIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactLexicalIndex.swift; sourceTree = "<group>"; };
 		A20000032F20000100000001 /* lexical-index.wbli */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lexical-index.wbli"; sourceTree = "<group>"; };
 		A20000042F20000100000001 /* LocalModels */ = {isa = PBXFileReference; lastKnownFileType = folder; path = LocalModels; sourceTree = "<group>"; };
+		A30000012F30000100000001 /* ExplanationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationModels.swift; sourceTree = "<group>"; };
+		A30000022F30000100000001 /* SQLiteReadOnlyDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteReadOnlyDatabase.swift; sourceTree = "<group>"; };
+		A30000032F30000100000001 /* OfflineExplanationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineExplanationStore.swift; sourceTree = "<group>"; };
+		A80000012F80000100000001 /* NormalizationV1.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalizationV1.generated.swift; sourceTree = "<group>"; };
+		A40000012F40000100000001 /* SQLiteWritableDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteWritableDatabase.swift; sourceTree = "<group>"; };
+		A40000022F40000100000001 /* ExplanationOverlayStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationOverlayStore.swift; sourceTree = "<group>"; };
+		A50000012F50000100000001 /* ExplanationServerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationServerClient.swift; sourceTree = "<group>"; };
+		A50000022F50000100000001 /* ExplanationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationRepository.swift; sourceTree = "<group>"; };
+		A60000012F60000100000001 /* ExplanationRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationRuntime.swift; sourceTree = "<group>"; };
+		A70000012F70000100000001 /* wordbook-content.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "wordbook-content.sqlite"; sourceTree = "<group>"; };
+		B10000012F90000100000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		B10000022F90000100000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		B10000032F90000100000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		88039BE7278AD5C7008EE125 /* WatchWordListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWordListViewModel.swift; sourceTree = "<group>"; };
 		88039BEA278B00A7008EE125 /* WatchCoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WatchCoreDataModel.xcdatamodel; sourceTree = "<group>"; };
 		8803F37C276F2B1200E46DAF /* SharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingViewModel.swift; sourceTree = "<group>"; };
@@ -442,6 +481,7 @@
 		8812951E277F1EEC008F1B1B /* WatchKit Extension */ = {
 			isa = PBXGroup;
 			children = (
+				B10000032F90000100000001 /* PrivacyInfo.xcprivacy */,
 				88039BE6278AD5A6008EE125 /* View Models */,
 				88129540277F280F008F1B1B /* WatchKit Extension.entitlements */,
 				8812951F277F1EEC008F1B1B /* WatchApp.swift */,
@@ -486,6 +526,13 @@
 		8833ABF0274F34F300637B61 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A30000012F30000100000001 /* ExplanationModels.swift */,
+				A80000012F80000100000001 /* NormalizationV1.generated.swift */,
+				A30000032F30000100000001 /* OfflineExplanationStore.swift */,
+				A40000022F40000100000001 /* ExplanationOverlayStore.swift */,
+				A50000012F50000100000001 /* ExplanationServerClient.swift */,
+				A50000022F50000100000001 /* ExplanationRepository.swift */,
+				A60000012F60000100000001 /* ExplanationRuntime.swift */,
 				A20000012F20000100000001 /* LocalTutor.swift */,
 				884EE6E6277461120038E990 /* UserPreferences.swift */,
 				884EE6E027745E840038E990 /* InAppPurchaseManager.swift */,
@@ -525,6 +572,7 @@
 		8833AC20274FE90400637B61 /* ShareExtension */ = {
 			isa = PBXGroup;
 			children = (
+				B10000022F90000100000001 /* PrivacyInfo.xcprivacy */,
 				88F25289277CD9F00046BA15 /* SharedExtensionView.swift */,
 				8833AC2A274FE90400637B61 /* ShareExtension.entitlements */,
 				8833AC21274FE90400637B61 /* ShareViewController.swift */,
@@ -564,6 +612,8 @@
 		884EE6F6277577B50038E990 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				B10000012F90000100000001 /* PrivacyInfo.xcprivacy */,
+				A70000012F70000100000001 /* wordbook-content.sqlite */,
 				88E9571327B028770032742E /* eula.txt */,
 				8874799C27876F9200C66E85 /* privacy.txt */,
 				884EE6F8277577CF0038E990 /* about.txt */,
@@ -594,6 +644,8 @@
 			children = (
 				A10000112F12345600000001 /* NaturalVoiceAssets.swift */,
 				A20000022F20000100000001 /* CompactLexicalIndex.swift */,
+				A30000022F30000100000001 /* SQLiteReadOnlyDatabase.swift */,
+				A40000012F40000100000001 /* SQLiteWritableDatabase.swift */,
 				88F2528B277CDA0E0046BA15 /* WordFilter.swift */,
 				88F517D527553EED004C174B /* Helper.swift */,
 				884EE7032775C0630038E990 /* PausableTimer.swift */,
@@ -639,9 +691,7 @@
 			isa = PBXGroup;
 			children = (
 				88E02DFB27061D270015ECEA /* Wordbook.app */,
-				88E02E0127061D270015ECEA /* Wordbook.app */,
 				88E02E0827061D280015ECEA /* Tests iOS.xctest */,
-				88E02E1427061D280015ECEA /* Tests macOS.xctest */,
 				8833AC1F274FE90400637B61 /* ShareExtension.appex */,
 				88129512277F1EEA008F1B1B /* Wordbook.app */,
 				8812951A277F1EEC008F1B1B /* WatchKit Extension.appex */,
@@ -759,6 +809,7 @@
 			buildPhases = (
 				88E02DF727061D270015ECEA /* Sources */,
 				88E02DF827061D270015ECEA /* Frameworks */,
+				C20000012FA0000100000001 /* Validate Release Content */,
 				88E02DF927061D270015ECEA /* Resources */,
 				8833AC2E274FE90400637B61 /* Embed App Extensions */,
 				88129533277F1EEC008F1B1B /* Embed Watch Content */,
@@ -865,16 +916,9 @@
 					88E02DFA27061D270015ECEA = {
 						CreatedOnToolsVersion = 13.0;
 					};
-					88E02E0027061D270015ECEA = {
-						CreatedOnToolsVersion = 13.0;
-					};
 					88E02E0727061D280015ECEA = {
 						CreatedOnToolsVersion = 13.0;
 						TestTargetID = 88E02DFA27061D270015ECEA;
-					};
-					88E02E1327061D280015ECEA = {
-						CreatedOnToolsVersion = 13.0;
-						TestTargetID = 88E02E0027061D270015ECEA;
 					};
 				};
 			};
@@ -901,9 +945,7 @@
 			projectRoot = "";
 			targets = (
 				88E02DFA27061D270015ECEA /* Wordbook (iOS) */,
-				88E02E0027061D270015ECEA /* Wordbook (macOS) */,
 				88E02E0727061D280015ECEA /* Tests iOS */,
-				88E02E1327061D280015ECEA /* Tests macOS */,
 				8833AC1E274FE90400637B61 /* ShareExtension */,
 				88129511277F1EEA008F1B1B /* WatchApp */,
 				88129519277F1EEC008F1B1B /* WatchKit Extension */,
@@ -925,6 +967,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B10000122F90000100000001 /* PrivacyInfo.xcprivacy in Resources */,
 				A20000322F20000100000001 /* lexical-index.wbli in Resources */,
 				8812952D277F1EEC008F1B1B /* Preview Assets.xcassets in Resources */,
 				8812953B277F1F19008F1B1B /* Assets.xcassets in Resources */,
@@ -936,6 +979,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B10000112F90000100000001 /* PrivacyInfo.xcprivacy in Resources */,
 				A20000332F20000100000001 /* lexical-index.wbli in Resources */,
 				888C3CB02750BBF7003CE213 /* LaunchScreen.storyboard in Resources */,
 				884EE6FB277577CF0038E990 /* plans.txt in Resources */,
@@ -957,6 +1001,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B10000102F90000100000001 /* PrivacyInfo.xcprivacy in Resources */,
+				A70000102F70000100000001 /* wordbook-content.sqlite in Resources */,
 				A10000142F12345600000001 /* NaturalVoiceModels in Resources */,
 				A20000302F20000100000001 /* lexical-index.wbli in Resources */,
 				A20000342F20000100000001 /* LocalModels in Resources */,
@@ -982,10 +1028,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A70000112F70000100000001 /* wordbook-content.sqlite in Resources */,
 				A20000312F20000100000001 /* lexical-index.wbli in Resources */,
 				884EE6DC2770D8710038E990 /* SF-Pro-Text-Semibold.otf in Resources */,
 				884EE6D02770D8710038E990 /* SF-Pro-Text-Regular.otf in Resources */,
-				888C3CAF2750BBF7003CE213 /* LaunchScreen.storyboard in Resources */,
 				8874799E27876F9200C66E85 /* privacy.txt in Resources */,
 				884EE6DA2770D8710038E990 /* SF-Pro-Text-Heavy.otf in Resources */,
 				884EE6CC2770D8710038E990 /* SF-Pro-Text-Bold.otf in Resources */,
@@ -1017,11 +1063,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		C20000012FA0000100000001 /* Validate Release Content */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Shared/wordbook-content.sqlite",
+				"$(SRCROOT)/scripts/validate_release_content_pack.py",
+				"$(WORDBOOK_CONTENT_BUILD_RECEIPT_PATH)",
+			);
+			name = "Validate Release Content";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\n\nif [ \"${CONFIGURATION}\" != \"Release\" ]; then\n    exit 0\nfi\n\nexec /usr/bin/python3 \"${SRCROOT}/scripts/validate_release_content_pack.py\" \\\n    --pack \"${SRCROOT}/Shared/wordbook-content.sqlite\" \\\n    --receipt \"${WORDBOOK_CONTENT_BUILD_RECEIPT_PATH}\" \\\n    --app-build \"${CURRENT_PROJECT_VERSION}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		88129516277F1EEC008F1B1B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A30000122F30000100000001 /* ExplanationModels.swift in Sources */,
+				A80000122F80000100000001 /* NormalizationV1.generated.swift in Sources */,
 				A20000122F20000100000001 /* LocalTutor.swift in Sources */,
 				A20000222F20000100000001 /* CompactLexicalIndex.swift in Sources */,
 				88129524277F1EEC008F1B1B /* NotificationController.swift in Sources */,
@@ -1051,6 +1125,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A30000132F30000100000001 /* ExplanationModels.swift in Sources */,
+				A80000132F80000100000001 /* NormalizationV1.generated.swift in Sources */,
 				A20000132F20000100000001 /* LocalTutor.swift in Sources */,
 				A20000232F20000100000001 /* CompactLexicalIndex.swift in Sources */,
 				88F2528A277CD9F00046BA15 /* SharedExtensionView.swift in Sources */,
@@ -1082,6 +1158,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000122F12345600000001 /* NaturalVoiceAssets.swift in Sources */,
+				A30000102F30000100000001 /* ExplanationModels.swift in Sources */,
+				A30000202F30000100000001 /* SQLiteReadOnlyDatabase.swift in Sources */,
+				A80000102F80000100000001 /* NormalizationV1.generated.swift in Sources */,
+				A30000302F30000100000001 /* OfflineExplanationStore.swift in Sources */,
+				A40000102F40000100000001 /* SQLiteWritableDatabase.swift in Sources */,
+				A40000202F40000100000001 /* ExplanationOverlayStore.swift in Sources */,
+				A50000102F50000100000001 /* ExplanationServerClient.swift in Sources */,
+				A50000202F50000100000001 /* ExplanationRepository.swift in Sources */,
+				A60000102F60000100000001 /* ExplanationRuntime.swift in Sources */,
 				A20000102F20000100000001 /* LocalTutor.swift in Sources */,
 				A20000202F20000100000001 /* CompactLexicalIndex.swift in Sources */,
 				8833AC13274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
@@ -1121,6 +1206,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A30000112F30000100000001 /* ExplanationModels.swift in Sources */,
+				A30000212F30000100000001 /* SQLiteReadOnlyDatabase.swift in Sources */,
+				A80000112F80000100000001 /* NormalizationV1.generated.swift in Sources */,
+				A30000312F30000100000001 /* OfflineExplanationStore.swift in Sources */,
+				A40000112F40000100000001 /* SQLiteWritableDatabase.swift in Sources */,
+				A40000212F40000100000001 /* ExplanationOverlayStore.swift in Sources */,
+				A50000112F50000100000001 /* ExplanationServerClient.swift in Sources */,
+				A50000212F50000100000001 /* ExplanationRepository.swift in Sources */,
+				A60000112F60000100000001 /* ExplanationRuntime.swift in Sources */,
 				A20000112F20000100000001 /* LocalTutor.swift in Sources */,
 				A20000212F20000100000001 /* CompactLexicalIndex.swift in Sources */,
 				8833AC14274FE35800637B61 /* Wordbook.xcdatamodeld in Sources */,
@@ -1184,6 +1278,7 @@
 		};
 		88129531277F1EEC008F1B1B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 88129511277F1EEA008F1B1B /* WatchApp */;
 			targetProxy = 88129530277F1EEC008F1B1B /* PBXContainerItemProxy */;
 		};
@@ -1615,11 +1710,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WORDBOOK_NATURAL_VOICE WORDBOOK_LOCAL_LLM";
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WORDBOOK_NATURAL_VOICE WORDBOOK_LOCAL_LLM WORDBOOK_EXPLANATION_REPOSITORY";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WORDBOOK_CONTENT_BUILD_RECEIPT_PATH = "$(SRCROOT)/scripts/Fixtures/debug-content-build-receipt-placeholder.json";
 			};
 			name = Debug;
 		};
@@ -1652,12 +1750,15 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WORDBOOK_NATURAL_VOICE WORDBOOK_LOCAL_LLM";
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WORDBOOK_NATURAL_VOICE WORDBOOK_LOCAL_LLM WORDBOOK_EXPLANATION_REPOSITORY";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				WORDBOOK_CONTENT_BUILD_RECEIPT_PATH = "$(SRCROOT)/Shared/.wordbook-content-build-receipt.json";
 			};
 			name = Release;
 		};
@@ -1685,6 +1786,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WORDBOOK_EXPLANATION_REPOSITORY";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -1714,6 +1816,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ai.sagittarius.memorable;
 				PRODUCT_NAME = Wordbook;
 				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WORDBOOK_EXPLANATION_REPOSITORY";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};

@@ -8,42 +8,12 @@ import MLXLMCommon
 import Tokenizers
 #endif
 
-/// A short, conversational explanation intended to be read or spoken aloud.
-enum VocabularyMemoryTechnique: String, Codable, Equatable, Sendable {
-    case parts
-    case letters
-    case image
-    case sound
-    case contrast
-}
-
-struct VocabularyExplanation: Codable, Equatable, Sendable {
-    let partOfSpeech: String
-    let meaning: String
-    let memoryTechnique: VocabularyMemoryTechnique?
-    let memoryAid: [String]
-    let example: String
-    let synonyms: [String]
-
-    var memoryAidText: String {
-        memoryAid.joined(separator: " ")
-    }
-}
-
-enum ExplanationLoadState: Equatable {
-    case idle
-    case loading
-    case ready(VocabularyExplanation)
-    case unavailable(String)
-}
-
 enum LocalTutorConfiguration {
     static let modelName = "Qwen3.5-2B-4bit-text"
     static let modelVersion = "Qwen3.5-2B-4bit@674aaa7240b9-text-only"
-    // Cache versions track the learner-facing content contract. Guided decoding
-    // and automatic fallback improve reliability without invalidating already
-    // validated explanations produced by this same v6 contract.
-    static let promptVersion = 6
+    // v7 requires the example to contain the exact target spelling. Earlier
+    // cached responses were only length-checked and may contain unrelated text.
+    static let promptVersion = 7
     static let cacheSource: Int16 = 100
 
     static func normalizedCacheWord(_ word: String) -> String {
@@ -112,6 +82,8 @@ final class LocalTutorManager: ObservableObject {
         let task: Task<VocabularyExplanation, Error>
     }
     private var pendingExplanations: [String: PendingExplanation] = [:]
+    private var failedExplanationDates: [String: Date] = [:]
+    private static let failedExplanationCooldown: TimeInterval = 5 * 60
     #endif
 
     private init() {}
@@ -172,6 +144,7 @@ final class LocalTutorManager: ObservableObject {
             request.task.cancel()
         }
         pendingExplanations.removeAll()
+        failedExplanationDates.removeAll()
         preparationTask = nil
         engine = nil
         preparationAttempt = UUID()
@@ -190,6 +163,10 @@ final class LocalTutorManager: ObservableObject {
         if let cached = WordManager.shared.getCachedExplanation(word: target) {
             return cached
         }
+        let cacheKey = LocalTutorConfiguration.normalizedCacheWord(target)
+        guard !isInFailureCooldown(cacheKey) else {
+            throw LocalTutorError.invalidResponse
+        }
         return try await explanationRequest(for: target).value
         #else
         throw LocalTutorError.unavailable
@@ -202,8 +179,10 @@ final class LocalTutorManager: ObservableObject {
     func prefetchExplanation(for word: String) {
         #if WORDBOOK_LOCAL_LLM
         let target = canonicalTarget(for: word)
+        let cacheKey = LocalTutorConfiguration.normalizedCacheWord(target)
         guard !target.isEmpty,
-              WordManager.shared.getCachedExplanation(word: target) == nil else {
+              WordManager.shared.getCachedExplanation(word: target) == nil,
+              !isInFailureCooldown(cacheKey) else {
             return
         }
         _ = explanationRequest(for: target)
@@ -219,6 +198,7 @@ final class LocalTutorManager: ObservableObject {
         if let pending = pendingExplanations.removeValue(forKey: cacheKey) {
             pending.task.cancel()
         }
+        failedExplanationDates.removeValue(forKey: cacheKey)
         #endif
         WordManager.shared.removeCachedExplanation(word: target)
     }
@@ -230,6 +210,20 @@ final class LocalTutorManager: ObservableObject {
     }
 
     #if WORDBOOK_LOCAL_LLM
+    private func isInFailureCooldown(
+        _ cacheKey: String,
+        now: Date = Date()
+    ) -> Bool {
+        guard let failedAt = failedExplanationDates[cacheKey] else {
+            return false
+        }
+        guard now.timeIntervalSince(failedAt) < Self.failedExplanationCooldown else {
+            failedExplanationDates.removeValue(forKey: cacheKey)
+            return false
+        }
+        return true
+    }
+
     private func explanationRequest(
         for target: String
     ) -> Task<VocabularyExplanation, Error> {
@@ -255,12 +249,18 @@ final class LocalTutorManager: ObservableObject {
             let startedAt = Date()
             print("Preparing local explanation for \(target)")
             #endif
-            let explanation = try await engine.explain(word: target)
-            try Task.checkCancellation()
-            WordManager.shared.setCachedExplanation(
-                word: target,
-                explanation: explanation
-            )
+            let explanation: VocabularyExplanation
+            do {
+                explanation = try await engine.explain(word: target)
+                try Task.checkCancellation()
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                self.failedExplanationDates[cacheKey] = Date()
+                throw error
+            }
+            self.failedExplanationDates.removeValue(forKey: cacheKey)
+            WordManager.shared.setCachedExplanation(word: target, explanation: explanation)
             #if DEBUG
             print(
                 String(
@@ -395,6 +395,7 @@ private enum LocalTutorResponseRejection: Error, CustomStringConvertible {
     case unsupportedPartOfSpeech(String)
     case invalidMeaningLength(Int)
     case invalidExampleLength(Int)
+    case exampleMissingTarget(String)
 
     var description: String {
         switch self {
@@ -408,6 +409,8 @@ private enum LocalTutorResponseRejection: Error, CustomStringConvertible {
             return "meaning length \(count) is outside the accepted range"
         case .invalidExampleLength(let count):
             return "example length \(count) is outside the accepted range"
+        case .exampleMissingTarget(let target):
+            return "example does not contain the exact target \(String(reflecting: target))"
         }
     }
 }
@@ -590,8 +593,9 @@ private actor LocalTutorEngine {
           and clearly helps recall this exact meaning. Omit it if that check fails.
 
         Example:
-        - Write exactly one natural sentence using the target or an ordinary
-          inflected form.
+        - Write exactly one natural sentence containing the target exactly as
+          spelled above; capitalization may differ. Do not substitute only an
+          inflected or derived form.
         - Do not prefix it with "For example".
 
         Part of speech:
@@ -654,8 +658,9 @@ private actor LocalTutorEngine {
 
         Return only the target's most common established sense. The meaning must
         begin directly with the definition, not with the target or "the word".
-        Give one natural example containing the target or an ordinary inflected
-        form. Use exactly one part-of-speech value from n, v, adj, adv, prep,
+        Give one natural example containing the target exactly as spelled;
+        capitalization may differ. Do not substitute only an inflected form.
+        Use exactly one part-of-speech value from n, v, adj, adv, prep,
         conj, pron, interj, det, or phrase. Keep the answer concise.
         """
 
@@ -685,12 +690,22 @@ private actor LocalTutorEngine {
         }
     }
 
-    /// Runs the same complete inference path used by a card so the startup gate
-    /// includes first-token Metal compilation and validated output. The normal
-    /// interface remains gated if this representative inference is not usable.
+    /// Exercises the real primary inference path so the startup gate includes
+    /// tokenizer, grammar, Metal, and first-token work. Readiness depends on a
+    /// structurally decodable response rather than the wording of one arbitrary
+    /// example; learner-facing explanations still receive semantic validation.
     func warmUp() async throws {
         _ = try await prepareGuidedGrammar()
-        _ = try await explain(word: "apple")
+        let warmUpPrompt = """
+        Create a compact English vocabulary record for the noun "apple".
+        Use a short definition and one short natural example. Return recognized
+        true, partOfSpeech n, no memory aid, and at most one synonym.
+        """
+        let json = try await generateConstrainedJSON(
+            prompt: warmUpPrompt,
+            kind: .primary
+        )
+        _ = try Self.decodePrimary(json)
     }
 
     private enum GuidedResponseKind {
@@ -935,6 +950,9 @@ private actor LocalTutorEngine {
         }
         guard (8...220).contains(example.count) else {
             throw LocalTutorResponseRejection.invalidExampleLength(example.count)
+        }
+        guard LexicalTextMatcher.containsExactSpelling(target, in: example) else {
+            throw LocalTutorResponseRejection.exampleMissingTarget(target)
         }
         return (partOfSpeech, meaning, example)
     }

@@ -24,27 +24,27 @@ struct PurchaseView: View {
     let features: [Feature] = [Feature(imageName: "graduationcap",
                                        color: Color.orange,
                                        headline: "Friendly Dictionary",
-                                       content: "extremely learner-friendly dictionary, without any loss in its thoroughness."),
+                                       content: "Clear, learner-friendly explanations without sacrificing useful detail."),
                                Feature(imageName: "scroll",
                                        color: Color.red,
-                                       headline: "Realworld Shortcuts",
-                                       content: "checking out real-world usage from the world wide web within the App with just one click."),
+                                       headline: "Real-World Shortcuts",
+                                       content: "Check real-world usage on the web from inside the app with one tap."),
                                Feature(imageName: "photo.on.rectangle.angled",
                                        color: Color("fontLink"),
                                        headline: "Graphic Reference",
-                                       content: "gets the visual idea of the word by listing all the images related within App."),
+                                       content: "Build a visual sense of a word by finding related images."),
                                Feature(imageName: "brain.head.profile",
                                        color: Color.green,
-                                       headline: "Private Local Tutor",
-                                       content: "explains each word warmly on your device, with a natural example and no explanation server."),
+                                       headline: "Reviewed Explanations",
+                                       content: "Uses reviewed explanations stored on your device first. Rare spellings and feedback may contact Wordbook."),
                                Feature(imageName: "ipad.and.iphone",
                                        color: Color.yellow,
                                        headline: "Sync Across Devices",
-                                       content: "keep up with the progress across iPad, iPhone, and Apple Watch by turning on iCloud sync."),
+                                       content: "Keep your study progress in sync across iPad, iPhone, and Apple Watch with iCloud."),
                                Feature(imageName: "books.vertical",
                                        color: Color("progressGood"),
                                        headline: "Translation",
-                                       content: "translate to your native language of choice for quick understanding.")]
+                                       content: "Translate into your preferred language for quick understanding.")]
     
     var body: some View {
         VStack{
@@ -114,7 +114,7 @@ struct PurchaseView: View {
                 HStack{
                     Spacer()
                     VStack(alignment: .center, spacing: 2) {
-                        Text("Uplock all features above.")
+                        Text("Unlock all features above.")
                             .font(.caption)
                         
                         Button(action: {
@@ -126,7 +126,7 @@ struct PurchaseView: View {
                         }
                         
                         if let price = iapManager.localizedPrice {
-                            Text("for only \(price)/m.")
+                            Text("\(price) per month")
                                 .font(.caption)
                         }
                     }

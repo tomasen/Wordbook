@@ -1,0 +1,22 @@
+{
+  "eventID": "4d5be27f-f83d-45c8-926b-ed71c720db25",
+  "accepted": true,
+  "replacementStatus": "complete",
+  "replacement": {
+    "id": "exp_0b68aa094f885e947054afb29f35c8917f5c5cda815df84dbc1795797fb755eb",
+    "senseID": "source:sense-alpha",
+    "schemaVersion": 1,
+    "contentHash": "7cf2f7b44b58357e66a6320fad24fa2a54b98f0bdc466d8ae01cc1b752c560e8",
+    "content": {
+      "senseID": "source:sense-alpha",
+      "partOfSpeech": "v",
+      "meaning": "traveled swiftly on foot before the moment described",
+      "memoryTechnique": "contrast",
+      "memoryAid": ["Contrast run now with ran after the quick trip is over."],
+      "example": "She ran home before the storm arrived.",
+      "synonyms": ["sprint"]
+    },
+    "source": "ollama",
+    "model": "fixture-model"
+  }
+}

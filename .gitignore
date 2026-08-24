@@ -29,5 +29,17 @@ DerivedData/
 
 ._*
 
+# Local Python tooling/tests.
+__pycache__/
+*.py[cod]
+
 # Recreated by scripts/setup_local_model.py; never commit the 1 GiB payload.
 /LocalModels/Qwen3.5-2B-4bit-text/model.safetensors
+
+# Generated or downloaded by scripts/install_content_pack.py; never commit the
+# curated explanation database itself.
+/Shared/wordbook-content.sqlite
+/Shared/.wordbook-content-release-state.json
+/Shared/.wordbook-content-release-state.json.pending
+/Shared/.wordbook-content.previous.sqlite
+/Shared/.wordbook-content-build-receipt.json

@@ -39,8 +39,16 @@ struct TodayStatusView: View {
                                      num: viewModel.queue,
                                      color: Color("progressBackground"))
                 }
+
+                HStack(spacing: 5) {
+                    Image(systemName: "clock")
+                    Text("A new day begins at \(viewModel.studyDayStartTimeString).")
+                }
+                .customFont(name: "AvenirNext-Regular", style: .caption2)
+                .foregroundColor(Color("fontGray"))
+                .padding(.top, 14)
             }
-            .padding(EdgeInsets(top: 18, leading: 20, bottom: 28, trailing: 20))
+            .padding(EdgeInsets(top: 18, leading: 20, bottom: 14, trailing: 20))
         }
         .foregroundColor(Color("fontBody"))
         .background(Rectangle().fill(Color("todayBackgroundHighlight")).shadow(radius: 2).cornerRadius(12))

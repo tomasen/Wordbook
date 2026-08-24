@@ -404,8 +404,9 @@ class WordManager {
         
         switch rate {
         case .WELLKNOWN:
-            // step up
-            card.step += 1
+            // Step 7 is the terminal review tier. Keep mature cards there
+            // instead of incrementing to an unsupported value and crashing.
+            card.step = Int16(min(max(Int(card.step) + 1, 1), 7))
             card.extendDuedate(from:today)
             
         case .VAGUE:
@@ -490,7 +491,9 @@ class WordManager {
     }
     
     // ------- Date Functions -------
-    let cutoffHour = 4
+    /// A learner-facing "day" starts at 4 AM local time, so late-night study
+    /// remains grouped with the preceding calendar date.
+    private let studyDayStartHour = 4
     var pseudoTime: Date?
     var today: Int32 {
         day(from: now())
@@ -511,7 +514,7 @@ class WordManager {
         let calendar = Calendar.current
         let civilDay = calendar.startOfDay(for: date)
         let cutoff = calendar.date(
-            bySettingHour: cutoffHour,
+            bySettingHour: studyDayStartHour,
             minute: 0,
             second: 0,
             of: civilDay
@@ -538,7 +541,7 @@ class WordManager {
     
     func BeginOfTheDay(_ day: Int32) -> Date {
         Calendar.current.date(
-            bySettingHour: cutoffHour,
+            bySettingHour: studyDayStartHour,
             minute: 0,
             second: 0,
             of: date(from: day)
@@ -556,6 +559,28 @@ class WordManager {
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .none
         return dateFormatter.string(from: self.date(from: self.today))
+    }
+
+    /// Localized clock text for the fixed study-day boundary shown in the UI.
+    /// DateFormatter follows the device's 12- or 24-hour preference.
+    func studyDayStartTimeString() -> String {
+        let calendar = Calendar.autoupdatingCurrent
+        guard let startTime = calendar.date(
+            bySettingHour: studyDayStartHour,
+            minute: 0,
+            second: 0,
+            of: now()
+        ) else {
+            return "4:00 AM"
+        }
+
+        let formatter = DateFormatter()
+        formatter.locale = .autoupdatingCurrent
+        formatter.calendar = calendar
+        formatter.timeZone = calendar.timeZone
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter.string(from: startTime)
     }
     
     func now() -> Date {
@@ -585,10 +610,12 @@ extension WordCard {
             self.updateDueByDay(30)
         case 6: // ENDING
             self.updateDueByDay(75)
-        case 7: // ENDED
+        case 7...: // ENDED; also repairs legacy out-of-range values
+            self.step = 7
             self.updateDueByDay(200)
-        default:
-            fatalError()
+        default: // Repair a malformed negative persisted value safely.
+            self.step = 0
+            self.updateDueByMinute(1)
         }
     }
     

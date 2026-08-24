@@ -8,6 +8,11 @@
 import SwiftUI
 import Introspect
 
+private struct PronunciationPreparationID: Hashable {
+    let word: String
+    let isEnabled: Bool
+}
+
 struct CardView: View {
     @ObservedObject private var soundManager = SoundManager.shared
 
@@ -23,7 +28,7 @@ struct CardView: View {
     private var defaultWord = ""
 
     private var canAnswerAfterReveal: Bool {
-        showDefinition && viewModel.isExplanationSettled
+        showDefinition
     }
 
     init(_ word: String = "",
@@ -80,7 +85,10 @@ struct CardView: View {
                                 }
                             } else {
                                 Button {
-                                    soundManager.playTTS(viewModel.word)
+                                    soundManager.playTTS(
+                                        viewModel.word,
+                                        phonemes: viewModel.preferredPronunciationPhonemes
+                                    )
                                 } label: {
                                     Text(viewModel.word)
                                         .frame(maxWidth: .infinity)
@@ -98,7 +106,7 @@ struct CardView: View {
                             }
 
                             if let alsoKnownAs = viewModel.alsoKnownAs {
-                                Text("as. \(alsoKnownAs)")
+                                Text(alsoKnownAs)
                                     .customFont(
                                         name: "AvenirNext-Regular",
                                         style: .caption2,
@@ -114,7 +122,10 @@ struct CardView: View {
                     }
                 },
                 tap: {
-                    SoundManager.shared.playTTS(viewModel.word)
+                    SoundManager.shared.playTTS(
+                        viewModel.word,
+                        phonemes: viewModel.preferredPronunciationPhonemes
+                    )
                 },
                 flipped: $showDefinition,
                 disabled: $editing || $disableFlip
@@ -130,6 +141,9 @@ struct CardView: View {
                 viewModel.word = defaultWord
             }
             viewModel.validate()
+            // Explanation lookup is independent of pronunciation. A bundled
+            // SQLite hit should be visible immediately instead of waiting for
+            // the natural-voice pipeline.
             viewModel.fetchExplain()
 
             PausableTimer.shared.restart()
@@ -138,7 +152,36 @@ struct CardView: View {
                 enableGoodButton = true
             }
         }
+        .task(id: PronunciationPreparationID(
+            word: viewModel.word,
+            isEnabled: !editing
+        )) {
+            let wordToPrepare = viewModel.word.trimmingCharacters(
+                in: .whitespacesAndNewlines
+            )
+            guard !editing, !wordToPrepare.isEmpty else { return }
+
+            // Wait for the fast overlay/catalog-only lookup before starting
+            // synthesis. Common words use their reviewed IPA; a true local
+            // miss reaches Kokoro's bundled lexicon/G2P exactly once.
+            let phonemes = await EntryExplanationRuntime.shared
+                .preferredLocalPronunciationPhonemes(for: wordToPrepare)
+            guard !Task.isCancelled,
+                  !editing,
+                  viewModel.word.trimmingCharacters(
+                    in: .whitespacesAndNewlines
+                  ) == wordToPrepare else { return }
+            _ = await soundManager.preparePronunciation(
+                wordToPrepare,
+                phonemes: phonemes,
+                foreground: true
+            )
+        }
         .onDisappear {
+            soundManager.stopPronunciation(
+                for: viewModel.word,
+                phonemes: viewModel.preferredPronunciationPhonemes
+            )
             viewModel.cancelExplanation()
         }
         .navigationBarItems(trailing: trailingBarItem())
@@ -253,6 +296,112 @@ struct MemoryAidView: View {
     }
 }
 
+private struct ExplanationFeedbackButton: View {
+    let title: String
+    let systemImage: String
+    let hint: String
+    let state: ExplanationFeedbackControlState
+    let anotherRequestIsInFlight: Bool
+    let fillWidth: Bool
+    let action: () -> Void
+
+    private var isDisabled: Bool {
+        state.isLocked || anotherRequestIsInFlight
+    }
+
+    private var accessibilityStatus: String {
+        if state == .available, anotherRequestIsInFlight {
+            return "Temporarily unavailable while another feedback request is in progress"
+        }
+        return state.accessibilityValue
+    }
+
+    var body: some View {
+        Button(action: action) {
+            Label(title, systemImage: systemImage)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+                .frame(
+                    maxWidth: fillWidth ? .infinity : nil,
+                    minHeight: 44,
+                    alignment: .leading
+                )
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(PlainButtonStyle())
+        .foregroundColor(Color("fontLink"))
+        .customFont(
+            name: "AvenirNext-Regular",
+            style: .caption2,
+            weight: .regular
+        )
+        .disabled(isDisabled)
+        .opacity(isDisabled && !state.isSelected ? 0.58 : 1)
+        .accessibilityLabel(Text(title))
+        .accessibilityValue(Text(accessibilityStatus))
+        .accessibilityHint(Text(hint))
+        .accessibilityAddTraits(state.isSelected ? .isSelected : [])
+    }
+}
+
+private struct PrimaryExplanationFeedbackControls: View {
+    @ObservedObject var viewModel: CardViewModel
+
+    var body: some View {
+        Group {
+            if #available(iOS 16.0, macOS 13.0, *) {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 14) {
+                        helpfulButton(fillWidth: false)
+                        meaningButton(fillWidth: false)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    verticalButtons
+                }
+            } else {
+                verticalButtons
+            }
+        }
+    }
+
+    private var verticalButtons: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            helpfulButton(fillWidth: true)
+            meaningButton(fillWidth: true)
+        }
+    }
+
+    private func helpfulButton(fillWidth: Bool) -> some View {
+        ExplanationFeedbackButton(
+            title: "Helpful",
+            systemImage: viewModel.explanationWasLiked
+                ? "hand.thumbsup.fill"
+                : "hand.thumbsup",
+            hint: "Marks this explanation as helpful.",
+            state: viewModel.likeFeedbackState,
+            anotherRequestIsInFlight: viewModel.explanationFeedbackInFlight,
+            fillWidth: fillWidth,
+            action: viewModel.likeExplanation
+        )
+    }
+
+    private func meaningButton(fillWidth: Bool) -> some View {
+        ExplanationFeedbackButton(
+            title: "Explanation not helpful",
+            systemImage: viewModel.meaningFeedbackState.isSelected
+                ? "hand.thumbsdown.fill"
+                : "hand.thumbsdown",
+            hint: "Requests a different meaning for this explanation.",
+            state: viewModel.meaningFeedbackState,
+            anotherRequestIsInFlight: viewModel.explanationFeedbackInFlight,
+            fillWidth: fillWidth
+        ) {
+            viewModel.requestBetterExplanation(for: .meaning)
+        }
+    }
+}
+
 struct DefinitionView: View {
     @ObservedObject var viewModel: CardViewModel
     @State private var popSheetWord = ""
@@ -260,56 +409,38 @@ struct DefinitionView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            switch viewModel.explanationState {
-            case .idle, .loading:
+            switch viewModel.wordEntryState {
+            case .idle, .loading, .pending:
                 ExplanationPlaceholderView()
 
-            case .ready(let explanation):
-                VStack(alignment: .leading, spacing: 0) {
-                    HStack(alignment: .firstTextBaseline) {
-                        VStack(alignment: .trailing) {
-                            Text("\(explanation.partOfSpeech).")
+            case .ready:
+                EntryLessonsView(viewModel: viewModel)
+
+            case .correctionRequired(let candidates):
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Check the spelling. Did you mean:")
+                    ForEach(candidates, id: \.self) { candidate in
+                        Button(candidate) {
+                            viewModel.useSuggestedSpelling(candidate)
                         }
-
-                        VStack(alignment: .leading) {
-                            Text(explanation.meaning)
-                                .multilineTextAlignment(.leading)
-                                .padding(.bottom, 2.5)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-
-                            if !explanation.synonyms.isEmpty {
-                                synonymView(explanation.synonyms)
-                                    .padding(.bottom, 2.5)
-                            }
-
-                            HStack(alignment: .top) {
-                                Text("·")
-                                Text("\"\(explanation.example)\"")
-                                    .multilineTextAlignment(.leading)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .customFont(
-                                name: "AvenirNext-Italic",
-                                style: .footnote,
-                                weight: .regular
-                            )
-                            .padding(.bottom, 2.5)
-                        }
+                        .foregroundColor(Color("fontLink"))
                     }
-                    .customFont(
-                        name: "AvenirNext-Regular",
-                        style: .callout,
-                        weight: .medium
-                    )
-                    .padding(.horizontal, 10)
-
-                    if !explanation.memoryAid.isEmpty {
-                        Divider()
-                        MemoryAidView(text: explanation.memoryAidText)
+                    if viewModel.canConfirmRareSpelling {
+                        Button("This spelling is correct") {
+                            viewModel.confirmRareSpelling()
+                        }
+                        .foregroundColor(Color("fontLink"))
+                        .accessibilityHint(
+                            Text("Checks this exact spelling with the reviewed explanation service once.")
+                        )
                     }
                 }
+                .customFont(
+                    name: "AvenirNext-Regular",
+                    style: .callout,
+                    weight: .medium
+                )
+                .padding(.horizontal, 10)
 
             case .unavailable(let message):
                 VStack(alignment: .leading, spacing: 10) {
@@ -403,6 +534,233 @@ struct DefinitionView: View {
                     .foregroundColor(Color("fontLink"))
                 }
             }
+        }
+    }
+}
+
+private struct EntryLessonsView: View {
+    @ObservedObject var viewModel: CardViewModel
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(Array(viewModel.visibleEntryUsages.enumerated()), id: \.element.id) {
+                index, usage in
+                if index > 0 {
+                    Divider()
+                        .padding(.vertical, 12)
+                }
+                lesson(usage)
+            }
+
+            if viewModel.canRevealMoreUsages {
+                Button("Show more uses") {
+                    viewModel.revealAllEntryUsages()
+                }
+                .foregroundColor(Color("fontLink"))
+                .customFont(
+                    name: "AvenirNext-Regular",
+                    style: .footnote,
+                    weight: .medium
+                )
+                .padding(.horizontal, 10)
+                .padding(.top, 12)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func lesson(_ usage: UsageLesson) -> some View {
+        VStack(alignment: .leading, spacing: 7) {
+            if usage.learnerLabel != nil
+                || usage.partOfSpeechLabel != nil
+                || usage.formRelationLabel != nil {
+                HStack(alignment: .firstTextBaseline, spacing: 7) {
+                    if let partOfSpeech = usage.partOfSpeechLabel {
+                        Text(partOfSpeech)
+                    }
+                    if let learnerLabel = usage.learnerLabel {
+                        Text(learnerLabel)
+                    }
+                    if let formRelation = usage.formRelationLabel {
+                        Text("· \(formRelation)")
+                    }
+                }
+                .foregroundColor(Color("fontGray"))
+                .customFont(
+                    name: "AvenirNext-Regular",
+                    style: .caption2,
+                    weight: .regular
+                )
+            }
+
+            Text(usage.content.directExplanation)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .customFont(
+                    name: "AvenirNext-Regular",
+                    style: .callout,
+                    weight: .medium
+                )
+
+            HStack(alignment: .top, spacing: 7) {
+                Text("·")
+                Text("\"\(usage.content.example)\"")
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .customFont(
+                name: "AvenirNext-Italic",
+                style: .footnote,
+                weight: .regular
+            )
+
+            if !usage.content.synonyms.isEmpty {
+                synonymView(usage.content.synonyms)
+            }
+
+            if let memoryCue = usage.content.memoryCue {
+                memoryCueText(memoryCue)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 3)
+                    .customFont(
+                        name: "AvenirNext-Regular",
+                        style: .footnote,
+                        weight: .regular
+                    )
+            }
+
+            feedbackControls(for: usage)
+
+            if let message = viewModel.entryFeedbackMessage(
+                for: usage.entryUsageID
+            ) {
+                Text(message)
+                    .foregroundColor(Color("fontGray"))
+                    .customFont(
+                        name: "AvenirNext-Regular",
+                        style: .caption2,
+                        weight: .regular
+                    )
+                    .accessibilityLabel(Text("Feedback status: \(message)"))
+            }
+        }
+        .padding(.horizontal, 10)
+    }
+
+    @ViewBuilder
+    private func feedbackControls(for usage: UsageLesson) -> some View {
+        let helpfulState = viewModel.entryFeedbackState(
+            for: usage.entryUsageID,
+            component: .wholeLesson
+        )
+        let explanationState = viewModel.entryFeedbackState(
+            for: usage.entryUsageID,
+            component: .explanation
+        )
+
+        VStack(alignment: .leading, spacing: 0) {
+            ExplanationFeedbackButton(
+                title: "Helpful",
+                systemImage: helpfulState.isSelected
+                    ? "hand.thumbsup.fill" : "hand.thumbsup",
+                hint: "Marks this lesson as helpful.",
+                state: helpfulState,
+                anotherRequestIsInFlight: viewModel.explanationFeedbackInFlight,
+                fillWidth: true
+            ) {
+                viewModel.likeExplanation(entryUsageID: usage.entryUsageID)
+            }
+            ExplanationFeedbackButton(
+                title: "Explanation not helpful",
+                systemImage: explanationState.isSelected
+                    ? "hand.thumbsdown.fill" : "hand.thumbsdown",
+                hint: "Requests another reviewed lesson for this use.",
+                state: explanationState,
+                anotherRequestIsInFlight: viewModel.explanationFeedbackInFlight,
+                fillWidth: true
+            ) {
+                viewModel.requestBetterExplanation(
+                    entryUsageID: usage.entryUsageID,
+                    component: .explanation
+                )
+            }
+            if usage.content.memoryCue != nil {
+                let memoryState = viewModel.entryFeedbackState(
+                    for: usage.entryUsageID,
+                    component: .memoryCue
+                )
+                ExplanationFeedbackButton(
+                    title: "Memory tip not helpful",
+                    systemImage: memoryState.isSelected
+                        ? "hand.thumbsdown.fill" : "hand.thumbsdown",
+                    hint: "Requests another reviewed lesson with a better memory tip.",
+                    state: memoryState,
+                    anotherRequestIsInFlight: viewModel.explanationFeedbackInFlight,
+                    fillWidth: true
+                ) {
+                    viewModel.requestBetterExplanation(
+                        entryUsageID: usage.entryUsageID,
+                        component: .memoryCue
+                    )
+                }
+            }
+        }
+        .padding(.top, 2)
+    }
+
+    private func memoryCueText(_ cue: MemoryCue) -> Text {
+        cue.segments.reduce(Text("")) { partial, segment in
+            partial + Text(segment.text).fontWeight(
+                segment.emphasized ? .semibold : .regular
+            )
+        }
+    }
+
+    @ViewBuilder
+    private func synonymView(_ synonyms: [String]) -> some View {
+        if #available(iOS 15.0, macOS 12.0, *) {
+            let links = synonyms.map {
+                "[\($0)](wordbook://pop/\($0.urlencode()))"
+            }
+            let options = AttributedString.MarkdownParsingOptions(
+                interpretedSyntax: .inlineOnlyPreservingWhitespace
+            )
+            let attributed = (try? AttributedString(
+                markdown: links.joined(separator: " "),
+                options: options
+            )) ?? AttributedString(synonyms.joined(separator: " "))
+            HStack(alignment: .firstTextBaseline) {
+                Text("Similar:").fixedSize()
+                Text(attributed).accentColor(Color("fontLink"))
+            }
+            .customFont(
+                name: "AvenirNext-Regular",
+                style: .footnote,
+                weight: .regular
+            )
+        } else {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Similar:").fixedSize()
+                ForEach(synonyms, id: \.self) { synonym in
+                    Button(synonym) {
+                        guard let url = URL(
+                            string: "wordbook://pop/\(synonym.urlencode())"
+                        ) else { return }
+                        openURL(url)
+                    }
+                    .foregroundColor(Color("fontLink"))
+                }
+            }
+            .customFont(
+                name: "AvenirNext-Regular",
+                style: .footnote,
+                weight: .regular
+            )
         }
     }
 }
