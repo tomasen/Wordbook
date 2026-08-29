@@ -253,13 +253,21 @@ Wordbook bundles a text-only 4-bit build of
 [Qwen3.5-2B](https://huggingface.co/Qwen/Qwen3.5-2B) using
 [MLX Swift LM](https://github.com/ml-explore/mlx-swift-lm) with XGrammar-backed
 guided generation. Under the final Entry-first architecture, this local model
-is reserved for comprehension assessment—for example, comparing a learner's
-own explanation with the selected lesson—not for routine definition
-generation. Entry lookup and explanation prefetch never wait for this model,
-and its loading or warm-up does not gate normal app readiness. A future
-assessment fallback may use the server when the local evaluator cannot reach a
-reliable result, but model output never directly changes grades, intervals, or
-due dates.
+is primarily reserved for comprehension assessment, not routine definition
+generation. In the planned spoken-answer mode, speech recognition produces a
+transcript and the on-device model compares that transcript with the meaning
+requirements of the selected `entryUsageID`. It returns a bounded assessment
+such as mastered, partially understood, or not understood, together with the
+important meaning points that were missing. Only an assessment that satisfies
+the explicit mastery contract may qualify the answer as `GOOD`.
+
+Entry lookup and explanation prefetch never wait for this model, and its
+loading or warm-up does not gate normal app readiness. Routine explanation
+resolution remains bundled SQLite first, server second, with on-device
+generation only as the last available fallback for an Entry absent from both.
+An assessment may likewise use a bounded server fallback when the local
+evaluator cannot reach a reliable result. In both cases, model output is
+validated and never directly changes grades, intervals, or due dates.
 
 The model payload in `LocalModels/Qwen3.5-2B-4bit-text/` is 1,059,405,152 bytes. It is derived from `mlx-community/Qwen3.5-2B-4bit` revision `674aaa7240b91e8012fcad5d791b7dfe5ba90207`; 297 unused `vision_tower.*` tensors were removed and all 694 `language_model.*` tensors were retained. `manifest.json` records provenance, byte sizes, and SHA-256 hashes. The model is Apache-2.0 licensed and its license ships beside it.
 
@@ -374,10 +382,14 @@ carry the SQLite catalog, contact the explanation service, or perform
 definition generation.
 
 The long-term role of LocalTutor is comprehension assessment rather than
-routine definition generation. A future quiz can ask the learner for a typed
-explanation—or text transcribed by a separate speech-recognition component—and
-compare it with the selected `entryUsageID` lesson under a dedicated assessment
-contract on-device. A bounded server fallback may handle an assessment that
-cannot return a reliable local result. This evaluator remains separate from
-explanation display and from the deterministic study engine: model output must
-never directly mutate grades, intervals, or due dates.
+routine definition generation. A learner may explicitly enter a spoken-answer
+mode in which explaining the word is required before it can be marked mastered.
+A separate speech-recognition component supplies only the transcript. The
+on-device evaluator compares it with the selected `entryUsageID`'s structured
+meaning requirements, reports whether the essential meaning was expressed,
+and identifies omissions without demanding dictionary wording. A bounded
+server fallback may handle an assessment that cannot return a reliable local
+result. This evaluator remains separate from explanation display and from the
+deterministic study engine: only validated assessment states may be translated
+into an answer grade, and model output must never directly mutate grades,
+intervals, or due dates.
