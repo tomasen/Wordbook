@@ -45,6 +45,21 @@ struct WatchCardView: View {
                     .font(.caption2)
                     .lineSpacing(2)
 
+                case .localFallback(let explanation):
+                    VStack(alignment: .leading, spacing: 6) {
+                        if !explanation.partOfSpeech.isEmpty {
+                            Text(explanation.partOfSpeech)
+                                .foregroundColor(Color("fontGray"))
+                        }
+                        Text(explanation.meaning)
+                        if !explanation.example.isEmpty {
+                            Text("“\(explanation.example)”")
+                                .italic()
+                        }
+                    }
+                    .font(.caption2)
+                    .lineSpacing(2)
+
                 case .idle, .loading, .pending:
                     Text("Reviewed lesson")
                         .frame(maxWidth: .infinity, alignment: .leading)

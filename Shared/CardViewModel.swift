@@ -248,6 +248,8 @@ final class CardViewModel: ObservableObject {
         switch wordEntryState {
         case .ready(let entry):
             return entry.usages.first?.content.directExplanation ?? ""
+        case .localFallback(let explanation):
+            return explanation.meaning
         case .correctionRequired(let candidates):
             return candidates.first.map { "Check spelling: \($0)" } ?? ""
         case .pending, .loading:
@@ -362,6 +364,10 @@ final class CardViewModel: ObservableObject {
                         allowPendingStatusCheck: allowPendingStatusCheck
                     ) else {
                         guard let self, self.explanationRequest == request else { return }
+                        if await self.loadLocalFallback(
+                            for: enteredWord,
+                            request: request
+                        ) { return }
                         self.wordEntryState = .unavailable(
                             EntryExplanationRuntime.shared.initializationError
                                 ?? "The reviewed explanation library is unavailable."
@@ -397,6 +403,10 @@ final class CardViewModel: ObservableObject {
                         )
                         return
                     case .unavailable:
+                        if await self.loadLocalFallback(
+                            for: enteredWord,
+                            request: request
+                        ) { return }
                         self.wordEntryState = .unavailable(
                             "Explanations are temporarily unavailable. Please try again."
                         )
@@ -407,6 +417,10 @@ final class CardViewModel: ObservableObject {
                 return
             } catch {
                 guard let self, self.explanationRequest == request else { return }
+                if await self.loadLocalFallback(
+                    for: enteredWord,
+                    request: request
+                ) { return }
                 self.wordEntryState = .unavailable(
                     "The explanation could not be opened. Please try again."
                 )
@@ -610,6 +624,22 @@ final class CardViewModel: ObservableObject {
         #if os(iOS)
         WatchEntrySnapshotBridge.shared.publish(resolution.entry)
         #endif
+    }
+
+    /// Local generation is intentionally the final explanation fallback. Its
+    /// result is display-only: it carries no reviewed Entry identity and is
+    /// therefore excluded from persistence, feedback, and Watch publication.
+    private func loadLocalFallback(for word: String, request: UUID) async -> Bool {
+        do {
+            let explanation = try await LocalTutorManager.shared.explanation(for: word)
+            try Task.checkCancellation()
+            guard explanationRequest == request else { return false }
+            explanationState = .ready(explanation)
+            wordEntryState = .localFallback(explanation)
+            return true
+        } catch {
+            return false
+        }
     }
 
     func likeExplanation() {

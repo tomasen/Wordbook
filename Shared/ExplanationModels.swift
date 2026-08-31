@@ -168,6 +168,9 @@ enum WordEntryLoadState: Equatable {
     case idle
     case loading
     case ready(ResolvedWordEntry)
+    /// Ephemeral last-resort output. It is never written to the reviewed
+    /// catalog/overlay, sent to Watch, or made eligible for feedback.
+    case localFallback(VocabularyExplanation)
     case correctionRequired([String])
     case pending
     case unavailable(String)

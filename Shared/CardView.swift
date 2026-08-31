@@ -416,6 +416,9 @@ struct DefinitionView: View {
             case .ready:
                 EntryLessonsView(viewModel: viewModel)
 
+            case .localFallback(let explanation):
+                localFallbackLesson(explanation)
+
             case .correctionRequired(let candidates):
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Check the spelling. Did you mean:")
@@ -501,6 +504,52 @@ struct DefinitionView: View {
                     .environment(\.colorScheme, .dark)
             }
         }
+    }
+
+    @ViewBuilder
+    private func localFallbackLesson(_ explanation: VocabularyExplanation) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                if !explanation.partOfSpeech.isEmpty {
+                    Text(explanation.partOfSpeech)
+                        .fixedSize()
+                }
+                Text(explanation.meaning)
+                    .multilineTextAlignment(.leading)
+            }
+            .customFont(
+                name: "AvenirNext-Regular",
+                style: .body,
+                weight: .regular
+            )
+
+            if !explanation.synonyms.isEmpty {
+                synonymView(explanation.synonyms)
+            }
+
+            if !explanation.example.isEmpty {
+                Text("·  “\(explanation.example)”")
+                    .italic()
+                    .customFont(
+                        name: "AvenirNext-Regular",
+                        style: .footnote,
+                        weight: .regular
+                    )
+            }
+
+            if !explanation.memoryAidText.isEmpty {
+                Divider()
+                    .padding(.top, 2)
+                Text(explanation.memoryAidText)
+                    .customFont(
+                        name: "AvenirNext-Regular",
+                        style: .footnote,
+                        weight: .regular
+                    )
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.top, 2)
     }
 
     @ViewBuilder
