@@ -48,6 +48,37 @@ class EntryClientP0ContractTests(unittest.TestCase):
         ]
         self.assertIn("allowPendingStatusCheck: false", prefetch)
 
+    def test_local_model_is_only_the_ephemeral_last_explanation_fallback(self) -> None:
+        models = self.source("Shared/ExplanationModels.swift")
+        self.assertIn("case localFallback(VocabularyExplanation)", models)
+
+        view_model = self.source("Shared/CardViewModel.swift")
+        foreground = view_model[
+            view_model.index("func fetchExplain(") :
+            view_model.index("func retryExplanation()")
+        ]
+        # A missing catalog runtime, a bounded server-unavailable outcome, or
+        # a transport failure may use the device model.  Correction, a known
+        # negative spelling, and a still-reviewed job must remain authoritative.
+        self.assertEqual(foreground.count("loadLocalFallback("), 3)
+        self.assertIn("case .correctionRequired(let correction):", foreground)
+        self.assertIn("case .negative:", foreground)
+        self.assertIn("case .pending(let pending):", foreground)
+        self.assertIn("case .unavailable:", foreground)
+
+        fallback = view_model[
+            view_model.index("private func loadLocalFallback") :
+            view_model.index("func likeExplanation()")
+        ]
+        self.assertIn("LocalTutorManager.shared.explanation", fallback)
+        self.assertIn("wordEntryState = .localFallback(explanation)", fallback)
+        self.assertNotIn("save", fallback.lower())
+        self.assertNotIn("feedback", fallback.lower())
+
+        view = self.source("Shared/CardView.swift")
+        self.assertIn("case .localFallback(let explanation):", view)
+        self.assertIn("localFallbackLesson(explanation)", view)
+
     def test_confirmed_spelling_action_is_one_shot_and_cache_scoped(self) -> None:
         view = self.source("Shared/CardView.swift")
         self.assertIn('Button("This spelling is correct")', view)
