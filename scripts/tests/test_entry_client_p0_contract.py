@@ -75,6 +75,23 @@ class EntryClientP0ContractTests(unittest.TestCase):
         self.assertNotIn("save", fallback.lower())
         self.assertNotIn("feedback", fallback.lower())
 
+        tutor = self.source("Shared/LocalTutor.swift")
+        explanation = tutor[
+            tutor.index("func explanation(for word: String)") :
+            tutor.index("func prefetchExplanation")
+        ]
+        self.assertIn("try await loadEngineIfNeeded()", explanation)
+        loader = tutor[
+            tutor.index("private func loadEngineIfNeeded()") :
+            tutor.index("private func isInFailureCooldown")
+        ]
+        self.assertIn("if let engineLoadTask", loader)
+        self.assertIn("return try await engineLoadTask.value", loader)
+        self.assertIn("try await engine.warmUp()", loader)
+
+        startup = self.source("Shared/WordbookApp.swift")
+        self.assertNotIn("LocalTutorManager", startup)
+
         view = self.source("Shared/CardView.swift")
         self.assertIn("case .localFallback(let explanation):", view)
         self.assertIn("localFallbackLesson(explanation)", view)

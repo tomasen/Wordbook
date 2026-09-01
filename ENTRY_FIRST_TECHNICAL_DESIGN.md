@@ -131,9 +131,10 @@ one entry. The IDs only make the resulting records durable.
    inference.** It is a bounded SQLite read plus lightweight ordering. Optional
    Wikipedia or discovery content may still load independently below it.
 7. **Routine explanation generation does not run on the phone.** The local
-   language model is reserved for future comprehension assessment. A rare
-   unknown entry goes to the server, where verification, generation, and
-   independent review can use stronger models and evidence.
+   language model is primarily reserved for future comprehension assessment.
+   A rare unknown entry goes to the server first, where stronger models and
+   evidence can verify and review it; only if that path cannot provide an
+   answer may the app lazily load its model as the final available fallback.
 8. **Unknown strings are not definitions waiting to happen.** A probable typo
    receives corrections. A valid rare term must pass server evidence checks
    before prose is generated.
@@ -1137,10 +1138,11 @@ bytes.
 - **Interactive server models:** handle the rare verified miss and explicit
   replacement in durable workers. A result is not returned as successful until
   independent review passes.
-- **Phone model:** does not generate routine explanations. Its planned role is
-  to judge the learner's typed or transcribed explanation against a compact
-  rubric. It is loaded lazily for that feature and does not gate normal app
-  startup or SQLite explanation readiness.
+- **Phone model:** does not generate routine explanations. Its primary planned
+  role is to judge the learner's typed or transcribed explanation against a
+  compact rubric. It may also generate the final fallback for an Entry missed
+  by both SQLite and the server. Either use loads it lazily and never gates
+  normal startup or SQLite explanation readiness.
 - **Deterministic code/data:** owns normalization, exact-entry lookup, spelling
   suggestions, public IDs, bounded jobs, update security, and cache state.
 

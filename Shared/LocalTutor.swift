@@ -63,7 +63,7 @@ enum LocalTutorError: LocalizedError {
     }
 }
 
-/// Owns startup preparation and exposes only the small vocabulary task to UI.
+/// Lazily owns the on-device model and exposes only the small vocabulary task.
 /// The implementation never downloads a model or calls a server.
 @MainActor
 final class LocalTutorManager: ObservableObject {
@@ -75,7 +75,7 @@ final class LocalTutorManager: ObservableObject {
 
     #if WORDBOOK_LOCAL_LLM
     private var engine: LocalTutorEngine?
-    private var preparationTask: Task<Void, Never>?
+    private var engineLoadTask: Task<LocalTutorEngine, Error>?
     private var preparationAttempt = UUID()
     private struct PendingExplanation {
         let id: UUID
@@ -90,47 +90,8 @@ final class LocalTutorManager: ObservableObject {
 
     func prepare() {
         #if WORDBOOK_LOCAL_LLM
-        guard engine == nil, preparationTask == nil else { return }
-        preparationError = nil
-        preparationStatus = "Checking language resources…"
-        let preparationStartedAt = Date()
-        let attempt = UUID()
-        preparationAttempt = attempt
-
-        preparationTask = Task { [weak self] in
-            guard let self else { return }
-            do {
-                let engine = try await LocalTutorEngine.load { [weak self] status in
-                    Task { @MainActor [weak self] in
-                        guard self?.preparationAttempt == attempt else { return }
-                        self?.preparationStatus = status
-                    }
-                }
-                try Task.checkCancellation()
-                guard self.preparationAttempt == attempt else { return }
-                self.preparationStatus = "Getting explanations ready…"
-                try await engine.warmUp()
-                try Task.checkCancellation()
-                guard self.preparationAttempt == attempt else { return }
-                self.engine = engine
-                self.isReady = true
-                self.preparationStatus = "Language model ready"
-                print(
-                    String(
-                        format: "Local tutor ready in %.2fs",
-                        Date().timeIntervalSince(preparationStartedAt)
-                    )
-                )
-            } catch is CancellationError {
-                // A superseded preparation attempt must not surface an error.
-            } catch {
-                guard self.preparationAttempt == attempt else { return }
-                self.preparationError = error.localizedDescription
-                print("Local tutor preparation failed: \(error.localizedDescription)")
-            }
-            if self.preparationAttempt == attempt {
-                self.preparationTask = nil
-            }
+        Task { [weak self] in
+            _ = try? await self?.loadEngineIfNeeded()
         }
         #else
         isReady = true
@@ -139,13 +100,13 @@ final class LocalTutorManager: ObservableObject {
 
     func retryPreparation() {
         #if WORDBOOK_LOCAL_LLM
-        preparationTask?.cancel()
+        engineLoadTask?.cancel()
         for request in pendingExplanations.values {
             request.task.cancel()
         }
         pendingExplanations.removeAll()
         failedExplanationDates.removeAll()
-        preparationTask = nil
+        engineLoadTask = nil
         engine = nil
         preparationAttempt = UUID()
         #endif
@@ -167,6 +128,8 @@ final class LocalTutorManager: ObservableObject {
         guard !isInFailureCooldown(cacheKey) else {
             throw LocalTutorError.invalidResponse
         }
+        _ = try await loadEngineIfNeeded()
+        try Task.checkCancellation()
         return try await explanationRequest(for: target).value
         #else
         throw LocalTutorError.unavailable
@@ -210,6 +173,66 @@ final class LocalTutorManager: ObservableObject {
     }
 
     #if WORDBOOK_LOCAL_LLM
+    /// Loads and warms the model only when a caller actually needs the final
+    /// on-device fallback. Concurrent fallback requests share this task; normal
+    /// startup and SQLite/server explanation resolution never call it.
+    private func loadEngineIfNeeded() async throws -> LocalTutorEngine {
+        if let engine {
+            return engine
+        }
+        if let engineLoadTask {
+            return try await engineLoadTask.value
+        }
+
+        preparationError = nil
+        preparationStatus = "Checking language resources…"
+        let preparationStartedAt = Date()
+        let attempt = UUID()
+        preparationAttempt = attempt
+        let task = Task { [weak self] () throws -> LocalTutorEngine in
+            guard let self else { throw CancellationError() }
+            do {
+                let engine = try await LocalTutorEngine.load { [weak self] status in
+                    Task { @MainActor [weak self] in
+                        guard self?.preparationAttempt == attempt else { return }
+                        self?.preparationStatus = status
+                    }
+                }
+                try Task.checkCancellation()
+                guard self.preparationAttempt == attempt else {
+                    throw CancellationError()
+                }
+                self.preparationStatus = "Getting explanations ready…"
+                try await engine.warmUp()
+                try Task.checkCancellation()
+                guard self.preparationAttempt == attempt else {
+                    throw CancellationError()
+                }
+                self.engine = engine
+                self.engineLoadTask = nil
+                self.isReady = true
+                self.preparationStatus = "Language model ready"
+                print(
+                    String(
+                        format: "Local tutor ready in %.2fs",
+                        Date().timeIntervalSince(preparationStartedAt)
+                    )
+                )
+                return engine
+            } catch {
+                guard self.preparationAttempt == attempt else { throw error }
+                self.engineLoadTask = nil
+                if !(error is CancellationError) {
+                    self.preparationError = error.localizedDescription
+                    print("Local tutor preparation failed: \(error.localizedDescription)")
+                }
+                throw error
+            }
+        }
+        engineLoadTask = task
+        return try await task.value
+    }
+
     private func isInFailureCooldown(
         _ cacheKey: String,
         now: Date = Date()
